@@ -22,7 +22,7 @@
 # include <termios.h>
 # include <curses.h>
 # include <term.h>
-
+# include <stdbool.h>
 typedef struct	s_global
 {
 	int			pid;

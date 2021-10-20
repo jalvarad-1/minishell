@@ -10,7 +10,7 @@ LIBFT_DIR = ./libft/
 LIBFT = libft.a
 HEADER = minishell.h
 
-CFLAGS = -Wall -Wextra #-Werror #-fsanitize=address
+CFLAGS = -Wall -Wextra -lreadline#-Werror #-fsanitize=address
 
 all: proyect make-libft $(NAME) $(HEADER)
 	@echo "Proyect $(NAME) ready!"
@@ -18,7 +18,7 @@ all: proyect make-libft $(NAME) $(HEADER)
 proyect:
 	@echo "\t $(NAME) IS COMMING!!"
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) $(HEADER)
 	@echo "\t[ $(GREEN)✔$(NONE) ] compiling..."
 	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT_DIR)$(LIBFT) -o $(NAME)
 	@echo "\t[ $(GREEN)✔$(NONE) ] $@ executable"
