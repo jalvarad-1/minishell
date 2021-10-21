@@ -4,6 +4,7 @@ void	sig_handler(int signal)
 {
 	if (signal == SIGINT)
 	{
+		printf("dfjk\n");
 		rl_on_new_line();
 		rl_line_buffer = 0;
 		rl_point = 0;
