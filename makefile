@@ -1,6 +1,7 @@
 NAME = minishell
 SRC = 	main.c \
-		signals_1.c
+		signals_1.c \
+		builtins_1.c
 
 RED 			= \033[0;31m
 GREEN 			= \033[0;32m

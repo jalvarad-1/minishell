@@ -29,6 +29,7 @@ typedef struct	s_global
 }				t_global;
 void	sig_handler(int signal);
 void	signal_receiver(void);
-void	print_promt(void);
+char	*print_promt(void);
+void	built_in_identifier(char *str);
 
 #endif
