@@ -27,4 +27,8 @@ typedef struct	s_global
 {
 	int			pid;
 }				t_global;
+void	sig_handler(int signal);
+void	signal_receiver(void);
+void	print_promt(void);
+
 #endif
