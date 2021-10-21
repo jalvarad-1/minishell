@@ -7,6 +7,8 @@ char	*print_promt(void)
 	char *str;
 
 	str = readline(YELLOW"🌯 Burri_shell 🌯 "GREEN"> "RESET);
+	if (!str)
+		exit(-1);
 	if (*str)
 		add_history(str);
 	return (str);
@@ -24,5 +26,6 @@ int main (void)
 		built_in_identifier(str);
 		if (str)
 			free(str);
+
 	}
 }

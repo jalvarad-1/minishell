@@ -5,7 +5,9 @@ void	sig_handler(int signal)
 	if (signal == SIGINT)
 	{
 		rl_on_new_line();
-//		rl_replace_line("", 0);
+		rl_line_buffer = 0;
+		rl_point = 0;
+		rl_end = 0;
 		rl_redisplay();
 	}
 }
