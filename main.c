@@ -15,7 +15,6 @@ char	*print_promt(void)
 	}
 	if (*str)
 		add_history(str);
-
 	return (str);
 }
 
@@ -28,8 +27,8 @@ int main (int argc, char **argv, char **env)
 	while (1)
 	{
 		str = print_promt();
-		built_in_identifier(str);
-		if (str)
-			free(str);
+		if (ft_strcmp(str, ""))
+			built_in_identifier(str);
+		free(str);
 	}
 }
