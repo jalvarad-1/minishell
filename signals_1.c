@@ -4,11 +4,13 @@ void	sig_handler(int signal)
 {
 	if (signal == SIGINT)
 	{
-		printf("dfjk\n");
 		rl_on_new_line();
 		rl_line_buffer = 0;
 		rl_point = 0;
 		rl_end = 0;
+		write(1, "\b\b", 2);
+		write(1, "  ", 2);
+		write(1, "\b\b\n", 3);
 		rl_redisplay();
 	}
 }

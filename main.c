@@ -7,22 +7,19 @@ char	*print_promt(void)
 {
 	char *str;
 
-	str = readline("\1\033[0;32m\2Burri_shell> ");
+	str = readline("Burri_shell > ");
 	if (!str)
 	{
 		write(1, "\b\b", 2);
 		exit(-1);
 	}
 	if (*str)
-	{
-		printf("|%s|", str);
 		add_history(str);
-	}
 
 	return (str);
 }
 
-int main (void)
+int main (int argc, char **argv, char **env)
 {
 	char *str;
 
@@ -32,9 +29,7 @@ int main (void)
 	{
 		str = print_promt();
 		built_in_identifier(str);
-		//printf("|%s|", str);
-		//if (str)
-			//free(str);
-
+		if (str)
+			free(str);
 	}
 }
