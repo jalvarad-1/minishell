@@ -1,7 +1,8 @@
 NAME = minishell
 SRC = 	main.c \
 		signals_1.c \
-		builtins_1.c
+		builtins_1.c \
+		ft_pwd.c
 
 RED 			= \033[0;31m
 GREEN 			= \033[0;32m
@@ -12,7 +13,7 @@ LIBFT_DIR = ./libft/
 LIBFT = libft.a
 HEADER = minishell.h
 
-CFLAGS = -Wall -Wextra #-fsanitize=address #-Werror
+CFLAGS = -Wall -Wextra -fsanitize=address #-Werror
 
 all: proyect make-libft $(NAME) $(HEADER)
 	@echo "Proyect $(NAME) ready!"

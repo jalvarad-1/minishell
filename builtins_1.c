@@ -42,7 +42,7 @@ void	built_in_identifier(char *str)
 	else if (!ft_strcmp(split[0], "cd"))
 		printf("cd command detected\n");
 	else if (!ft_strcmp(split[0], "pwd"))
-		printf("pwd command detected\n");
+		ft_pwd();
 	else if (!ft_strcmp(split[0], "export"))
 		printf("export command detected\n");
 	else if (!ft_strcmp(split[0], "unset"))
@@ -53,4 +53,5 @@ void	built_in_identifier(char *str)
 		printf("exit command detected\n");
 	else
 		printf("command not found\n");
+	//////////falta liberar todo el churro del split
 }
