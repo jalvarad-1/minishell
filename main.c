@@ -3,14 +3,49 @@
 t_global g_common;
 HIST_ENTRY ** the_history_list;
 
-/**char **create_envs(char **envp)
+char **doublepointer_dup(char **array)
 {
 	char **env_v;
+	int i;
 
-	if (envp)
-		while ()
+	i = 0;
+	while (array[i])
+		i++;
+	env_v = (char **)malloc(sizeof(char *) * (i + 1));
+	if (!env_v)
+		return (0);
+	i = 0;
+	while (array[i])
+	{
+		env_v[i] = ft_strdup(array[i]);
+		i++;
+	}
+	env_v[i] = NULL;
+	return (env_v);
+}
+
+char **create_envp(char **envp)
+{
+	char	**env_v;
+	char	aux[ARG_MAX];
+	int		i;
+
+	i = 0;
+	if (envp[i])
+	{
+		env_v = doublepointer_dup(envp);
+	}
+	else
+	{
+		env_v = (char **)malloc(sizeof(char *) * 2);
+		getcwd(aux, ARG_MAX);
+		env_v[i] = ft_strjoin("PWD=", aux);
+		i++;
+		env_v[i] = NULL;
+	}
 	return(env_v);
-}*/
+}
+
 char	*print_promt(void)
 {
 	char *str;
@@ -32,8 +67,9 @@ int main (int argc, char **argv, char **envp)
 {
 	char *str;
 	char **env_v;
+			int i = 0;
 
-	//env_v = create_envvs(envp);
+	env_v = create_envp(envp);
 	str = NULL;
 	signal_receiver();
 	while (1)

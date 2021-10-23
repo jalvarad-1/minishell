@@ -1,15 +1,4 @@
 #include "minishell.h"
-
-/*Necesitamos el PATH, Jose sabe como va eso*/
-/*static void	pwd_func(void)
-{
-	char *str;
-
-//	str = getcwd(Esto es el path, Esto la longitud de la string)
-	printf("%s\n", str);
-	free(str);
-}*/
-
 /*Le falta el flag -n*/
 static void	echo_func(char **str)
 {
@@ -29,7 +18,7 @@ static void	echo_func(char **str)
 /*static void	unset_func(void)
 {
 	Se carga completamente la variable que le pongas
-	No se puede hacer unset de una variable READ_ONLY
+	No se puede hacer unset de unav ariable READ_ONLY
 }*/
 
 void	built_in_identifier(char *str)
@@ -46,7 +35,7 @@ void	built_in_identifier(char *str)
 	else if (!ft_strcmp(split[0], "export"))
 		printf("export command detected\n");
 	else if (!ft_strcmp(split[0], "unset"))
-		printf("unset command detected\n");
+		printf("unset command detected\n");// ft_unset(char **envp, char *str);
 	else if (!ft_strcmp(split[0], "env"))
 		printf("env command detected\n");
 	else if (!ft_strcmp(split[0], "exit"))

@@ -1,9 +1,9 @@
 #include "minishell.h"
-
-void    ft_pwd()
+/* La ARG_MAX se pone pq en stackoverflow un jambo dice que es el maximo que cabe en una variable de netorno */
+void    ft_pwd(void)
 {
-	char drt[2000];
+	char drt[ARG_MAX];
 
-	getcwd(drt, 2000);
+	getcwd(drt, ARG_MAX);
 	printf("%s\n", drt);
 }
