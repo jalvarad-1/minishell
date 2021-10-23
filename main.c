@@ -67,7 +67,6 @@ int main (int argc, char **argv, char **envp)
 {
 	char *str;
 	char **env_v;
-			int i = 0;
 
 	env_v = create_envp(envp);
 	str = NULL;
@@ -77,7 +76,7 @@ int main (int argc, char **argv, char **envp)
 		str = print_promt();
 		if (ft_strcmp(str, ""))
 		{
-			built_in_identifier(str);
+			built_in_identifier(str, env_v);
 		}
 		free(str);
 	}
