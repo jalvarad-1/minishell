@@ -24,7 +24,7 @@ static int	locate_var(char **env, char *str)
 				return (i);
 		i++;
 	}
-	return (0);
+	return (-1);
 }
 
 void	ft_unset(char **str, char **env)
@@ -38,7 +38,8 @@ void	ft_unset(char **str, char **env)
 	while (str[i])
 	{
 		j = locate_var(env, str[i]);
-		if (j)
+		if (j >= 0)
+			printf("Located %d\n", j);
 //			destroy_var(env[j], str[j]);
 		i++;
 	}
