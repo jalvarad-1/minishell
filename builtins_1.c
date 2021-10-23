@@ -15,61 +15,6 @@ static void	echo_func(char **str)
 	printf("\n");
 }
 
-static size_t	get_env_len(char **env, char *str)
-{
-	int		i;
-	int		j;
-	size_t	len;
-
-	i = 0;
-	while (env[i])
-	{
-		j = 0;
-		len = 0;
-		while (str[j])
-		{
-			if (!env[i][j])
-				break ;
-			if (str[j] == env[i][j])
-				len++;
-			j++;
-		}
-		if (j == (int)len)
-			if (env[i][j] == '=')
-				return (len);
-		i++;
-	}
-	return (0);
-}
-
-void	ft_unset(char **str, char **env)
-{
-	int		i;
-	int		j;
-	int		len;
-
-	i = 1;
-	if (!str[i])
-		return ;
-	while (str[i])
-	{
-		j = 0;
-		len = get_env_len(env, str[i]);
-		if (!len)
-			return ;
-		while (env[j])
-		{
-			if (!ft_strncmp(str[i], env[j], len))
-			{
-				printf("He encontrado\n");
-				break ;
-			}
-			j++;
-		}
-		i++;
-	}
-}
-
 void	built_in_identifier(char *str, char **env)
 {
 	char **split;

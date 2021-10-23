@@ -2,7 +2,8 @@ NAME = minishell
 SRC = 	main.c \
 		signals_1.c \
 		builtins_1.c \
-		ft_pwd.c
+		ft_pwd.c \
+		ft_unset.c
 
 RED 			= \033[0;31m
 GREEN 			= \033[0;32m
