@@ -32,7 +32,7 @@ typedef struct	s_global
 void	sig_handler(int signal);
 void	signal_receiver(void);
 char	*print_promt(void);
-void	built_in_identifier(char *str, char **env);
-void	ft_unset(char **str, char **env);
+void	built_in_identifier(char *str, char ***env);
+void	ft_unset(char **str, char ***env);
 void	ft_pwd();
 #endif

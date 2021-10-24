@@ -15,7 +15,7 @@ static void	echo_func(char **str)
 	printf("\n");
 }
 
-void	built_in_identifier(char *str, char **env)
+void	built_in_identifier(char *str, char ***env)
 {
 	char **split;
 

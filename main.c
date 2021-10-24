@@ -76,7 +76,8 @@ int main (int argc, char **argv, char **envp)
 		str = print_promt();
 		if (ft_strcmp(str, ""))
 		{
-			built_in_identifier(str, env_v);
+			built_in_identifier(str, &env_v);
+			printf("	len al salir %d\n", ft_split_len(env_v));
 		}
 		free(str);
 	}

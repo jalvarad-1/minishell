@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static char **destroy_var(char **var, int pos)
+static char	**destroy_var(char **var, int pos)
 {
 	char	**tmp;
 	int		i;
@@ -10,13 +10,16 @@ static char **destroy_var(char **var, int pos)
 	i = 0;
 	j = 0;
 	len = ft_split_len(var);
-	tmp = ft_calloc(sizeof(char *), (len - 1));
+	tmp = (char **)ft_calloc(sizeof(char *), (len));
 	if (!tmp)
 		return (0);
 	while (i < len)
 	{
 		if (i != pos)
-			tmp[j++] = ft_strdup(var[i]);
+		{
+			tmp[j] = ft_strdup(var[i]);
+			j++;
+		}
 		free(var[i]);
 		i++;
 	}
@@ -24,7 +27,8 @@ static char **destroy_var(char **var, int pos)
 	return (tmp);
 }
 
-/*Devuelve la posicion de la variable a eliminar si la encuentra. En caso de no encontrarla devuelve -1*/
+/*Devuelve la posicion de la variable a eliminar si la encuentra.
+	En caso de no encontrarla devuelve -1*/
 static int	locate_var(char **env, char *str)
 {
 	int		i;
@@ -52,7 +56,7 @@ static int	locate_var(char **env, char *str)
 	return (-1);
 }
 
-void	ft_unset(char **str, char **env)
+void	ft_unset(char **str, char ***env)
 {
 	int		i;
 	int		j;
@@ -63,15 +67,9 @@ void	ft_unset(char **str, char **env)
 		return ;
 	while (str[i])
 	{
-		j = locate_var(env, str[i]);
+		j = locate_var(*env, str[i]);
 		if (j >= 0)
-			env = destroy_var(env, j);
-		i++;
-	}
-	i = 0;
-	while (i < ft_split_len(env))
-	{
-		printf("%s\n", env[i]);
+			*env = destroy_var(*env, j);
 		i++;
 	}
 }
