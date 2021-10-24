@@ -5,6 +5,7 @@
 # define CYAN "\033[0;36m"
 # define RESET "\033[0m"
 # define YELLOW "\033[0;33m"
+# define ARG_MAX 200
 # include "./libft/includes/libft.h"
 # include <readline/readline.h>
 # include <readline/history.h>
