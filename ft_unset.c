@@ -71,9 +71,7 @@ void	ft_unset(char **str, char ***env)
 		else
 			printf("unset : %s: invalid parameter\n", str[i]);
 		if (j >= 0)
-		{
 			*env = destroy_var(*env, j);
-		}
 		i++;
 	}
 }
