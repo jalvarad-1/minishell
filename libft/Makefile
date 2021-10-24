@@ -57,7 +57,8 @@ SRC_NAMES 	=  ft_atoi.c \
 				ft_strmapi.c \
 				ft_putnbr_base.c \
 				ft_putnbr_base_long.c \
-				ft_strcmp.c
+				ft_strcmp.c \
+				ft_split_len.c
 
 SRCS 		= $(addprefix $(SRC_DIR), $(SRC_NAMES))
 OBJ_DIR 	= objs/

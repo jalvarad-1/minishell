@@ -16,6 +16,7 @@ void	sig_handler(int signal)
 	}
 }
 
+/*Cambiar por sigaction y añadir la flag de ignorar la SIG_IGN para poder mutear los print*/
 void	signal_receiver(void)
 {
 	struct sigaction	sa;
