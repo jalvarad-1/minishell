@@ -1,5 +1,5 @@
 #include "minishell.h"
-
+////dmnfkds
 static int	locate_var(char **env, char *str)
 {
 	int		i;
