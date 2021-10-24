@@ -12,8 +12,6 @@ void	ft_cd(char ***env_v, char **str)
 	}
 	else
 	{
-		i = 
-		chdir()
 		return ;
 	}
 }

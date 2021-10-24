@@ -1,17 +1,16 @@
 # include "minishell.h"
 
-/*Hacer funcion realloc seria la ostia, todo por no usar listas THX JOSE*/
 static char	**add_variable(char *str, char **var)
 {
 	char		**tmp;
-	size_t		len;
 	size_t		i;
+	size_t		len;
 
+	i = 0;
 	len = ft_split_len(var);
-	tmp = (char **)ft_calloc(sizeof(char *), (len + 1));
+	tmp = (char **)ft_calloc(sizeof(char *), (len + 2));
 	if (!tmp)
 		return (0);
-	i = 0;
 	while (i < len)
 	{
 		tmp[i] = ft_strdup(var[i]);
@@ -37,7 +36,8 @@ void	ft_export(char **str, char ***env)
 	}
 	while (str[i])
 	{
-		*env = add_variable(str[i], *env);
+		if (locate_var(*env, str[i]) < 0)
+			*env = add_variable(str[i], *env);
 		i++;
 	}
 }

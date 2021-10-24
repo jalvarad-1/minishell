@@ -4,6 +4,8 @@ SRC = 	main.c \
 		builtins_1.c \
 		ft_pwd.c \
 		ft_unset.c \
+		ft_env.c \
+		ft_export.c \
 		ft_cd.c
 
 RED 			= \033[0;31m
