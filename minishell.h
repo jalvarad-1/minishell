@@ -36,4 +36,6 @@ void	built_in_identifier(char *str, char ***env);
 void	ft_unset(char **str, char ***env);
 void	ft_pwd();
 void	ft_cd(char ***env_v, char **str);
+void	ft_export(char **str, char ***env);
+void	ft_env(char **env, bool assigned);
 #endif
