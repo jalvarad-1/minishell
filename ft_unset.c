@@ -31,9 +31,10 @@ static char	**destroy_var(char **var, int pos)
 
 /*Devuelve la posicion de la variable a eliminar si la encuentra.
 	En caso de no encontrarla devuelve -1*/
-/*Solo esta localizando las variables con = Toca modificar*/
+/*STRNSTR O STRNCMP deberian funcionar para comprarar la cadena hasta encontrar el '=' Hay que encontrar la cadena exacta hasta el igual*/
 int	locate_var(char **env, char *str)
 {
+	char	*aux;
 	int		i;
 	size_t	len;
 
@@ -43,8 +44,14 @@ int	locate_var(char **env, char *str)
 		len = 0;
 		while (env[i][len] != '=')
 			len++;
-		if (ft_strnstr(env[i], str, len));
+		aux = ft_calloc(sizeof(char), len);
+		ft_strlcpy(aux, env[i], len);
+		if (!ft_strcmp(env[i], str));
+		{
+			free(aux);
 			return (i);
+		}
+		free(aux);
 		i++;
 	}
 	return (-1);
