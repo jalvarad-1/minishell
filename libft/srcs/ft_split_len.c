@@ -1,4 +1,6 @@
-int	ft_split_len(char **str)
+#include "libft.h"
+
+size_t	ft_split_len(char **str)
 {
 	int	i;
 

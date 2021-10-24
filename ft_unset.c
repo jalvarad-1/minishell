@@ -2,10 +2,10 @@
 
 static char	**destroy_var(char **var, int pos)
 {
-	char	**tmp;
-	int		i;
-	int		j;
-	int		len;
+	char		**tmp;
+	size_t		i;
+	size_t		j;
+	size_t		len;
 
 	i = 0;
 	j = 0;
@@ -15,7 +15,7 @@ static char	**destroy_var(char **var, int pos)
 		return (0);
 	while (i < len)
 	{
-		if (i != pos)
+		if ((int)i != pos)
 		{
 			tmp[j] = ft_strdup(var[i]);
 			j++;
@@ -31,7 +31,7 @@ static char	**destroy_var(char **var, int pos)
 	En caso de no encontrarla devuelve -1*/
 int	locate_var(char **env, char *str)
 {
-	int		i;
+	size_t	i;
 	int		j;
 	size_t	len;
 
@@ -48,28 +48,32 @@ int	locate_var(char **env, char *str)
 				len++;
 			j++;
 		}
-		if (j == (int)len)
-			if (env[i][j] == '=')
-				return (i);
+		if (env[i][j] == '=' && (int)len == j)
+			return (i);
 		i++;
 	}
 	return (-1);
 }
-
+/*Printea cada error que ve, pero ejecuta todo lo que puede*/
 void	ft_unset(char **str, char ***env)
 {
-	int		i;
-	int		j;
+	size_t		i;
+	int			j;
 
 	i = 1;
-	j = 0;
+	j = -1;
 	if (!str[i])
 		return ;
 	while (str[i])
 	{
-		j = locate_var(*env, str[i]);
+		if (!ft_strchr(str[i], '='))
+			j = locate_var(*env, str[i]);
+		else
+			printf("unset : %s: invalid parameter\n", str[i]);
 		if (j >= 0)
+		{
 			*env = destroy_var(*env, j);
+		}
 		i++;
 	}
 }

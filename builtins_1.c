@@ -27,11 +27,11 @@ void	built_in_identifier(char *str, char ***env)
 	else if (!ft_strcmp(split[0], "pwd"))
 		ft_pwd();
 	else if (!ft_strcmp(split[0], "export"))
-		printf("export command detected\n");
+		ft_export(split, env);
 	else if (!ft_strcmp(split[0], "unset"))
 		ft_unset(split, env);
 	else if (!ft_strcmp(split[0], "env"))
-		printf("env command detected\n");
+		ft_env(*env, 1);
 	else if (!ft_strcmp(split[0], "exit"))
 		printf("exit command detected\n");
 	else
