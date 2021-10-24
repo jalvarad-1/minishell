@@ -35,4 +35,5 @@ char	*print_promt(void);
 void	built_in_identifier(char *str, char ***env);
 void	ft_unset(char **str, char ***env);
 void	ft_pwd();
+void	ft_cd(char ***env_v, char **str);
 #endif

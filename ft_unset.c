@@ -29,7 +29,7 @@ static char	**destroy_var(char **var, int pos)
 
 /*Devuelve la posicion de la variable a eliminar si la encuentra.
 	En caso de no encontrarla devuelve -1*/
-static int	locate_var(char **env, char *str)
+int	locate_var(char **env, char *str)
 {
 	int		i;
 	int		j;

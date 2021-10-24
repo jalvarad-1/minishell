@@ -23,7 +23,7 @@ void	built_in_identifier(char *str, char ***env)
 	if (!ft_strcmp(split[0], "echo"))
 		echo_func(split);
 	else if (!ft_strcmp(split[0], "cd"))
-		printf("cd command detected\n");
+		ft_cd(env, split);
 	else if (!ft_strcmp(split[0], "pwd"))
 		ft_pwd();
 	else if (!ft_strcmp(split[0], "export"))
