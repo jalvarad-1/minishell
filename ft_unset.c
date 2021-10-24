@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+/*Hace una especide de realloc a lo guarro. En esencia elimina la cadena anterior
+para copiarse en la nueva, excepto la variable que no deseamos en pos*/
 static char	**destroy_var(char **var, int pos)
 {
 	char		**tmp;
@@ -32,24 +34,12 @@ static char	**destroy_var(char **var, int pos)
 /*Solo esta localizando las variables con = Toca modificar*/
 int	locate_var(char **env, char *str)
 {
-	size_t	i;
-	int		j;
-	size_t	len;
+	int	i;
 
 	i = 0;
 	while (env[i])
 	{
-		j = 0;
-		len = 0;
-		while (str[j])
-		{
-			if (!env[i][j])
-				break ;
-			if (str[j] == env[i][j])
-				len++;
-			j++;
-		}
-		if (env[i][j] == '=' && (int)len == j)
+		if (ft_strstr(env[i], str));
 			return (i);
 		i++;
 	}
