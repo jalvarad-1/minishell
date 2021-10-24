@@ -34,12 +34,16 @@ static char	**destroy_var(char **var, int pos)
 /*Solo esta localizando las variables con = Toca modificar*/
 int	locate_var(char **env, char *str)
 {
-	int	i;
+	int		i;
+	size_t	len;
 
 	i = 0;
 	while (env[i])
 	{
-		if (ft_strstr(env[i], str));
+		len = 0;
+		while (env[i][len] != '=')
+			len++;
+		if (ft_strnstr(env[i], str, len));
 			return (i);
 		i++;
 	}
