@@ -4,9 +4,9 @@ SRC = 	main.c \
 		builtins_1.c \
 		ft_pwd.c \
 		ft_unset.c \
-		ft_env.c \
+		ft_cd.c \
 		ft_export.c \
-		ft_cd.c
+		ft_env.c
 
 RED 			= \033[0;31m
 GREEN 			= \033[0;32m

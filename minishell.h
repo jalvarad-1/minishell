@@ -5,7 +5,9 @@
 # define CYAN "\033[0;36m"
 # define RESET "\033[0m"
 # define YELLOW "\033[0;33m"
-# define ARG_MAX 200
+#ifndef ARG_MAX
+#define ARG_MAX 20480
+#endif
 # include "./libft/includes/libft.h"
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -40,5 +42,4 @@ void	ft_cd(char ***env_v, char **str);
 void	ft_export(char **str, char ***env);
 void	ft_env(char **env, bool assigned);
 int		locate_var(char **env, char *str);
-
 #endif
