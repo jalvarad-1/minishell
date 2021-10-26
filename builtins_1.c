@@ -49,7 +49,7 @@ void	built_in_identifier(char *str, char ***env)
 	else if (!ft_strcmp(split[0], "env"))
 		ft_env(*env, 1);
 	else if (!ft_strcmp(split[0], "exit"))
-		ft_exit();
+		ft_exit(split);
 	else
 		printf("command not found\n");
 	free_matrix(split);

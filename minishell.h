@@ -41,7 +41,7 @@ void	ft_pwd();
 void	ft_cd(char ***env_v, char **str);
 void	ft_export(char **str, char ***env);
 void	ft_env(char **env, bool assigned);
-void	ft_exit();
+void	ft_exit(char **str);
 int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
 void	free_matrix(char **str);

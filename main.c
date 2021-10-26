@@ -1,7 +1,6 @@
 # include "minishell.h"
 
 t_global g_common;
-HIST_ENTRY ** the_history_list;
 
 char **doublepointer_dup(char **array)
 {

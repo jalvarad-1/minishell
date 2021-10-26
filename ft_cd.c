@@ -26,7 +26,6 @@ void	ft_cd(char ***env_v, char **str)
 			i = locate_var(*env_v, "PWD");
 			if (i>= 0 && j>= 0)
 			{
-				printf("entro \n");
 				free((*env_v)[j]);
 				(*env_v)[j] = ft_strjoin("OLDPWD", ((*env_v)[i]) + 3);
 				free((*env_v)[i]);
