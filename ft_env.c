@@ -7,24 +7,28 @@ y comprobar que set y unset funcionan correctamente*/
 /*Assigned 0 = Ordenar y mostrar todas las variables precedido de declare -x*/
 /*Export muestra cada valor entre comillas ""*/
 
-/*TO-DO list : Env no debe cambiar al ordenarlos para export
-				Export debe poner "" en el valor de las variables*/
+/*TO-DO list :	Export debe poner "" en el valor de las variables*/
 
 static char	*add_quotation_marks(char *env)
 {
 	char	*aux;
-	char	*tmp;
-	char	*dst;
+	int		i;
 
-	tmp = cut_compare(env);
-	aux = ft_strjoin(tmp, "\"");
-	free(tmp);
-	tmp = ft_strchr(env, '=');
-	dst = ft_strjoin(tmp, "\"");
-	tmp = ft_strjoin(aux, dst);
-	free(aux);
-	free(dst);
-	return (tmp);
+	i = 0;
+	while(env[i] != '=')
+	{
+		aux[i] = env[i];
+		i++;
+	}
+	aux[i++] = '"';
+	while (env[i])
+	{
+		aux[i] = env[i];
+		i++;
+	}
+	aux[i] = '"';
+	aux[i + 1] = '\0';
+	return (aux);
 }
 static void	print_export(char **env)
 {
@@ -68,8 +72,10 @@ static void	order_export(char **env)
 void	ft_env(char **env, bool assigned)
 {
 	int		i;
+	char	**ptr;
 
 	i = 0;
+	ptr = NULL;
 	if (assigned)
 	{
 		while (env[i])
@@ -80,5 +86,9 @@ void	ft_env(char **env, bool assigned)
 		}
 	}
 	else
-		order_export(env);
+	{
+		ptr = doublepointer_dup(env);
+		order_export(ptr);
+		free_matrix(ptr);
+	}
 }

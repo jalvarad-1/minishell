@@ -45,4 +45,6 @@ void	ft_exit();
 int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
 void	free_matrix(char **str);
+char	**doublepointer_dup(char **array);
+
 #endif

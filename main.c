@@ -9,6 +9,8 @@ char **doublepointer_dup(char **array)
 	int i;
 
 	i = 0;
+	if (!array)
+		return (0);
 	while (array[i])
 		i++;
 	env_v = (char **)malloc(sizeof(char *) * (i + 1));
