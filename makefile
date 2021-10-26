@@ -18,7 +18,7 @@ LIBFT_DIR = ./libft/
 LIBFT = libft.a
 HEADER = minishell.h
 
-CFLAGS = -Wall -Wextra -fsanitize=address #-Werror
+CFLAGS = -Wall -Wextra #-fsanitize=address #-Werror
 
 all: proyect make-libft $(NAME) $(HEADER)
 	@echo "Proyect $(NAME) ready!"

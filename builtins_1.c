@@ -16,7 +16,7 @@ void	free_matrix(char **str)
 }
 
 /*Le falta el flag -n*/
-static void	echo_func(char **str)
+static void	ft_echo(char **str)
 {
 	int	i;
 
@@ -37,7 +37,7 @@ void	built_in_identifier(char *str, char ***env)
 
 	split = ft_split(str, ' ');
 	if (!ft_strcmp(split[0], "echo"))
-		echo_func(split);
+		ft_echo(split);
 	else if (!ft_strcmp(split[0], "cd"))
 		ft_cd(env, split);
 	else if (!ft_strcmp(split[0], "pwd"))

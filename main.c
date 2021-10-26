@@ -8,6 +8,8 @@ char **doublepointer_dup(char **array)
 	int i;
 
 	i = 0;
+	if (!array)
+		return (0);
 	while (array[i])
 		i++;
 	env_v = (char **)malloc(sizeof(char *) * (i + 1));
@@ -67,7 +69,6 @@ int main (int argc, char **argv, char **envp)
 	char **env_v;
 
 	env_v = create_envp(envp);
-	str = NULL;
 	signal_receiver();
 	while (1)
 	{
