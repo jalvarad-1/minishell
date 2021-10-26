@@ -42,4 +42,5 @@ void	ft_cd(char ***env_v, char **str);
 void	ft_export(char **str, char ***env);
 void	ft_env(char **env, bool assigned);
 int		locate_var(char **env, char *str);
+char	*cut_compare(char *str);
 #endif

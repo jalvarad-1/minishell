@@ -1,11 +1,17 @@
 # include "minishell.h"
 
-static char	*change_var_value(char *dst, char *str)
+static char	**change_var_value(char **dst, char *str, int j)
 {
-	if (!ft_strcmp(dst, str))
+	char	*tmp;
+	char	*aux;
+
+	if (!ft_strcmp(dst[j], str))
 		return (dst);
-	
-	return(dst);
+	tmp = ft_strchr(str, '=');
+	aux = cut_compare(dst[j]);
+	dst[j] = ft_strjoin(aux, tmp);
+	free(aux);
+	return (dst);
 }
 
 static char	**add_variable(char *str, char **var)
@@ -32,7 +38,7 @@ static char	**add_variable(char *str, char **var)
 
 /*Debe ser capaz de cambiar el valor de las variables ya asignadas*/
 /*El formato es variable=algo. variable= es igual a ""*/
-/*Si lleva comillas se pega tal cual. Si no, se añaden*/
+/*Las comillas las tratamos en el parseo. Aqui las pondremos por cojones*/
 void	ft_export(char **str, char ***env)
 {
 	int	i;
@@ -48,11 +54,10 @@ void	ft_export(char **str, char ***env)
 	while (str[i])
 	{
 		j = locate_var(*env, str[i]);
-//		printf("%d\n", j);
 		if (j < 0)
 			*env = add_variable(str[i], *env);
 		else
-			*env[i] = change_var_value(*env[i], str[i]);
+			*env = change_var_value(*env, str[i], j);
 		i++;
 	}
 }

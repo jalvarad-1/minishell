@@ -32,7 +32,7 @@ static char	**destroy_var(char **var, int pos)
 /*Devuelve la posicion de la variable a eliminar si la encuentra.
 	En caso de no encontrarla devuelve -1*/
 /*STRNSTR O STRNCMP deberian funcionar para comprarar la cadena hasta encontrar el '=' Hay que encontrar la cadena exacta hasta el igual*/
-static char *cut_compare(char *str)
+char *cut_compare(char *str)
 {
 	char	*aux;
 	size_t 	len;
