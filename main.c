@@ -68,7 +68,6 @@ int main (int argc, char **argv, char **envp)
 	char **env_v;
 
 	env_v = create_envp(envp);
-	str = NULL;
 	signal_receiver();
 	while (1)
 	{

@@ -9,6 +9,7 @@ static char	**change_var_value(char **dst, char *str, int j)
 		return (dst);
 	tmp = ft_strchr(str, '=');
 	aux = cut_compare(dst[j]);
+	free(dst[j]);
 	dst[j] = ft_strjoin(aux, tmp);
 	free(aux);
 	return (dst);
@@ -37,8 +38,6 @@ static char	**add_variable(char *str, char **var)
 }
 
 /*Debe ser capaz de cambiar el valor de las variables ya asignadas*/
-/*El formato es variable=algo. variable= es igual a ""*/
-/*Las comillas las tratamos en el parseo. Aqui las pondremos por cojones*/
 void	ft_export(char **str, char ***env)
 {
 	int	i;
