@@ -57,7 +57,6 @@ char	*print_promt(void)
 		write(1, "\b\b", 2);
 		exit(-1);
 	}
-
 	if (*str)
 		add_history(str);
 	return (str);

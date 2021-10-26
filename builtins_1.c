@@ -1,4 +1,20 @@
 #include "minishell.h"
+
+void	free_matrix(char **str)
+{
+	size_t	i;
+	size_t	len;
+
+	i = 0;
+	len = ft_split_len(str);
+	while (i < len)
+	{
+		free(str[i]);
+		i++;
+	}
+	free(str);
+}
+
 /*Le falta el flag -n*/
 static void	echo_func(char **str)
 {
@@ -33,8 +49,9 @@ void	built_in_identifier(char *str, char ***env)
 	else if (!ft_strcmp(split[0], "env"))
 		ft_env(*env, 1);
 	else if (!ft_strcmp(split[0], "exit"))
-		printf("exit command detected\n");
+		ft_exit();
 	else
 		printf("command not found\n");
-	//////////falta liberar todo el churro del split
+	free_matrix(split);
+	//////////Done ;)
 }

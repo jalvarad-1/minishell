@@ -6,7 +6,8 @@ SRC = 	main.c \
 		ft_unset.c \
 		ft_cd.c \
 		ft_export.c \
-		ft_env.c
+		ft_env.c \
+		ft_exit.c
 
 RED 			= \033[0;31m
 GREEN 			= \033[0;32m
