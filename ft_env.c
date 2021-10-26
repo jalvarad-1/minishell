@@ -15,21 +15,24 @@ static char	*add_quotation_marks(char *env)
 	int		i;
 
 	i = 0;
+	aux = ft_calloc(sizeof(char), ft_strlen(env) + 3);
+	if (!aux)
+		return (0);
 	while(env[i] != '=')
 	{
 		aux[i] = env[i];
 		i++;
 	}
 	aux[i++] = '"';
-	while (env[i])
+	while (env[i - 1])
 	{
-		aux[i] = env[i];
+		aux[i] = env[i - 1];
 		i++;
 	}
 	aux[i] = '"';
-	aux[i + 1] = '\0';
 	return (aux);
 }
+
 static void	print_export(char **env)
 {
 	int	i;
