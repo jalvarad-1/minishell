@@ -1,8 +1,42 @@
 #include "minishell.h"
 
-static	void	ft_trim_plus(char *str, char d_q, char s_q)
+static char	*ft_conditions(char **str, size_t len)
 {
+	size_t	i;
+	size_t	j;
+	char	*aux;
+	size_t	actual_len;
 
+	i = 0;
+	j = 0;
+	actual_len = ft_strlen(*str) - len;
+	aux = ft_calloc(sizeof(char), actual_len + 2);
+	if (!aux)
+		return (0);
+	while (j < actual_len)
+	{
+		if ((*str)[i] == '\\')
+		{
+			if ((*str)[i + 1])
+				aux[j++] = (*str)[++i];
+		}
+		else if ((*str)[i] != '"' && (*str)[i] != '\'')
+			aux[j++] = (*str)[i];
+		i++;
+	}
+	return (aux);
+}
+
+static	void	ft_trim_plus(char **str, t_parse prs)
+{
+	char	*aux;
+	size_t	len;
+
+	len = prs.s_q + prs.d_q;
+	aux = ft_conditions(str, len);
+	free(*str);
+	*str = ft_strdup(aux);
+	free(aux);
 }
 
 /*0 si está todo ok
@@ -12,22 +46,24 @@ static	void	ft_trim_plus(char *str, char d_q, char s_q)
 EJ = // el primero hace posible que se imprima el segundo
 EJ 2 = /" Hace que se imprima la comilla y por tanto
 no cuenta para el contador de comillas cerradas*/
-int	ft_parser(char *str)
+int	ft_parser(char **str)
 {
 	t_parse	prs;
 	int		i;
 
-	prs = (t_parse){0, 0, 0};
+	prs = (t_parse){0, 0};
 	i = 0;
-	while (str[i])
+	while ((*str)[i])
 	{
-		if (str[i] == '\\' && str[i + 1] == '"')
-			i++;
-		else if (str[i] == '\\' && str[i + 1] == '\'')
-			i++;
-		else if (str[i] == '"')
+		if ((*str)[i] == '\\')
+		{
+			if ((*str)[i + 1])
+				if ((*str)[i + 1] == '"' || (*str)[i + 1] == '\'')
+					i++;
+		}
+		else if ((*str)[i] == '"')
 			prs.d_q++;
-		else if (str[i] == '\'')
+		else if ((*str)[i] == '\'')
 			prs.s_q++;
 		i++;
 	}
@@ -36,7 +72,8 @@ int	ft_parser(char *str)
 		printf("Error, unclosed quotation marks\n");
 		return (1);
 	}
-	ft_trim_plus(str, '"', '\'');
+	ft_trim_plus(str, prs);
+	printf("str ---> |%s|\n", *str);
 	return (0);
 }
 

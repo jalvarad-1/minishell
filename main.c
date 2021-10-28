@@ -87,8 +87,9 @@ int main (int argc, char **argv, char **envp)
 	{
 		str = print_promt();
 		/*Fork send child process*/
-		if (ft_strcmp(str, "") && !ft_parser(str))
+		if (ft_strcmp(str, "") && !ft_parser(&str))
 		{
+			printf("str ---> |%s|\n", str);
 			built_in_identifier(str, &env_v);
 		}
 		free(str);
