@@ -41,8 +41,7 @@ char **create_envp(char **envp)
 		env_v = (char **)malloc(sizeof(char *) * 2);
 		getcwd(aux, ARG_MAX);
 		env_v[i] = ft_strjoin("PWD=", aux);
-		i++;
-		env_v[i] = NULL;
+		env_v[i + 1] = NULL;
 	}
 	return(env_v);
 }
@@ -63,6 +62,20 @@ char	*print_promt(void)
 	return (str);
 }
 
+/*When the shell reads input, it proceeds through a sequence of operations.
+If the input indicates the beginning of a comment, the shell ignores the comment symbol (‘#’),
+and the rest of that line.
+
+Otherwise, roughly speaking, the shell reads its input and divides the input
+into words and operators, employing the quoting rules
+to select which meanings to assign various words and characters.
+
+The shell then parses these tokens into commands and other constructs,
+removes the special meaning of certain words or characters, expands others,
+redirects input and output as needed, executes the specified command,
+waits for the command’s exit status, and makes that exit status available for further inspection
+or processing.*/
+
 int main (int argc, char **argv, char **envp)
 {
 	char *str;
@@ -73,7 +86,8 @@ int main (int argc, char **argv, char **envp)
 	while (1)
 	{
 		str = print_promt();
-		if (ft_strcmp(str, ""))
+		/*Fork send child process*/
+		if (ft_strcmp(str, "") && !ft_parser(str))
 		{
 			built_in_identifier(str, &env_v);
 		}

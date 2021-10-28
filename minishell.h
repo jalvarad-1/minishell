@@ -32,9 +32,19 @@ typedef struct	s_global
 {
 	int			pid;
 }				t_global;
+
+typedef struct	s_parse
+{
+	size_t	s_q;
+	size_t	d_q;
+	size_t	bs_q;
+}				t_parse;
+/*Signals*/
 void	sig_handler(int signal);
 void	signal_receiver(void);
+/*Readline*/
 char	*print_promt(void);
+/*Built_ins*/
 void	built_in_identifier(char *str, char ***env);
 void	ft_unset(char **str, char ***env);
 void	ft_pwd();
@@ -42,9 +52,12 @@ void	ft_cd(char ***env_v, char **str);
 void	ft_export(char **str, char ***env);
 void	ft_env(char **env, bool assigned);
 void	ft_exit(char **str);
+/*Generic utils*/
+void	free_matrix(char **str);
 int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
-void	free_matrix(char **str);
 char	**doublepointer_dup(char **array);
+/*Parser*/
+int	ft_parser(char *str);
 
 #endif
