@@ -37,6 +37,8 @@ typedef struct	s_parse
 {
 	size_t	s_q;
 	size_t	d_q;
+	size_t	n_dollar;
+	size_t	*pos_dollar;
 }				t_parse;
 /*Signals*/
 void	sig_handler(int signal);
@@ -57,6 +59,6 @@ int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
 char	**doublepointer_dup(char **array);
 /*Parser*/
-int		ft_parser(char *str);
+int		ft_parser(char **str, char **env);
 
 #endif

@@ -88,7 +88,7 @@ int main (int argc, char **argv, char **envp)
 	{
 		str = print_promt();
 		/*Fork send child process*/
-		if (ft_strcmp(str, "") && !ft_parser(str))
+		if (ft_strcmp(str, "") && !ft_parser(&str, env_v))
 		{
 			pipe = ft_split(str, '|');
 			built_in_identifier(pipe, &env_v);

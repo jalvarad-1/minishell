@@ -69,6 +69,8 @@ int	locate_var(char **env, char *str)
 	return (-1);
 }
 /*Printea cada error que ve, pero ejecuta todo lo que puede*/
+
+/*Una variable de entorno puede empezar por letra o '_' y contener caracteres alfanumericos*/
 void	ft_unset(char **str, char ***env)
 {
 	size_t		i;

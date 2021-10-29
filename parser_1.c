@@ -39,6 +39,33 @@ static	void	ft_trim_plus(char **str, t_parse prs)
 	free(aux);
 }*/
 
+static void	ft_dollar_expand(char **str, char **env, t_parse prs)
+{
+	char	**aux;
+	size_t	i;
+	size_t	j;
+
+	aux = ft_calloc(sizeof(char*), prs.n_dollar);
+	if (!aux)
+		return ;
+	i = 0;
+	j = 0;
+	while (i < prs.n_dollar)
+	{
+		while ((*str)[prs.pos_dollar[i] + j] != ' ' && *(str + j))
+			j++;
+		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
+		i++;
+	}
+	i = 0;
+	while (aux[i])
+	{
+		printf("%s\n", aux[i]);
+		i++;
+	}
+	free_matrix(aux);
+}
+
 /*0 si está todo ok
 1 si da error*/
 /*Hay que distinguir entre comillas simples y dobles*/
@@ -46,19 +73,36 @@ static	void	ft_trim_plus(char **str, t_parse prs)
 EJ = // el primero hace posible que se imprima el segundo
 EJ 2 = /" Hace que se imprima la comilla y por tanto
 no cuenta para el contador de comillas cerradas*/
-int	ft_parser(char *str)
+static void	*get_pos_dollar(size_t **prs, size_t i)
+{
+	size_t	*aux;
+
+	if (*prs)
+	{
+		aux = *prs;
+		free(prs);
+	}
+	prs
+}
+
+int	ft_parser(char **str, char **env)
 {
 	t_parse	prs;
-	int		i;
+	size_t	i;
 
-	prs = (t_parse){0, 0};
+	prs = (t_parse){0, 0, 0, 0};
 	i = 0;
-	while (str[i])
+	while ((*str)[i])
 	{
-		if (str[i] == '"')
+		if ((*str)[i] == '"')
 			prs.d_q++;
-		else if (str[i] == '\'')
+		else if ((*str)[i] == '\'')
 			prs.s_q++;
+		else if ((*str)[i] == '$')
+		{
+			prs.n_dollar++;
+			get_pos_dollar(&prs.pos_dollar, i);
+		}
 		i++;
 	}
 	if (prs.s_q % 2 || prs.d_q % 2)
@@ -66,6 +110,11 @@ int	ft_parser(char *str)
 		printf("Error, unclosed quotation marks\n");
 		return (1);
 	}
+	i = 0;
+	while (i < prs.n_dollar)
+		printf("%zu\n", prs.pos_dollar[i++]);
+//	if (prs.n_dollar)
+//		ft_dollar_expand(str, env, prs);
 //	ft_trim_plus(str, prs);
 	return (0);
 }
