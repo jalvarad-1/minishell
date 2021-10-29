@@ -73,16 +73,22 @@ static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 EJ = // el primero hace posible que se imprima el segundo
 EJ 2 = /" Hace que se imprima la comilla y por tanto
 no cuenta para el contador de comillas cerradas*/
-static void	*get_pos_dollar(size_t **prs, size_t i)
+static size_t	*get_pos_dollar(size_t j, t_parse prs, size_t **pos)
 {
 	size_t	*aux;
+	size_t	i;
 
-	if (*prs)
+	i = 0;
+	aux = malloc(sizeof(size_t) * prs.n_dollar);
+	while (i < prs.n_dollar - 1)
 	{
-		aux = *prs;
-		free(prs);
+		aux[i] = (*pos)[i];
+		i++;
 	}
-	prs
+	aux[i] = j;
+	if (*pos)
+		free(*pos);
+	return (aux);
 }
 
 int	ft_parser(char **str, char **env)
@@ -101,7 +107,7 @@ int	ft_parser(char **str, char **env)
 		else if ((*str)[i] == '$')
 		{
 			prs.n_dollar++;
-			get_pos_dollar(&prs.pos_dollar, i);
+			prs.pos_dollar = get_pos_dollar(i, prs, &prs.pos_dollar);
 		}
 		i++;
 	}
