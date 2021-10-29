@@ -39,6 +39,84 @@ static	void	ft_trim_plus(char **str, t_parse prs)
 	free(aux);
 }*/
 
+/*Busca el valor de la variable en env y saca la longitud*/
+static size_t var_len(char **env, char **var, char *str, size_t len)
+{
+	size_t	j;
+	int		pos;
+	char	*tmp;
+
+	j = ft_strlen(str);
+	while (var[len])
+	{
+		pos = locate_var(env, var[len]);
+		if (pos >= 0)
+		{
+			tmp = ft_strchr(env[pos], '=');
+			j += ft_strlen(tmp + 1);
+		}
+		else
+			j++;
+		j -= ft_strlen(var[len]);
+		len++;
+	}
+//	printf("%zu\n", j);
+	return (j);
+}
+
+static void	copy_var(char *aux, size_t *j, char *env)
+{
+	char	*tmp;
+	size_t	i;
+
+	i = 1;
+	tmp = ft_strchr(env, '=');
+	while (tmp[i])
+	{
+		aux[*j] = tmp[i];
+		*j +=1;
+		i++; 
+	}
+}
+
+/*Devuelve la cadena, ahora sí, con la variable que toca en env
+Si no la encuentra deja un espacio*/
+/*Para guardar memoria adecuadamente :
+	Coger la longitud de la cadena entera, sumar la longitud del valor de la variable*/
+static void	ft_seek_n_destroy(char **str, char **env, char **var)
+{
+	char	*aux;
+	int		pos;
+	size_t	len;
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	len = 0;
+	aux = ft_calloc(sizeof(char), var_len(env, var, *str, len) + 1);
+	if (!aux)
+		return ;
+	while ((*str)[i])
+	{
+		if ((*str)[i] == '$')
+		{
+			pos = locate_var(env, var[len]);
+			if (pos >= 0)
+				copy_var(aux, &j, env[pos]);
+			else
+				aux[j++] = ' ';
+			i+= ft_strlen(var[len++]);
+		}
+		else
+			aux[j++] = (*str)[i];
+		i++;
+	}
+	free(*str);
+	*str = ft_strdup(aux);
+	free(aux);
+}
+
 static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 {
 	char	**aux;
@@ -57,12 +135,7 @@ static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
 		i++;
 	}
-//	i = 0;
-//	while (aux[i])
-//	{
-//		printf("%s\n", aux[i]);
-//		i++;
-//	}
+	ft_seek_n_destroy(str, env, aux);
 	free_matrix(aux);
 }
 
@@ -80,6 +153,8 @@ static size_t	*get_pos_dollar(size_t j, t_parse prs, size_t **pos)
 
 	i = 0;
 	aux = malloc(sizeof(size_t) * prs.n_dollar);
+	if (!aux)
+		return (0);
 	while (i < prs.n_dollar - 1)
 	{
 		aux[i] = (*pos)[i];
@@ -107,7 +182,7 @@ int	ft_parser(char **str, char **env)
 		else if ((*str)[i] == '$')
 		{
 			prs.n_dollar++;
-			prs.pos_dollar = get_pos_dollar(i, prs, &prs.pos_dollar);
+			prs.pos_dollar = get_pos_dollar(++i, prs, &prs.pos_dollar);
 		}
 		i++;
 	}
@@ -116,9 +191,6 @@ int	ft_parser(char **str, char **env)
 		printf("Error, unclosed quotation marks\n");
 		return (1);
 	}
-	i = 0;
-//	while (i < prs.n_dollar)
-//		printf("%zu\n", prs.pos_dollar[i++]);
 	if (prs.n_dollar)
 	{
 		ft_dollar_expand(str, env, prs);
