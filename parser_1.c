@@ -45,24 +45,24 @@ static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 	size_t	i;
 	size_t	j;
 
-	aux = ft_calloc(sizeof(char*), prs.n_dollar);
+	aux = ft_calloc(sizeof(char*), prs.n_dollar + 1);
 	if (!aux)
 		return ;
 	i = 0;
 	j = 0;
 	while (i < prs.n_dollar)
 	{
-		while ((*str)[prs.pos_dollar[i] + j] != ' ' && *(str + j))
+		while ((*str)[prs.pos_dollar[i] + j] != ' ' && *(str))
 			j++;
 		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
 		i++;
 	}
-	i = 0;
-	while (aux[i])
-	{
-		printf("%s\n", aux[i]);
-		i++;
-	}
+//	i = 0;
+//	while (aux[i])
+//	{
+//		printf("%s\n", aux[i]);
+//		i++;
+//	}
 	free_matrix(aux);
 }
 
@@ -117,11 +117,13 @@ int	ft_parser(char **str, char **env)
 		return (1);
 	}
 	i = 0;
-	while (i < prs.n_dollar)
-		printf("%zu\n", prs.pos_dollar[i++]);
-//	if (prs.n_dollar)
-//		ft_dollar_expand(str, env, prs);
-//	ft_trim_plus(str, prs);
+//	while (i < prs.n_dollar)
+//		printf("%zu\n", prs.pos_dollar[i++]);
+	if (prs.n_dollar)
+	{
+		ft_dollar_expand(str, env, prs);
+		free(prs.pos_dollar);
+	}
 	return (0);
 }
 
