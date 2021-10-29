@@ -78,8 +78,9 @@ or processing.*/
 
 int main (int argc, char **argv, char **envp)
 {
-	char *str;
-	char **env_v;
+	char	*str;
+	char	**env_v;
+	char	**pipe;
 
 	env_v = create_envp(envp);
 	signal_receiver();
@@ -87,10 +88,11 @@ int main (int argc, char **argv, char **envp)
 	{
 		str = print_promt();
 		/*Fork send child process*/
-		if (ft_strcmp(str, "") && !ft_parser(&str))
+		if (ft_strcmp(str, "") && !ft_parser(str))
 		{
-			printf("str ---> |%s|\n", str);
-			built_in_identifier(str, &env_v);
+			pipe = ft_split(str, '|');
+			built_in_identifier(pipe, &env_v);
+			free_matrix(pipe);
 		}
 		free(str);
 	}

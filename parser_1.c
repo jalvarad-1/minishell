@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static char	*ft_conditions(char **str, size_t len)
+/*static char	*ft_conditions(char **str, size_t len)
 {
 	size_t	i;
 	size_t	j;
@@ -37,7 +37,7 @@ static	void	ft_trim_plus(char **str, t_parse prs)
 	free(*str);
 	*str = ft_strdup(aux);
 	free(aux);
-}
+}*/
 
 /*0 si está todo ok
 1 si da error*/
@@ -46,24 +46,18 @@ static	void	ft_trim_plus(char **str, t_parse prs)
 EJ = // el primero hace posible que se imprima el segundo
 EJ 2 = /" Hace que se imprima la comilla y por tanto
 no cuenta para el contador de comillas cerradas*/
-int	ft_parser(char **str)
+int	ft_parser(char *str)
 {
 	t_parse	prs;
 	int		i;
 
 	prs = (t_parse){0, 0};
 	i = 0;
-	while ((*str)[i])
+	while (str[i])
 	{
-		if ((*str)[i] == '\\')
-		{
-			if ((*str)[i + 1])
-				if ((*str)[i + 1] == '"' || (*str)[i + 1] == '\'')
-					i++;
-		}
-		else if ((*str)[i] == '"')
+		if (str[i] == '"')
 			prs.d_q++;
-		else if ((*str)[i] == '\'')
+		else if (str[i] == '\'')
 			prs.s_q++;
 		i++;
 	}
@@ -72,8 +66,7 @@ int	ft_parser(char **str)
 		printf("Error, unclosed quotation marks\n");
 		return (1);
 	}
-	ft_trim_plus(str, prs);
-	printf("str ---> |%s|\n", *str);
+//	ft_trim_plus(str, prs);
 	return (0);
 }
 

@@ -44,7 +44,7 @@ void	signal_receiver(void);
 /*Readline*/
 char	*print_promt(void);
 /*Built_ins*/
-void	built_in_identifier(char *str, char ***env);
+void	built_in_identifier(char **str, char ***env);
 void	ft_unset(char **str, char ***env);
 void	ft_pwd();
 void	ft_cd(char ***env_v, char **str);
@@ -57,6 +57,6 @@ int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
 char	**doublepointer_dup(char **array);
 /*Parser*/
-int	ft_parser(char **str);
+int		ft_parser(char *str);
 
 #endif

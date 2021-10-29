@@ -31,11 +31,11 @@ static void	ft_echo(char **str)
 	printf("\n");
 }
 
-void	built_in_identifier(char *str, char ***env)
+void	built_in_identifier(char **str, char ***env)
 {
-	char **split;
+	char	**split;
 
-	split = ft_split(str, ' ');
+	split = ft_split(*str, ' ');
 	if (!ft_strcmp(split[0], "echo"))
 		ft_echo(split);
 	else if (!ft_strcmp(split[0], "cd"))
@@ -53,5 +53,4 @@ void	built_in_identifier(char *str, char ***env)
 	else
 		printf("command not found\n");
 	free_matrix(split);
-	//////////Done ;)
 }
