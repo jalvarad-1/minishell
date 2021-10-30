@@ -6,7 +6,6 @@
 	size_t	j;
 	char	*aux;
 	size_t	actual_len;
-
 	i = 0;
 	j = 0;
 	actual_len = ft_strlen(*str) - len;
@@ -26,12 +25,10 @@
 	}
 	return (aux);
 }
-
 static	void	ft_trim_plus(char **str, t_parse prs)
 {
 	char	*aux;
 	size_t	len;
-
 	len = prs.s_q + prs.d_q;
 	aux = ft_conditions(str, len);
 	free(*str);
@@ -39,24 +36,105 @@ static	void	ft_trim_plus(char **str, t_parse prs)
 	free(aux);
 }*/
 
+/*Busca el valor de la variable en env y saca la longitud*/
+static size_t var_len(char **env, char **var, size_t j)
+{
+	size_t	len;
+	int		pos;
+	char	*tmp;
+
+	len = 0;
+	while (var[len])
+	{
+		pos = locate_var(env, var[len]);
+		if (pos >= 0)
+		{
+			tmp = ft_strchr(env[pos], '=');
+			j += ft_strlen(tmp + 1);
+		}
+		else
+			j++;
+		j -= ft_strlen(var[len]);
+		len++;
+	}
+//	printf("%zu\n", j);
+	return (j);
+}
+
+static void	copy_var(char *aux, size_t *j, char *env)
+{
+	char	*tmp;
+	size_t	i;
+
+	i = 1;
+	tmp = ft_strchr(env, '=');
+	while (tmp[i])
+	{
+		aux[*j] = tmp[i];
+		*j +=1;
+		i++;
+	}
+}
+
+/*Devuelve la cadena, ahora sí, con la variable que toca en env
+Si no la encuentra deja un espacio*/
+/*Para guardar memoria adecuadamente :
+	Coger la longitud de la cadena entera, sumar la longitud del valor de la variable*/
+static void	ft_seek_n_destroy(char **str, char **env, char **var)
+{
+	char	*aux;
+	int		pos;
+	size_t	len;
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	len = 0;
+	aux = ft_calloc(sizeof(char), var_len(env, var, ft_strlen(*str)) + 1);
+	if (!aux)
+		return ;
+	while ((*str)[i])
+	{
+		if ((*str)[i] == '$')
+		{
+			pos = locate_var(env, var[len]);
+			if (pos >= 0)
+				copy_var(aux, &j, env[pos]);
+			else
+				aux[j++] = ' ';
+			i+= ft_strlen(var[len++]);
+		}
+		else
+			aux[j++] = (*str)[i];
+		i++;
+	}
+	free(*str);
+	*str = ft_strdup(aux);
+	free(aux);
+}
+
+/*echo $USER puta $PACO $OLDPWD $PWD*/
 static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 {
 	char	**aux;
 	size_t	i;
 	size_t	j;
 
-	aux = ft_calloc(sizeof(char*), prs.n_dollar);
+	aux = ft_calloc(sizeof(char *), prs.n_dollar + 1);
 	if (!aux)
 		return ;
 	i = 0;
-	j = 0;
 	while (i < prs.n_dollar)
 	{
-		while ((*str)[prs.pos_dollar[i] + j] != ' ' && *(str + j))
+		j = 0;
+		while (((*str)[prs.pos_dollar[i] + j] && (*str)[prs.pos_dollar[i] + j] != ' ')
+				&& (*str)[prs.pos_dollar[i] + j] != '$')
 			j++;
 		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
 		i++;
 	}
+	ft_seek_n_destroy(str, env, aux);
 	free_matrix(aux);
 }
 
@@ -74,6 +152,8 @@ static size_t	*get_pos_dollar(size_t j, t_parse prs, size_t **pos)
 
 	i = 0;
 	aux = malloc(sizeof(size_t) * prs.n_dollar);
+	if (!aux)
+		return (0);
 	while (i < prs.n_dollar - 1)
 	{
 		aux[i] = (*pos)[i];
@@ -101,7 +181,7 @@ int	ft_parser(char **str, char **env)
 		else if ((*str)[i] == '$')
 		{
 			prs.n_dollar++;
-			prs.pos_dollar = get_pos_dollar(i, prs, &prs.pos_dollar);
+			prs.pos_dollar = get_pos_dollar(++i, prs, &prs.pos_dollar);
 		}
 		i++;
 	}
@@ -111,8 +191,10 @@ int	ft_parser(char **str, char **env)
 		return (1);
 	}
 	if (prs.n_dollar)
+	{
 		ft_dollar_expand(str, env, prs);
-//	ft_trim_plus(str, prs);
+		free(prs.pos_dollar);
+	}
 	return (0);
 }
 
@@ -122,16 +204,12 @@ It preserves the literal value of the next character that follows,
 with the exception of newline. If a \newline pair appears,
 and the backslash itself is not quoted, the \newline is treated as a line continuation
 (that is, it is removed from the input stream and effectively ignored).
-
 Next: Double Quotes, Previous: Escape Character, Up: Quoting   [Contents][Index]
-
 3.1.2.2 Single Quotes
 Enclosing characters in single quotes (‘'’)
 preserves the literal value of each character within the quotes.
 A single quote may not occur between single quotes, even when preceded by a backslash.
-
 Next: ANSI-C Quoting, Previous: Single Quotes, Up: Quoting   [Contents][Index]
-
 3.1.2.3 Double Quotes
 Enclosing characters in double quotes (‘"’)
 preserves the literal value of all characters within the quotes,
@@ -146,6 +224,5 @@ Backslashes preceding characters without a special meaning are left unmodified.
 A double quote may be quoted within double quotes by preceding it with a backslash.
 If enabled, history expansion will be performed unless an ‘!’ appearing in double quotes
 is escaped using a backslash. The backslash preceding the ‘!’ is not removed.
-
 The special parameters ‘*’ and ‘@’ have special meaning when in double quotes
 (see Shell Parameter Expansion).*/
