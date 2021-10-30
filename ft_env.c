@@ -1,46 +1,47 @@
 #include "minishell.h"
 
-/*Proto-funcion para mostar el enviroment
-y comprobar que set y unset funcionan correctamente*/
-
 /*Assigned 1 = Mostrar solo variables asignadas*/
 /*Assigned 0 = Ordenar y mostrar todas las variables precedido de declare -x*/
 /*Export muestra cada valor entre comillas ""*/
 
-/*TO-DO list :	Export debe poner "" en el valor de las variables*/
-
-static char	*add_quotation_marks(char *env)
+static void	add_quotation_marks(char *env, size_t add)
 {
 	char	*aux;
 	int		i;
+	int		j;
 
 	i = 0;
-	aux = ft_calloc(sizeof(char), ft_strlen(env) + 3);
+	j = 0;
+	aux = ft_calloc(sizeof(char), ft_strlen(env) + add);
 	if (!aux)
-		return (0);
-	while(env[i] != '=')
+		return ;
+	while(env[i] && env[i] != '=')
+		aux[j++] = env[i++];
+	if (add == 3)
 	{
-		aux[i] = env[i];
-		i++;
+		aux[j++] = env[i++];
+		aux[j++] = '"';
+		while (env[i])
+			aux[j++] = env[i++];
+		aux[j] = '"';
 	}
-	aux[i++] = '"';
-	while (env[i - 1])
-	{
-		aux[i] = env[i - 1];
-		i++;
-	}
-	aux[i] = '"';
-	return (aux);
+	printf("declare -x %s\n", aux);
+	free(aux);
 }
 
 static void	print_export(char **env)
 {
-	int	i;
+	int		i;
+	size_t	add;
 
 	i = 0;
 	while (env[i])
 	{
-		printf("declare -x %s\n", add_quotation_marks(env[i]));
+		if (ft_strchr(env[i], '='))
+			add = 3;
+		else
+			add = 1;
+		add_quotation_marks(env[i], add);
 		i++;
 	}
 }
