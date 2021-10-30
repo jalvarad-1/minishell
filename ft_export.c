@@ -37,7 +37,7 @@ static char	**add_variable(char *str, char **var)
 	return (tmp);
 }
 
-/*Debe ser capaz de cambiar el valor de las variables ya asignadas*/
+/*Añade o cambia el valor de una variable de entorno*/
 void	ft_export(char **str, char ***env)
 {
 	int	i;
