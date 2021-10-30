@@ -57,7 +57,6 @@ static size_t var_len(char **env, char **var, size_t j)
 		j -= ft_strlen(var[len]);
 		len++;
 	}
-//	printf("%zu\n", j);
 	return (j);
 }
 
@@ -131,7 +130,8 @@ static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 	{
 		j = 0;
 		while (((*str)[prs.pos_dollar[i] + j] && (*str)[prs.pos_dollar[i] + j] != ' ')
-				&& (*str)[prs.pos_dollar[i] + j] != '$')
+				&& (*str)[prs.pos_dollar[i] + j] != '$' && (*str)[prs.pos_dollar[i] + j] != '"'
+				&& (*str)[prs.pos_dollar[i] + j] != '\'')
 			j++;
 		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
 		i++;
@@ -183,7 +183,7 @@ int	ft_parser(char **str, char **env)
 		else if ((*str)[i] == '$')
 		{
 			prs.n_dollar++;
-			prs.pos_dollar = get_pos_dollar(++i, prs, &prs.pos_dollar);
+			prs.pos_dollar = get_pos_dollar(i + 1, prs, &prs.pos_dollar);
 		}
 		i++;
 	}
