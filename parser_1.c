@@ -57,12 +57,6 @@ static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
 		i++;
 	}
-	i = 0;
-	while (aux[i])
-	{
-		printf("%s\n", aux[i]);
-		i++;
-	}
 	free_matrix(aux);
 }
 
@@ -116,11 +110,8 @@ int	ft_parser(char **str, char **env)
 		printf("Error, unclosed quotation marks\n");
 		return (1);
 	}
-	i = 0;
-	while (i < prs.n_dollar)
-		printf("%zu\n", prs.pos_dollar[i++]);
-//	if (prs.n_dollar)
-//		ft_dollar_expand(str, env, prs);
+	if (prs.n_dollar)
+		ft_dollar_expand(str, env, prs);
 //	ft_trim_plus(str, prs);
 	return (0);
 }
