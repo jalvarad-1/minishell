@@ -80,6 +80,8 @@ static void	copy_var(char *aux, size_t *j, char *env)
 Si no la encuentra deja un espacio*/
 /*Para guardar memoria adecuadamente :
 	Coger la longitud de la cadena entera, sumar la longitud del valor de la variable*/
+
+/* TODO $? Debe expandirse al estado de salida del último comando*/
 static void	ft_seek_n_destroy(char **str, char **env, char **var)
 {
 	char	*aux;
@@ -110,11 +112,11 @@ static void	ft_seek_n_destroy(char **str, char **env, char **var)
 		i++;
 	}
 	free(*str);
-	*str = ft_strdup(aux);
+	*str = ft_strtrim(aux, " ");
 	free(aux);
 }
 
-/*echo $USER puta $PACO $OLDPWD $PWD*/
+/*echo $USER pepe $PACO $OLDPWD $PWD*/
 static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 {
 	char	**aux;
