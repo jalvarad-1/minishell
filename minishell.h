@@ -40,6 +40,7 @@ typedef struct	s_parse
 	size_t	n_dollar;
 	size_t	*pos_dollar;
 }				t_parse;
+void rl_replace_line (const char *text, int clear_undo);
 /*Signals*/
 void	sig_handler(int signal);
 void	signal_receiver(void);

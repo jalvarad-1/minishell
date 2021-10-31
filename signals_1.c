@@ -2,18 +2,13 @@
 
 void	sig_handler(int signal)
 {
-	if (signal == SIGINT)
-	{
-		//printf("jnfg");
-		rl_on_new_line();
-		rl_line_buffer = 0;
-		rl_point = 0;
-		rl_end = 0;
-		write(1, "\b\b", 2);
-		write(1, "  ", 2);
-		write(1, "\b\b\n", 3);
-		rl_redisplay();
-	}
+	(void)signal;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+//	write(1, "\b\b", 2);
+//	write(1, "  ", 2);
 }
 
 /*Cambiar por sigaction y añadir la flag de ignorar la SIG_IGN para poder mutear los print*/

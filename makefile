@@ -29,7 +29,7 @@ proyect:
 
 $(NAME): $(OBJ) $(HEADER)
 	@echo "\t[ $(GREEN)✔$(NONE) ] compiling..."
-	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT_DIR)$(LIBFT) -lreadline -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT_DIR)$(LIBFT) -lreadline -L /Users/$(USER)/.brew/opt/readline/lib -I/Users/$(USER)/.brew/opt/readline/include -o $(NAME)
 	@echo "\t[ $(GREEN)✔$(NONE) ] $@ executable"
 
 make-libft:
