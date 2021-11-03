@@ -130,8 +130,7 @@ static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 	{
 		j = 0;
 		while (((*str)[prs.pos_dollar[i] + j] && (*str)[prs.pos_dollar[i] + j] != ' ')
-				&& (*str)[prs.pos_dollar[i] + j] != '$' && (*str)[prs.pos_dollar[i] + j] != '"'
-				&& (*str)[prs.pos_dollar[i] + j] != '\'')
+				&& (*str)[prs.pos_dollar[i] + j] != '$' && (*str)[prs.pos_dollar[i] + j] != '\'')
 			j++;
 		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
 		i++;
@@ -167,7 +166,7 @@ static size_t	*get_pos_dollar(size_t j, t_parse prs, size_t **pos)
 	return (aux);
 }
 
-int	ft_parser(char **str, char **env)
+void	ft_dollar_detect(char **str, char **env)
 {
 	t_parse	prs;
 	size_t	i;
@@ -176,10 +175,6 @@ int	ft_parser(char **str, char **env)
 	i = 0;
 	while ((*str)[i])
 	{
-		if ((*str)[i] == '"')
-			prs.d_q++;
-		else if ((*str)[i] == '\'')
-			prs.s_q++;
 		else if ((*str)[i] == '$')
 		{
 			prs.n_dollar++;
@@ -187,17 +182,11 @@ int	ft_parser(char **str, char **env)
 		}
 		i++;
 	}
-	if (prs.s_q % 2 || prs.d_q % 2)
-	{
-		printf("Error, unclosed quotation marks\n");
-		return (1);
-	}
 	if (prs.n_dollar)
 	{
 		ft_dollar_expand(str, env, prs);
 		free(prs.pos_dollar);
 	}
-	return (0);
 }
 
 /*3.1.2.1 Escape Character

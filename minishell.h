@@ -40,6 +40,27 @@ typedef struct	s_parse
 	size_t	n_dollar;
 	size_t	*pos_dollar;
 }				t_parse;
+
+typedef struct s_pipe_var
+{
+	int		fd1;
+	int		size;
+	int		**fd2;
+	int		status;
+	pid_t	pid;
+	char	*path;
+	int		l_p;/// last_pipe
+	int		n_p;/// next_pipe
+}	t_pipe_var;
+
+typedef struct s_cmds
+{
+	char			**content;
+	char			**input_fd;
+	char			**output_fd; //Guardamos las redirecciones
+	struct s_cmds	*next;
+}	t_cmds;
+
 void rl_replace_line (const char *text, int clear_undo);
 /*Signals*/
 void	sig_handler(int signal);
@@ -60,6 +81,8 @@ int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
 char	**doublepointer_dup(char **array);
 /*Parser*/
-int		ft_parser(char **str, char **env);
-
+int	get_command_table(char *str, char **env, t_cmds *table);
+/*Lst utils*/
+t_cmds	*ft_lstnew(char **content);
+void	ft_lstadd_back(t_cmds **lst, t_cmds *new);
 #endif

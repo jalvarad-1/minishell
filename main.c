@@ -80,19 +80,21 @@ int main (int argc, char **argv, char **envp)
 {
 	char	*str;
 	char	**env_v;
-	char	**pipe;
+	t_cmds	cmd_table;
 
 	env_v = create_envp(envp);
 	signal_receiver();
 	while (1)
 	{
 		str = print_promt();
-		/*Fork send child process*/
-		if (ft_strcmp(str, "") && !ft_parser(&str, env_v))
+		if (ft_strcmp(str, ""))
 		{
-			pipe = ft_split(str, '|');
-			built_in_identifier(pipe, &env_v);
-			free_matrix(pipe);
+			if (get_command_table(str, env_v, &cmd_table))
+			{
+				printf("Entro\n");
+//				built_in_identifier(cmd_table, &env_v);
+			}
+			//Liberar cmd_table
 		}
 		free(str);
 	}
