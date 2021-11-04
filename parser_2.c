@@ -72,11 +72,10 @@ int	get_command_table(char *str, char **env, t_cmds *table)
 		token = ft_mod_split(cmd[i], ' ');
 ///		if (!operator_indentifier(token))  /// retornara un entero (1 - correcto ; 0 mal)  y que se encargue de guardar los files
 			return;
-//		aux = input ;
-//		aux2 =auput ;
-//		ft_outputs(table, &token);
+//		aux = ft_get_inputs (&token);
+//		aux2 =ft_get_outputs (&token);
 //		ft_expand(token, env);
-		save_cmd(&table, token, );
+		save_cmd(&table, token);
 		free_matrix(token);
 		i++;
 	}
