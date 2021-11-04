@@ -53,19 +53,44 @@ static int	unquoted_marks(char **str)
 }*/
 
 
-/*Las comillas son un claro caso de voy a joder al personal pero estoy seguro que no tenian mucha idea de como iba y lo dejaron asi
+static void	ft_trim_quotes(char **str)
+{
+	size_t	i;
+	size_t	j;
+	t_parse	prs;
 
-En cualquier caso, "" y '' Toman el VALOR LITERAL DE LO QUE TIENEN DENTRO
-En otras palabras, las ultimas que se encuentran no existen en el ambito que nos concierne, pero tienen efecto
-Eso funciona en las comillas simples y las comillas dobles
-Un ejemplo practico "$USER" existe como USER (Robrodri/Jalvarad por la expansion) y '$USER' existe tal cual, $USER
+	i = 0;
+	prs = (t_parse){0, 0 ,0 ,0};
+	while (str[i])
+	{
+		j = 0;
+		while (str[i][j])
+		{
+			if (str[i][j] == '"')
+			{
+				j++;
+				while (str[i][j] != '"')
+					j++;
+				prs.d_q+=2;
+			}
+			else if (str[i][j] == '\'')
+			{
+				j++;
+				while (str[i][j] != '\'')
+					j++;
+				prs.s_q+=2;
+			}
+			j++;
+		}
+		ft_trim_plus(&str[i], prs);
+		i++;
+	}
+}
 
-
-*/
 static void	ft_expand(char **token, char **env)
 {
+	ft_trim_quotes(token);
 	ft_dollar_detect(token, env);
-//	ft_trim_quotes(token);
 	int	i = 0;
 	while (token[i])
 		printf("%s\n", token[i++]);

@@ -18,6 +18,6 @@ void	signal_receiver(void)
 
 	sa.sa_handler = &sig_handler;
 	sa.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &sa, NULL);
+//	sigaction(SIGINT, &sa, NULL);
 //	signal(SIGQUIT, SIG_IGN);
 }
