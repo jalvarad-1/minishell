@@ -81,7 +81,9 @@ int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
 char	**doublepointer_dup(char **array);
 /*Parser*/
-int	get_command_table(char *str, char **env, t_cmds *table);
+int		get_command_table(char *str, char **env, t_cmds *table);
+void	ft_dollar_detect(char **str, char **env);
+void	ft_trim_plus(char **str, t_parse prs);
 /*Lst utils*/
 t_cmds	*ft_lstnew(char **content);
 void	ft_lstadd_back(t_cmds **lst, t_cmds *new);
