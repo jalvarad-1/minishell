@@ -24,10 +24,21 @@ static int	unquoted_marks(char **str)
 		while (str[i][j])
 		{
 			if (str[i][j] == '"')
+			{
 				prs.d_q++;
+				j++;
+				while (str[i][j] && str[i][j] != '"')
+					j++;
+			}
 			else if (str[i][j] == '\'')
+			{
 				prs.s_q++;
-			j++;
+				j++;
+				while (str[i][j] && str[i][j] != '\'')
+					j++;
+			}
+			else
+				j++;
 		}
 		i++;
 	}
