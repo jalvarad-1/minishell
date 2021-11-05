@@ -100,8 +100,8 @@ static void	ft_trim_quotes(char **str)
 
 static void	ft_expand(char **token, char **env)
 {
-	ft_trim_quotes(token);
 	ft_dollar_detect(token, env);
+//	ft_trim_quotes(token);
 	int	i = 0;
 	while (token[i])
 		printf("%s\n", token[i++]);

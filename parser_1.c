@@ -140,9 +140,11 @@ static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 	{
 		j = 0;
 		while (((*str)[prs.pos_dollar[i] + j] && (*str)[prs.pos_dollar[i] + j] != ' ')
-				&& (*str)[prs.pos_dollar[i] + j] != '$' && (*str)[prs.pos_dollar[i] + j] != '\'')
+				&& (*str)[prs.pos_dollar[i] + j] != '$' && (*str)[prs.pos_dollar[i] + j] != '"'
+				&& (*str)[prs.pos_dollar[i] + j] != '\'')
 			j++;
 		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
+		printf("el aux %s\n", aux[i]);
 		i++;
 	}
 	ft_seek_n_destroy(str, env, aux);
@@ -189,7 +191,26 @@ void	ft_dollar_detect(char **str, char **env)
 		j = 0;
 		while (str[i][j])
 		{
-			if (str[i][j] == '$')
+			if (str[i][j] == '"')
+			{
+				j++;
+				while (str[i][j] != '"')
+				{
+					if (str[i][j] == '$')
+					{
+						prs.n_dollar++;
+						prs.pos_dollar = get_pos_dollar(j + 1, prs, &prs.pos_dollar);
+					}
+					j++;
+				}
+			}
+			else if (str[i][j] == '\'')
+			{
+				j++;
+				while (str[i][j] != '\'')
+					j++;
+			}
+			else if (str[i][j] == '$')
 			{
 				prs.n_dollar++;
 				prs.pos_dollar = get_pos_dollar(j + 1, prs, &prs.pos_dollar);
