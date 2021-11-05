@@ -9,13 +9,6 @@ t_cmds	*ft_lstnew(char **content)
 		return (NULL);
 	a->content = doublepointer_dup(content);
 	a->next = NULL;
-/*	int	i = 0;
-	while (a)
-	{
-		while (a->content[i])
-			printf("%s\n", a->content[i++]); //Lo hace bien
-		a = a->next;
-	}*/
 	return (a);
 }
 

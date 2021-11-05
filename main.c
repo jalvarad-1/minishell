@@ -80,18 +80,20 @@ int main (int argc, char **argv, char **envp)
 {
 	char	*str;
 	char	**env_v;
-	t_cmds	cmd_table;
+	t_cmds	*cmd_table;
 
 	env_v = create_envp(envp);
 	signal_receiver();
 	while (1)
 	{
+		cmd_table = NULL;
 		str = print_promt();
 		if (ft_strcmp(str, ""))
 		{
 			if (get_command_table(str, env_v, &cmd_table))
 			{
-				printf("Entro\n");
+//				printf("Entro\n");
+//				printf("%s\n", cmd_table->content[1]);
 //				built_in_identifier(cmd_table, &env_v);
 			}
 			//Liberar cmd_table

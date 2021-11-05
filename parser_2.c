@@ -111,7 +111,7 @@ static void	ft_expand(char **token, char **env)
 		printf("%s\n", token[i++]);*/
 }
 
-int	get_command_table(char *str, char **env, t_cmds *table)
+int	get_command_table(char *str, char **env, t_cmds **table)
 {
 	char	**cmd;
 	char	**token;
@@ -126,7 +126,6 @@ int	get_command_table(char *str, char **env, t_cmds *table)
 		free_matrix(cmd);
 		return (0);
 	}
-	table = NULL;
 	while (cmd[i])
 	{
 		token = ft_mod_split(cmd[i], ' ');
@@ -136,17 +135,17 @@ int	get_command_table(char *str, char **env, t_cmds *table)
 //		aux2 =auput ;
 //		ft_outputs(table, &token);
 		ft_expand(token, env);
-		save_cmd(&table, token); //Hay que revisar esta funcion porque no esta guardando bien los comandos en la tabla ni crea mas de un NODO
+		save_cmd(table, token);
 		free_matrix(token);
 		i++;
 	}
-	while (table)
+/*	while (table)
 	{
 		i = 0;
 		while (table->content[i])
 			printf("%s\n", table->content[i++]);
 		table = table->next;
-	}
+	}*/
 	free_matrix(cmd);
 	return (1);
 }
