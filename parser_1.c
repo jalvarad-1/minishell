@@ -144,7 +144,6 @@ static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 				&& (*str)[prs.pos_dollar[i] + j] != '\'')
 			j++;
 		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
-		printf("el aux %s\n", aux[i]);
 		i++;
 	}
 	ft_seek_n_destroy(str, env, aux);

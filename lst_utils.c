@@ -7,8 +7,15 @@ t_cmds	*ft_lstnew(char **content)
 	a = malloc(sizeof(t_cmds));
 	if (!a)
 		return (NULL);
-	a->content = content;
+	a->content = doublepointer_dup(content);
 	a->next = NULL;
+/*	int	i = 0;
+	while (a)
+	{
+		while (a->content[i])
+			printf("%s\n", a->content[i++]); //Lo hace bien
+		a = a->next;
+	}*/
 	return (a);
 }
 
@@ -21,7 +28,7 @@ void	ft_lstadd_back(t_cmds **lst, t_cmds *new)
 	else
 	{
 		aux = *lst;
-		while (lst)
+		while (*lst)
 		{
 			if (!aux->next)
 			{

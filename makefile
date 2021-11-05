@@ -11,6 +11,7 @@ SRC = 	main.c \
 		parser_1.c \
 		parser_2.c \
 		lst_utils.c \
+	#	parser_4.c \
 
 RED 			= \033[0;31m
 GREEN 			= \033[0;32m

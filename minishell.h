@@ -61,7 +61,7 @@ typedef struct s_cmds
 	struct s_cmds	*next;
 }	t_cmds;
 
-void rl_replace_line (const char *text, int clear_undo);
+void	rl_replace_line (const char *text, int clear_undo);
 /*Signals*/
 void	sig_handler(int signal);
 void	signal_receiver(void);

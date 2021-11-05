@@ -50,18 +50,22 @@ static int	unquoted_marks(char **str)
 	return (1);
 }
 
-/*static void	save_cmd(t_cmds **stack, char **argv)
+//Hay que revisar esta funcion porque no esta guardando bien los comandos en la tabla ni crea mas de un NODO
+static void	save_cmd(t_cmds **stack, char **argv)
 {
 	t_cmds	*tmp;
-
 	if (*stack == NULL)
+	{
+		printf("Entra la primera vez\n");
 		*stack = ft_lstnew(argv);
+	}
 	else
 	{
+		printf("Entra el resto\n");
 		tmp = ft_lstnew(argv);
 		ft_lstadd_back(stack, tmp);
 	}
-}*/
+}
 
 
 static void	ft_trim_quotes(char **str)
@@ -102,9 +106,9 @@ static void	ft_expand(char **token, char **env)
 {
 	ft_dollar_detect(token, env);
 	ft_trim_quotes(token);
-	int	i = 0;
+/*	int	i = 0;
 	while (token[i])
-		printf("%s\n", token[i++]);
+		printf("%s\n", token[i++]);*/
 }
 
 int	get_command_table(char *str, char **env, t_cmds *table)
@@ -122,26 +126,27 @@ int	get_command_table(char *str, char **env, t_cmds *table)
 		free_matrix(cmd);
 		return (0);
 	}
+	table = NULL;
 	while (cmd[i])
 	{
 		token = ft_mod_split(cmd[i], ' ');
-///		if (!operator_indentifier(token))  /// retornara un entero (1 - correcto ; 0 mal)  y que se encargue de guardar los files
-//			return;
+//		if (!operator_indentifier(token))  /// retornara un entero (1 - correcto ; 0 - mal)  y que se encargue de guardar los files
+//			return (0);
 //		aux = input ;
 //		aux2 =auput ;
 //		ft_outputs(table, &token);
 		ft_expand(token, env);
-//		save_cmd(&table, token, );
+		save_cmd(&table, token); //Hay que revisar esta funcion porque no esta guardando bien los comandos en la tabla ni crea mas de un NODO
 		free_matrix(token);
 		i++;
 	}
-/*	while (table)
+	while (table)
 	{
 		i = 0;
 		while (table->content[i])
 			printf("%s\n", table->content[i++]);
 		table = table->next;
-	}*/
+	}
 	free_matrix(cmd);
 	return (1);
 }
