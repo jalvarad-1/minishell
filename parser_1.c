@@ -1,40 +1,50 @@
 #include "minishell.h"
 
-/*static char	*ft_conditions(char **str, size_t len)
+static char	*ft_conditions(char *str, size_t len)
 {
 	size_t	i;
 	size_t	j;
 	char	*aux;
 	size_t	actual_len;
+
 	i = 0;
 	j = 0;
-	actual_len = ft_strlen(*str) - len;
+	actual_len = ft_strlen(str) - len;
 	aux = ft_calloc(sizeof(char), actual_len + 2);
 	if (!aux)
 		return (0);
-	while (j < actual_len)
+	while (str[i])
 	{
-		if ((*str)[i] == '\\')
+		if (str[i] == '"')
 		{
-			if ((*str)[i + 1])
-				aux[j++] = (*str)[++i];
+			i++;
+			while (str[i] != '"')
+				aux[j++] = str[i++];
+			i++;
 		}
-		else if ((*str)[i] != '"' && (*str)[i] != '\'')
-			aux[j++] = (*str)[i];
-		i++;
+		else if (str[i] == '\'')
+		{
+			i++;
+			while (str[i] != '\'')
+				aux[j++] = str[i++];
+			i++;
+		}
+		else
+			aux[j++] = str[i++];
 	}
 	return (aux);
 }
-static	void	ft_trim_plus(char **str, t_parse prs)
+void	ft_trim_plus(char **str, t_parse prs)
 {
 	char	*aux;
 	size_t	len;
+
 	len = prs.s_q + prs.d_q;
-	aux = ft_conditions(str, len);
+	aux = ft_conditions(*str, len);
 	free(*str);
 	*str = ft_strdup(aux);
 	free(aux);
-}*/
+}
 
 /*Busca el valor de la variable en env y saca la longitud*/
 static size_t var_len(char **env, char **var, size_t j)
@@ -130,7 +140,8 @@ static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 	{
 		j = 0;
 		while (((*str)[prs.pos_dollar[i] + j] && (*str)[prs.pos_dollar[i] + j] != ' ')
-				&& (*str)[prs.pos_dollar[i] + j] != '$' && (*str)[prs.pos_dollar[i] + j] != '\'')
+				&& (*str)[prs.pos_dollar[i] + j] != '$' && (*str)[prs.pos_dollar[i] + j] != '"'
+				&& (*str)[prs.pos_dollar[i] + j] != '\'')
 			j++;
 		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
 		i++;
@@ -168,25 +179,49 @@ static size_t	*get_pos_dollar(size_t j, t_parse prs, size_t **pos)
 
 void	ft_dollar_detect(char **str, char **env)
 {
-	t_parse	prs;
 	size_t	i;
+	size_t	j;
+	t_parse	prs;
 
-	prs = (t_parse){0, 0, 0, 0};
 	i = 0;
-	while ((*str)[i])
+	prs = (t_parse){0, 0, 0, 0};
+	while (str[i])
 	{
-		else if ((*str)[i] == '$')
+		j = 0;
+		while (str[i][j])
 		{
-			prs.n_dollar++;
-			prs.pos_dollar = get_pos_dollar(i + 1, prs, &prs.pos_dollar);
+			if (str[i][j] == '"')
+			{
+				j++;
+				while (str[i][j] != '"')
+				{
+					if (str[i][j] == '$')
+					{
+						prs.n_dollar++;
+						prs.pos_dollar = get_pos_dollar(j + 1, prs, &prs.pos_dollar);
+					}
+					j++;
+				}
+			}
+			else if (str[i][j] == '\'')
+			{
+				j++;
+				while (str[i][j] != '\'')
+					j++;
+			}
+			else if (str[i][j] == '$')
+			{
+				prs.n_dollar++;
+				prs.pos_dollar = get_pos_dollar(j + 1, prs, &prs.pos_dollar);
+			}
+			j++;
 		}
+		if (prs.n_dollar)
+			ft_dollar_expand(&str[i], env, prs);
 		i++;
 	}
 	if (prs.n_dollar)
-	{
-		ft_dollar_expand(str, env, prs);
 		free(prs.pos_dollar);
-	}
 }
 
 /*3.1.2.1 Escape Character

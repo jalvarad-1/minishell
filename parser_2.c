@@ -12,9 +12,9 @@
 */
 static int	unquoted_marks(char **str)
 {
-	t_parse	prs;
 	size_t	i;
 	size_t	j;
+	t_parse	prs;
 
 	prs = (t_parse){0, 0, 0, 0};
 	i = 0;
@@ -24,10 +24,21 @@ static int	unquoted_marks(char **str)
 		while (str[i][j])
 		{
 			if (str[i][j] == '"')
+			{
 				prs.d_q++;
+				j++;
+				while (str[i][j] && str[i][j] != '"')
+					j++;
+			}
 			else if (str[i][j] == '\'')
+			{
 				prs.s_q++;
-			j++;
+				j++;
+				while (str[i][j] && str[i][j] != '\'')
+					j++;
+			}
+			else
+				j++;
 		}
 		i++;
 	}
@@ -39,20 +50,68 @@ static int	unquoted_marks(char **str)
 	return (1);
 }
 
+//Hay que revisar esta funcion porque no esta guardando bien los comandos en la tabla ni crea mas de un NODO
 static void	save_cmd(t_cmds **stack, char **argv)
 {
 	t_cmds	*tmp;
-
 	if (*stack == NULL)
+	{
+		printf("Entra la primera vez\n");
 		*stack = ft_lstnew(argv);
+	}
 	else
 	{
+		printf("Entra el resto\n");
 		tmp = ft_lstnew(argv);
 		ft_lstadd_back(stack, tmp);
 	}
 }
 
-int	get_command_table(char *str, char **env, t_cmds *table)
+
+static void	ft_trim_quotes(char **str)
+{
+	size_t	i;
+	size_t	j;
+	t_parse	prs;
+
+	i = 0;
+	prs = (t_parse){0, 0 ,0 ,0};
+	while (str[i])
+	{
+		j = 0;
+		while (str[i][j])
+		{
+			if (str[i][j] == '"')
+			{
+				j++;
+				while (str[i][j] != '"')
+					j++;
+				prs.d_q+=2;
+			}
+			else if (str[i][j] == '\'')
+			{
+				j++;
+				while (str[i][j] != '\'')
+					j++;
+				prs.s_q+=2;
+			}
+			j++;
+		}
+		ft_trim_plus(&str[i], prs);
+		i++;
+	}
+}
+
+static void	ft_expand(char **token, char **env)
+{
+	ft_dollar_detect(token, env);
+	ft_trim_quotes(token);
+/*	int	i = 0;
+	while (token[i])
+		printf("%s\n", token[i++]);*/
+}
+
+int	get_command_table(char *str, char **env, t_cmds **table)
 {
 	char	**cmd;
 	char	**token;
@@ -70,15 +129,18 @@ int	get_command_table(char *str, char **env, t_cmds *table)
 	while (cmd[i])
 	{
 		token = ft_mod_split(cmd[i], ' ');
-///		if (!operator_indentifier(token))  /// retornara un entero (1 - correcto ; 0 mal)  y que se encargue de guardar los files
-			return;
-//		aux = ft_get_inputs (&token);
-//		aux2 =ft_get_outputs (&token);
-//		ft_expand(token, env);
-		save_cmd(&table, token);
-		free_matrix(token);
+//		if (!operator_indentifier(token))  /// retornara un entero (1 - correcto ; 0 - mal)  y que se encargue de guardar los files
+//			return (0);
+//		aux = input ;
+//		aux2 =auput ;
+//		ft_outputs(table, &token);
+		ft_expand(token, env);
+		save_cmd(table, token);
+		//free_matrix(token);
 		i++;
 	}
+
+	
 /*	while (table)
 	{
 		i = 0;
