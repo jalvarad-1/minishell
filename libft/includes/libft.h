@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jalvarad <jalvarad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/31 11:07:18 by robrodri          #+#    #+#             */
-/*   Updated: 2021/08/19 12:45:08 by robrodri         ###   ########.fr       */
+/*   Updated: 2021/11/06 12:11:36 by jalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ void	ft_putstr(char *s);
 int		ft_printf(const char *str, ...);
 void	ft_putnbr_base(int nbr, char *base);
 int		ft_putnbr_base_long(unsigned long long nbr, char *base);
-int		ft_lstsize(t_list *lst);
 t_list	*ft_lstlast(t_list *lst);
 void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void *));

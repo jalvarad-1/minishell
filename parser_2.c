@@ -139,8 +139,6 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 		//free_matrix(token);
 		i++;
 	}
-
-	
 /*	while (table)
 	{
 		i = 0;

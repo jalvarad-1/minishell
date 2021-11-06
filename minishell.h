@@ -8,6 +8,12 @@
 #ifndef ARG_MAX
 #define ARG_MAX 20480
 #endif
+# ifndef READ_END
+#  define READ_END 0
+# endif
+# ifndef WRITE_END
+#  define WRITE_END 1
+# endif
 # include "./libft/includes/libft.h"
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -87,4 +93,7 @@ void	ft_trim_plus(char **str, t_parse prs);
 /*Lst utils*/
 t_cmds	*ft_lstnew(char **content);
 void	ft_lstadd_back(t_cmds **lst, t_cmds *new);
+int	ft_lstsize(t_cmds *lst);
+/*pipex*/
+char	*search_path(char *argv, char **envp);
 #endif

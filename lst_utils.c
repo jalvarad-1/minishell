@@ -32,3 +32,16 @@ void	ft_lstadd_back(t_cmds **lst, t_cmds *new)
 		}
 	}
 }
+
+int	ft_lstsize(t_cmds *lst)
+{
+	int	size;
+
+	size = 0;
+	while (lst)
+	{
+		lst = lst->next;
+		size++;
+	}
+	return (size);
+}

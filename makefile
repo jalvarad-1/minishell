@@ -11,6 +11,8 @@ SRC = 	main.c \
 		parser_1.c \
 		parser_2.c \
 		lst_utils.c \
+		pipex2.0.c \
+		pipex2.0utils.c \
 	#	parser_4.c \
 
 RED 			= \033[0;31m
