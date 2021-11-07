@@ -137,17 +137,19 @@ void	pipex(char ***envp, t_cmds *cmd)
 		if (!is_builtin(aux->content))
 		{
 			info.path = search_path(aux->content[0], *envp);
-			i = 1;
 			info.pid = fork();
 		}
+		g_common.pid = info.pid;
 		if (is_builtin(aux->content))
 		{
 			built_in_identifier(aux->content, envp, 1);
 		}
-		else if (info.pid == 0)
+		if (info.pid == 0)
 		{
+			//signal(SIGINT, SIG_DFL);
 			only_son(info, aux->content, envp);
 		}
+		i = 1;
 	}
 
 	while (aux && info.size > 0)
@@ -158,6 +160,7 @@ void	pipex(char ***envp, t_cmds *cmd)
 			info.path = search_path(aux->content[0], *envp);
 		if (aux->next)
 			info.pid = fork();
+		//g_common.pid = info.pid
 		if (info.pid == -1)
 			exit(-1);
 		if (aux->next && info.pid == 0 && i == 0)
@@ -190,4 +193,5 @@ void	pipex(char ***envp, t_cmds *cmd)
 		wait(&info.status);
 		i--;
 	}
+	g_common.pid = 0;
 }

@@ -50,7 +50,7 @@ char	*print_promt(void)
 {
 	char *str;
 
-
+	g_common.is_cmd = 0;
 	str = readline("Burri_shell > ");
 	if (!str)
 	{
@@ -58,7 +58,10 @@ char	*print_promt(void)
 		exit(-1);
 	}
 	if (*str)
+	{
 		add_history(str);
+		g_common.is_cmd = 1;
+	}
 	return (str);
 }
 

@@ -36,8 +36,9 @@
 
 typedef struct	s_global
 {
-	int			pid;
+	int			is_cmd;
 	int			exit_status;
+	int			pid;
 }				t_global;
 
 t_global g_common;
