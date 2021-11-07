@@ -123,14 +123,16 @@ void	pipex(char **envp, t_cmds *cmd)
 
 	i = 0;
 	info.size = ft_lstsize(cmd) - 1;
-	//printf("%d\n", info.size);
 	info.fd2 = create_doble_array(cmd);
 	close (19);
 	close (21);
-	//system("lsof -c pipex");
 	aux = cmd;
 	i = 0;
-	while (aux)
+	/*if (aux && !info.size)
+	{
+
+	}*/
+	while (aux )//&& info.size > 0)
 	{
 		if (i < info.size)
 			pipe(info.fd2[i]);
@@ -154,9 +156,6 @@ void	pipex(char **envp, t_cmds *cmd)
 				if (i > 0)
 					close(info.fd2[info.l_p][READ_END]);
 			}
-		}
-		if (info.pid != 0)
-		{
 			aux = aux->next;
 			info.l_p = i;
 			i++;
