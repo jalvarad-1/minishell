@@ -21,6 +21,9 @@ static char	*search_path_aux(char **split_paths, char **cmd)
 	int		i;
 
 	i = 0;
+	if (access(cmd[0], X_OK) == 0)
+		return (cmd[0]);
+
 	while (split_paths[i])
 	{
 		aux = ft_strjoin(split_paths[i], "/");

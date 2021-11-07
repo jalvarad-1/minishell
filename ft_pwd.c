@@ -6,4 +6,5 @@ void    ft_pwd(void)
 
 	getcwd(drt, ARG_MAX);
 	printf("%s\n", drt);
+	exit (0);
 }

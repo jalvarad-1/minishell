@@ -45,4 +45,5 @@ void	ft_cd(char ***env_v, char **str)
 			}
 		}
 	}
+	exit(0);
 }

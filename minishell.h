@@ -84,6 +84,7 @@ void	ft_cd(char ***env_v, char **str);
 void	ft_export(char **str, char ***env);
 void	ft_env(char **env, bool assigned);
 void	ft_exit(char **str);
+void	ft_echo(char **str);
 /*Generic utils*/
 void	free_matrix(char **str);
 int		locate_var(char **env, char *str);

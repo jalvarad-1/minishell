@@ -16,7 +16,7 @@ void	free_matrix(char **str)
 }
 
 /*Le falta el flag -n*/
-static void	ft_echo(char **str)
+void	ft_echo(char **str)
 {
 	int	i;
 
@@ -29,6 +29,7 @@ static void	ft_echo(char **str)
 	while (str[i])
 		printf("%s ", str[i++]);
 	printf("\n");
+	exit (0);
 }
 
 void	built_in_identifier(char **str, char ***env)

@@ -90,4 +90,5 @@ void	ft_unset(char **str, char ***env)
 			*env = destroy_var(*env, j);
 		i++;
 	}
+	exit (0);
 }

@@ -95,4 +95,5 @@ void	ft_env(char **env, bool assigned)
 		order_export(ptr);
 		free_matrix(ptr);
 	}
+	exit(0);
 }

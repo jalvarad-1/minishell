@@ -59,4 +59,5 @@ void	ft_export(char **str, char ***env)
 			*env = change_var_value(*env, str[i], j);
 		i++;
 	}
+	exit (0);
 }
