@@ -55,13 +55,9 @@ static void	save_cmd(t_cmds **stack, char **argv)
 {
 	t_cmds	*tmp;
 	if (*stack == NULL)
-	{
-		printf("Entra la primera vez\n");
 		*stack = ft_lstnew(argv);
-	}
 	else
 	{
-		printf("Entra el resto\n");
 		tmp = ft_lstnew(argv);
 		ft_lstadd_back(stack, tmp);
 	}

@@ -1,6 +1,6 @@
 # include "minishell.h"
 
-t_global g_common;
+//t_global g_common;
 
 char **doublepointer_dup(char **array)
 {

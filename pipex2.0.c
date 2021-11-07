@@ -10,7 +10,7 @@ void close_unnecessary(t_pipe_var info, int a, int b)
 			close(info.fd2[i][0]);
 		if (info.fd2[i][1] != a && info.fd2[i][1] != b)
 			close(info.fd2[i][1]);
-		i++;	
+		i++;
 	}
 }
 void	only_son(t_pipe_var info, char **argv, char **envp)
@@ -144,13 +144,15 @@ void	pipex(char **envp, t_cmds *cmd)
 			info.pid = fork();
 		if (info.pid == -1)
 			exit(-1);
+		if (info.pid != 0)
+			g_common.pid = info.pid;
 		if (aux->next && info.pid == 0 && i == 0)
 			kamikaze_son1(info, aux->content, envp);
 		if (aux->next && i != 0 && info.pid == 0)
 			kamikaze_sonX(info, aux->content, envp);
 		if (!aux->next && info.pid != 0)
 			psycho_parent(info, aux->content, envp);
-		if (info.pid != 0) 
+		if (info.pid != 0)
 		{
 			free(info.path);
 			if (i < info.size)

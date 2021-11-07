@@ -37,7 +37,10 @@
 typedef struct	s_global
 {
 	int			pid;
+	int			exit_status;
 }				t_global;
+
+t_global g_common;
 
 typedef struct	s_parse
 {
