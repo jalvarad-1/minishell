@@ -96,4 +96,5 @@ void	ft_lstadd_back(t_cmds **lst, t_cmds *new);
 int	ft_lstsize(t_cmds *lst);
 /*pipex*/
 char	*search_path(char *argv, char **envp);
+void	pipex(char **envp, t_cmds *cmd);
 #endif
