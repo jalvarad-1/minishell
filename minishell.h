@@ -77,14 +77,15 @@ void	signal_receiver(void);
 /*Readline*/
 char	*print_promt(void);
 /*Built_ins*/
-void	built_in_identifier(char **str, char ***env);
-void	ft_unset(char **str, char ***env);
-void	ft_pwd();
-void	ft_cd(char ***env_v, char **str);
-void	ft_export(char **str, char ***env);
-void	ft_env(char **env, bool assigned);
+int		is_builtin(char **argv);
+void	built_in_identifier(char **str, char ***env, int f_or_s);
+void	ft_unset(char **str, char ***env, int f_or_s);
+void	ft_pwd(int f_or_s);
+void	ft_cd(char ***env_v, char **str, int f_or_s);
+void	ft_export(char **str, char ***env, int f_or_s);
+void	ft_env(char **env, bool assigned, int f_or_s);
 void	ft_exit(char **str);
-void	ft_echo(char **str);
+void	ft_echo(char **str, int f_or_s);
 /*Generic utils*/
 void	free_matrix(char **str);
 int		locate_var(char **env, char *str);
@@ -100,5 +101,5 @@ void	ft_lstadd_back(t_cmds **lst, t_cmds *new);
 int	ft_lstsize(t_cmds *lst);
 /*pipex*/
 char	*search_path(char *argv, char **envp);
-void	pipex(char **envp, t_cmds *cmd);
+void	pipex(char ***envp, t_cmds *cmd);
 #endif

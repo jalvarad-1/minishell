@@ -38,7 +38,7 @@ static char	**add_variable(char *str, char **var)
 }
 
 /*Añade o cambia el valor de una variable de entorno*/
-void	ft_export(char **str, char ***env)
+void	ft_export(char **str, char ***env, int f_or_s)
 {
 	int	i;
 	int	j;
@@ -47,7 +47,7 @@ void	ft_export(char **str, char ***env)
 	j = 0;
 	if (!str[i])
 	{
-		ft_env(*env, 0);
+		ft_env(*env, 0, f_or_s);
 		return ;
 	}
 	while (str[i])
@@ -59,5 +59,6 @@ void	ft_export(char **str, char ***env)
 			*env = change_var_value(*env, str[i], j);
 		i++;
 	}
-	exit (0);
+	if (!f_or_s)
+		exit (0);
 }

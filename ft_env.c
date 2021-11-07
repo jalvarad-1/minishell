@@ -73,7 +73,7 @@ static void	order_export(char **env)
 	print_export(env);
 }
 
-void	ft_env(char **env, bool assigned)
+void	ft_env(char **env, bool assigned, int f_or_s)
 {
 	int		i;
 	char	**ptr;
@@ -95,5 +95,6 @@ void	ft_env(char **env, bool assigned)
 		order_export(ptr);
 		free_matrix(ptr);
 	}
-	exit(0);
+	if (!f_or_s)
+		exit(0);
 }

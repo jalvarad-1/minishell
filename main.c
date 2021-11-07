@@ -94,7 +94,7 @@ int main (int argc, char **argv, char **envp)
 			{
 //				printf("Entro\n");
 //				printf("%s\n", cmd_table->content[1]);
-				pipex(env_v, cmd_table);
+				pipex(&env_v, cmd_table);
 //				built_in_identifier(cmd_table, &env_v);
 			}
 			//Liberar cmd_table

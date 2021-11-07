@@ -1,7 +1,7 @@
 #include "minishell.h"
 /*en caso de chdir de -1 mostrar un mensaje de error ,,, falta cambiar las variables de entorno*/
 /*ya funciona y aparentemente replica el funcionamiento de la original falta soltar errores*/
-void	ft_cd(char ***env_v, char **str)
+void	ft_cd(char ***env_v, char **str, int f_or_s)
 {
 	int	i;
 	int j;
@@ -45,5 +45,6 @@ void	ft_cd(char ***env_v, char **str)
 			}
 		}
 	}
-	exit(0);
+	if (!f_or_s)
+		exit(0);
 }

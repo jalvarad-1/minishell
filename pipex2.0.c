@@ -13,7 +13,8 @@ void close_unnecessary(t_pipe_var info, int a, int b)
 		i++;
 	}
 }
-void	only_son(t_pipe_var info, char **argv, char **envp)
+
+void	only_son(t_pipe_var info, char **argv, char ***envp)
 {
 	if (info.fd1 == -1)
 	{
@@ -22,11 +23,12 @@ void	only_son(t_pipe_var info, char **argv, char **envp)
 		ft_putstr_fd("pipex: ", 1);
 		ft_putstr_fd(": No such file or directory or permission denied\n", 1);
 	}
-	execve(info.path, argv, envp);
+
+	execve(info.path, argv, *envp);
 	exit (0);
 }
 
-void	kamikaze_son1(t_pipe_var info, char **argv, char **envp)
+void	kamikaze_son1(t_pipe_var info, char **argv, char ***envp)
 {
 	if (info.fd1 == -1)
 	{
@@ -39,11 +41,12 @@ void	kamikaze_son1(t_pipe_var info, char **argv, char **envp)
 	close(info.fd2[0][READ_END]);
 	dup2(info.fd2[0][WRITE_END], STDOUT_FILENO);
 	close(info.fd2[0][WRITE_END]);
-	execve(info.path, argv, envp);
+	built_in_identifier(argv, envp, 0);
+	execve(info.path, argv, *envp);
 	exit (0);
 }
 
-void	kamikaze_sonX(t_pipe_var info, char **argv, char **envp)
+void	kamikaze_sonX(t_pipe_var info, char **argv, char ***envp)
 {
 	if (info.fd1 == -1)
 	{
@@ -57,11 +60,12 @@ void	kamikaze_sonX(t_pipe_var info, char **argv, char **envp)
 	//system("lsof -c pipex");
 	dup2(info.fd2[info.n_p][WRITE_END], STDOUT_FILENO);
 	close(info.fd2[info.n_p][WRITE_END]);
-	execve(info.path, argv, envp);
+	built_in_identifier(argv, envp, 0);
+	execve(info.path, argv, *envp);
 	exit (1);
 }
 
-void	kamikaze_son2(t_pipe_var info, char **argv, char **envp)
+void	kamikaze_son2(t_pipe_var info, char **argv, char ***envp)
 {
 	if (info.fd1 == -1)
 	{
@@ -72,11 +76,12 @@ void	kamikaze_son2(t_pipe_var info, char **argv, char **envp)
 	close_unnecessary(info, info.fd2[info.l_p][READ_END], -7);
 	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
 	close(info.fd2[info.l_p][READ_END]);
-	execve(info.path, argv, envp);
+	built_in_identifier(argv, envp, 0);
+	execve(info.path, argv, *envp);
 	exit (1);
 }
 
-void	psycho_parent(t_pipe_var info, char **argv, char **envp)
+void	psycho_parent(t_pipe_var info, char **argv, char ***envp)
 {
 	info.pid = fork();
 	if (info.pid == -1)
@@ -113,7 +118,7 @@ int		**create_doble_array(t_cmds *cmd)
 	return (pipe_array);
 }
 
-void	pipex(char **envp, t_cmds *cmd)
+void	pipex(char ***envp, t_cmds *cmd)
 {
 	t_pipe_var	info;
 	t_cmds		*aux;
@@ -122,14 +127,20 @@ void	pipex(char **envp, t_cmds *cmd)
 	i = 0;
 	info.size = ft_lstsize(cmd) - 1;
 	info.fd2 = create_doble_array(cmd);
+	info.path = NULL;
 	close (19);
 	close (21);
 	aux = cmd;
 	i = 0;
 	if (aux && !info.size)
 	{
-		info.path = search_path(aux->content[0], envp);
-		info.pid = fork();
+		if (!is_builtin(aux->content))
+		{
+			info.path = search_path(aux->content[0], *envp);
+			info.pid = fork();
+		}
+		if (is_builtin(aux->content))
+			built_in_identifier(aux->content, envp, 1);
 		if (info.pid == 0)
 			only_son(info, aux->content, envp);
 		i = 1;
@@ -139,7 +150,8 @@ void	pipex(char **envp, t_cmds *cmd)
 	{
 		if (i < info.size)
 			pipe(info.fd2[i]);
-		info.path = search_path(aux->content[0], envp);
+		if (!is_builtin(aux->content))
+			info.path = search_path(aux->content[0], *envp);
 		if (aux->next)
 			info.pid = fork();
 		if (info.pid == -1)
@@ -154,7 +166,11 @@ void	pipex(char **envp, t_cmds *cmd)
 			psycho_parent(info, aux->content, envp);
 		if (info.pid != 0)
 		{
-			free(info.path);
+			if (info.path != NULL)
+			{
+				free(info.path);
+				info.path = NULL;
+			}
 			if (i < info.size)
 			{
 				close(info.fd2[i][WRITE_END]);
