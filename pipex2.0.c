@@ -137,13 +137,17 @@ void	pipex(char ***envp, t_cmds *cmd)
 		if (!is_builtin(aux->content))
 		{
 			info.path = search_path(aux->content[0], *envp);
+			i = 1;
 			info.pid = fork();
 		}
 		if (is_builtin(aux->content))
+		{
 			built_in_identifier(aux->content, envp, 1);
-		if (info.pid == 0)
+		}
+		else if (info.pid == 0)
+		{
 			only_son(info, aux->content, envp);
-		i = 1;
+		}
 	}
 
 	while (aux && info.size > 0)
@@ -156,8 +160,6 @@ void	pipex(char ***envp, t_cmds *cmd)
 			info.pid = fork();
 		if (info.pid == -1)
 			exit(-1);
-		if (info.pid != 0)
-			g_common.pid = info.pid;
 		if (aux->next && info.pid == 0 && i == 0)
 			kamikaze_son1(info, aux->content, envp);
 		if (aux->next && i != 0 && info.pid == 0)

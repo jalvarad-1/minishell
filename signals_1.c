@@ -3,19 +3,12 @@
 void	sig_handler(int signal)
 {
 	(void)signal;
-	if (g_common.pid == 0)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
-	else if (g_common.pid != 0)
-	{
-		kill(g_common.pid, SIGCONT);
-		write(1, "\n", 1);
-	}
-	g_common.pid = 0;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+
+//	g_common.pid = 0;
 //	write(1, "\b\b", 2);
 //	write(1, "  ", 2);
 }

@@ -31,7 +31,7 @@ void	ft_exit(char **str)
 {
 	int	argc;
 	int i;
-	
+
 	argc = 0;
 	i = 0;
 	printf("exit\n");
@@ -52,6 +52,5 @@ void	ft_exit(char **str)
 		else
 			i = ft_atoi(str[1]) % 255;
 	}
-	printf("kbhbsdzvkjsdbvklwdlwdhdv\n");
 	exit(i);
 }
