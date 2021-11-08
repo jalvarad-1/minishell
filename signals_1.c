@@ -15,7 +15,8 @@ void	sig_handler(int signal)
 //	write(1, "  ", 2);
 }
 
-/*Cambiar por sigaction y añadir la flag de ignorar la SIG_IGN para poder mutear los print*/
+//TODO IMPLEMENTAR EL METODO DE TOMAS : CAMBIAR EL COMPORTAMIENTOS DE LAS SEÑALES A SIG_DFLT CUANDO ENTRAN AL PIPE Y LUEGO RESTAURAR.
+//TODO DE ESTA MANERA ES SOLO EL HIJO EL QUE LAS INTERPRETA SIN NECESIDAD DE VARIABLE GLOBAL
 void	signal_receiver(void)
 {
 	struct sigaction	sa;

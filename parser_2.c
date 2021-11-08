@@ -102,9 +102,6 @@ static void	ft_expand(char **token, char **env)
 {
 	ft_dollar_detect(token, env);
 	ft_trim_quotes(token);
-/*	int	i = 0;
-	while (token[i])
-		printf("%s\n", token[i++]);*/
 }
 
 int	get_command_table(char *str, char **env, t_cmds **table)
@@ -112,8 +109,6 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 	char	**cmd;
 	char	**token;
 	int		i;
-//	char **aux1;
-//	char **aux2;
 
 	i = 0;
 	cmd = ft_mod_split(str, '|');
@@ -125,8 +120,12 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 	while (cmd[i])
 	{
 		token = ft_mod_split(cmd[i], ' ');
-//		if (!operator_indentifier(token))  /// retornara un entero (1 - correcto ; 0 - mal)  y que se encargue de guardar los files
-//			return (0);
+/*		if (!operator_identifier(token))
+		{
+			printf("Syntax error\n");
+			free(cmd);
+			return (0);
+		}*/
 //		aux = input ;
 //		aux2 =auput ;
 //		ft_outputs(table, &token);

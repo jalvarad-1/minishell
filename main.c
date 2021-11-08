@@ -88,19 +88,16 @@ int main (int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	env_v = create_envp(envp);
-	signal_receiver();
 	while (1)
 	{
+		signal_receiver();
 		cmd_table = NULL;
 		str = print_promt();
 		if (ft_strcmp(str, ""))
 		{
 			if (get_command_table(str, env_v, &cmd_table))
 			{
-//				printf("Entro\n");
-//				printf("%s\n", cmd_table->content[1]);
 				pipex(&env_v, cmd_table);
-//				built_in_identifier(cmd_table, &env_v);
 			}
 			ft_free_table(&cmd_table);
 		}

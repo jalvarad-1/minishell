@@ -126,7 +126,7 @@ void	pipex(char ***envp, t_cmds *cmd)
 	info.size = ft_lstsize(cmd) - 1;
 	info.fd2 = create_doble_array(cmd);
 	info.path = NULL;
-	close (19);
+	close (19); // Esto a mi me la suda. Discutir cuando hayamos terminado
 	close (21);
 	aux = cmd;
 	i = 0;
@@ -187,3 +187,4 @@ void	pipex(char ***envp, t_cmds *cmd)
 	}
 	g_common.pid = 0;
 }
+//TODO LIBERAR INFO.FD2 INT_ARRAY HACER OTRA FUNCION
