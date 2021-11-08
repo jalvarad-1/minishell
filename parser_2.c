@@ -132,7 +132,7 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 //		ft_outputs(table, &token);
 		ft_expand(token, env);
 		save_cmd(table, token);
-		//free_matrix(token);
+		free_matrix(token);
 		i++;
 	}
 /*	while (table)

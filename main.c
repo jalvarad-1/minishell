@@ -85,6 +85,8 @@ int main (int argc, char **argv, char **envp)
 	char	**env_v;
 	t_cmds	*cmd_table;
 
+	(void)argc;
+	(void)argv;
 	env_v = create_envp(envp);
 	signal_receiver();
 	while (1)
@@ -100,7 +102,7 @@ int main (int argc, char **argv, char **envp)
 				pipex(&env_v, cmd_table);
 //				built_in_identifier(cmd_table, &env_v);
 			}
-			//Liberar cmd_table
+			ft_free_table(&cmd_table);
 		}
 		free(str);
 	}

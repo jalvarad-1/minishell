@@ -94,12 +94,10 @@ void	psycho_parent(t_pipe_var info, char **argv, char ***envp)
 
 int		**create_doble_array(t_cmds *cmd)
 {
-	t_cmds	*aux;
 	int **pipe_array;
 	int		i;
 	int		b;
 	i = 0;
-	aux = cmd;
 	while (cmd)
 	{
 		i++;
@@ -141,14 +139,9 @@ void	pipex(char ***envp, t_cmds *cmd)
 		}
 		g_common.pid = info.pid;
 		if (is_builtin(aux->content))
-		{
 			built_in_identifier(aux->content, envp, 1);
-		}
 		if (info.pid == 0)
-		{
-			//signal(SIGINT, SIG_DFL);
 			only_son(info, aux->content, envp);
-		}
 		i = 1;
 	}
 
@@ -160,7 +153,6 @@ void	pipex(char ***envp, t_cmds *cmd)
 			info.path = search_path(aux->content[0], *envp);
 		if (aux->next)
 			info.pid = fork();
-		//g_common.pid = info.pid
 		if (info.pid == -1)
 			exit(-1);
 		if (aux->next && info.pid == 0 && i == 0)

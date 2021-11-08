@@ -99,7 +99,8 @@ void	ft_trim_plus(char **str, t_parse prs);
 /*Lst utils*/
 t_cmds	*ft_lstnew(char **content);
 void	ft_lstadd_back(t_cmds **lst, t_cmds *new);
-int	ft_lstsize(t_cmds *lst);
+int		ft_lstsize(t_cmds *lst);
+void	ft_free_table(t_cmds **table);
 /*pipex*/
 char	*search_path(char *argv, char **envp);
 void	pipex(char ***envp, t_cmds *cmd);

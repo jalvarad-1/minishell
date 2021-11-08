@@ -1,5 +1,18 @@
 #include "minishell.h"
 
+void	ft_free_table(t_cmds **table)
+{
+	t_cmds *aux;
+
+	while(*table)
+	{
+		aux = (*table)->next;
+		free_matrix((*table)->content);
+		free(*table);
+		*table = aux;
+	}
+}
+
 t_cmds	*ft_lstnew(char **content)
 {
 	t_cmds	*a;
