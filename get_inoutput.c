@@ -1,4 +1,25 @@
 #include "minishell.h"
+void move_out_quotes(char **token, int *i, int *j)
+{
+	if (!token || !token[*i])
+		return ;
+	if (token[*i][*j] == '\'' || token[*i][*j] == '"')
+	{
+		if (token[*i][*j] == '\'')
+		{
+			(*j)++;
+			while(token[*i][*j] && token[*i][*j] != '\'')
+				(*j)++;
+		}
+		else if (token[*i][*j] == '"')
+		{
+			(*j)++;
+			while (token[*i][*j] && token[*i][*j] != '"')
+				(*j)++;
+		}
+	}
+}
+
 int redirection_counter(char **token, char operator)
 {
 	int i;
@@ -12,21 +33,7 @@ int redirection_counter(char **token, char operator)
 		j = 0;
 		while (token[i][j])
 		{
-			if (token[i][j] == '\'' || token[i][j] == '"')
-			{
-				if (token[i][j] == '\'')
-				{
-					j++;
-					while(token[i][j] && token[i][j] != '\'')
-						j++;
-				}
-				else if (token[i][j] == '"')
-				{
-					j++;
-					while (token[i][j] && token[i][j] != '"')
-						j++;
-				}
-			}
+			move_out_quotes(token, &i, &j);
 			if (token[i][j] == operator && token[i][j + 1] != operator)
 				redirections++;
 			j++;
@@ -34,6 +41,52 @@ int redirection_counter(char **token, char operator)
 		i++;
 	}
 	return (redirections);
+}
+
+int	fd_len(char *token)
+{
+	int	len;
+
+	len = 0;
+	while (token[len] && token[len] != '<' && token[len] != '>')
+	{
+		len++;
+	}
+	return (len);
+}
+char *save_fd_name(char **token, int *i, int *j)
+{
+	char	*fd_name;
+	int		name_size;
+
+	name_size = 0;
+	while (token[*i])
+	{
+		while (token[*i][*j] && token[*i][*j] == ' ')
+			(*j)++;
+		if (token[*i][*j] && token[*i][*j] != ' ')
+			break ;
+		else
+			(*i)++;
+	}
+	name_size = fd_len(token[*i] + *j);
+	fd_name = ft_substr(token[*i], *j, name_size);
+	return (fd_name);
+}
+
+char **remove_ops_files(char **token, char optr)
+{
+	char **nw_tk;
+	char *ltt_tk;
+	char *aux;
+
+	while (token[i])
+	{
+
+		while()
+	}
+
+	
 }
 
 char **ft_get_inputs(char ***token)
@@ -47,6 +100,7 @@ char **ft_get_inputs(char ***token)
 	i = redirection_counter(*token, '<'); /// contador de redirecciones;
 	if (!i)
 		return (NULL);
+	b = 0;
 	fds = (char **)malloc(sizeof(char *) * (i + 1));
 	if (!fds)
 		return (NULL);
@@ -55,10 +109,12 @@ char **ft_get_inputs(char ***token)
 		j = 0;
 		while (token[0][i][j])
 		{
+			move_out_quotes(token[0], &i, &j);
 			if (token[0][i][j] == '<' && token[0][i][j + 1] != '<')
 			{
-				//if (token[0][i][j + 1])
-				//	fds[b] = ;
+				j++;
+				fds[b] = save_fd_name(token[0], &i, &j);
+				b++;
 			}
 			else if(token[0][i][j] == '<' && token[0][i][j + 1] == '<')
 				j++;
@@ -66,7 +122,8 @@ char **ft_get_inputs(char ***token)
 		}
 		i++;
 	}
-	new_token = remove_ops_files(*token);
+	fds[b] = NULL;
+	new_token = remove_ops_files(*token, '<');/* falta hacer esta función */
 	return (fds);
 }
 /*  remove_ops_files(char **token):
