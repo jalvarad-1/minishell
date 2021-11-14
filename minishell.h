@@ -68,6 +68,7 @@ typedef struct s_cmds
 	char			**content;
 	char			**input_fd;
 	char			**output_fd; //Guardamos las redirecciones
+	char			*heredoc_end;
 	struct s_cmds	*next;
 }	t_cmds;
 
@@ -92,6 +93,7 @@ void	free_matrix(char **str);
 int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
 char	**doublepointer_dup(char **array);
+void	move_out_quotes(char **token, int i, int *j);
 /*Parser*/
 int		get_command_table(char *str, char **env, t_cmds **table);
 void	ft_dollar_detect(char **str, char **env);
@@ -105,5 +107,5 @@ void	ft_free_table(t_cmds **table);
 /*pipex*/
 char	*search_path(char *argv, char **envp);
 void	pipex(char ***envp, t_cmds *cmd);
-char **ft_get_inputs(char ***token);
+char	**ft_get_inputs(char ***token, char oprt);
 #endif

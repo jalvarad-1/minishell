@@ -127,22 +127,22 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 			free(cmd);
 			return (0);
 		}*/
-		aux = ft_get_inputs(&token);
-//		aux2 =auput ;
-//		ft_outputs(table, &token);
+		aux = ft_get_inputs(&token, '<');
+//		aux2 = ft_get_inputs(&token, '>') ;
 		ft_expand(token, env);
 		save_cmd(table, token);
 		free_matrix(token);
 		i++;
 	}
-	while (*table)
+	if (aux)
+		printf("Soy el print %s\n", *aux);
+/*	while (*table)
 	{
 		i = 0;
 		while ((*table)->content[i])
 			printf("%s\n", (*table)->content[i++]);
 		*table = (*table)->next;
-	}
-	exit (0);
+	}*/
 	free_matrix(cmd);
 	return (1);
 }

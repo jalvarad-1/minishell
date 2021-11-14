@@ -8,6 +8,8 @@ void	ft_free_table(t_cmds **table)
 	{
 		aux = (*table)->next;
 		free_matrix((*table)->content);
+//		free_matrix(*table)->intput_fd;
+//		free_matrix(*table)->output_fd;
 		free(*table);
 		*table = aux;
 	}

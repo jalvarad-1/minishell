@@ -1,5 +1,6 @@
 #include "minishell.h"
-void move_out_quotes(char **token, int i, int *j)
+
+void	move_out_quotes(char **token, int i, int *j)
 {
 	if (!token || !token[i])
 		return ;
@@ -20,7 +21,7 @@ void move_out_quotes(char **token, int i, int *j)
 	}
 }
 
-int redirection_counter(char **token, char operator)
+int	redirection_counter(char **token, char operator)
 {
 	int i;
 	int j;
@@ -150,7 +151,7 @@ char **remove_ops_files(char **token, char optr)
 	return (nw_tk);
 }
 
-char **ft_get_inputs(char ***token)
+char **ft_get_inputs(char ***token, char oprt)
 {
 	char **new_token;
 	char **fds;
@@ -158,7 +159,7 @@ char **ft_get_inputs(char ***token)
 	int j;
 	int b;
 
-	i = redirection_counter(*token, '<'); /// contador de redirecciones;
+	i = redirection_counter(*token, oprt); /// contador de redirecciones;
 	if (!i)
 		return (NULL);
 	b = 0;
@@ -171,15 +172,21 @@ char **ft_get_inputs(char ***token)
 		j = 0;
 		while (token[0][i][j])
 		{
-			//printf("Antes %s\n", token[0][i]);
 			move_out_quotes(token[0], i, &j);
-			//printf("Despues %s\n", token[0][i]);
-			//printf("pta madre %c\n", token[0][i][j]);
 			if (token[0][i][j] == '<' && token[0][i][j + 1] != '<')
 			{
-				j++;
-				fds[b] = save_fd_name(token[0], &i, &j);
-				b++;
+				if (token[0][i][++j])
+				{
+					fds[b] = save_fd_name(token[0], &i, &j);
+					b++;
+				}
+				else
+				{
+					i++;
+					j = 0;
+					fds[b] = save_fd_name(token[0], &i, &j);
+					b++;
+				}
 			}
 			else if(token[0][i][j] == '<' && token[0][i][j + 1] == '<')
 				j++;
@@ -194,8 +201,8 @@ char **ft_get_inputs(char ***token)
 	return (fds);
 }
 /*  remove_ops_files(char **token):
-	Esta función se encarga de remover tanto los operadores , 
+	Esta función se encarga de remover tanto los operadores ,
 	como los archivos despues a este y por lo tanto a modifica
-	Ya que es complejo determinar las dimensiones de la "new_token" 
-	lo mas sencillo es crear un nuevo string completo con todo, 
+	Ya que es complejo determinar las dimensiones de la "new_token"
+	lo mas sencillo es crear un nuevo string completo con todo,
 	excepto los operadores y el string singuiente a los operadores. */
