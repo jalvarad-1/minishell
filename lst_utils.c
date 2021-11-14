@@ -8,21 +8,23 @@ void	ft_free_table(t_cmds **table)
 	{
 		aux = (*table)->next;
 		free_matrix((*table)->content);
-//		free_matrix(*table)->intput_fd;
-//		free_matrix(*table)->output_fd;
+		free_matrix((*table)->input_fd);
+		free_matrix((*table)->output_fd);
 		free(*table);
 		*table = aux;
 	}
 }
 
-t_cmds	*ft_lstnew(char **content)
+t_cmds	*ft_lstnew(char **content, char **ins, char **outs)
 {
 	t_cmds	*a;
 
 	a = malloc(sizeof(t_cmds));
 	if (!a)
 		return (NULL);
-	a->content = doublepointer_dup(content);
+	a->content = content;
+	a->input_fd = ins;
+	a->output_fd = outs;
 	a->next = NULL;
 	return (a);
 }

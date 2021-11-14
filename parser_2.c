@@ -51,14 +51,14 @@ static int	unquoted_marks(char **str)
 }
 
 //Hay que revisar esta funcion porque no esta guardando bien los comandos en la tabla ni crea mas de un NODO
-static void	save_cmd(t_cmds **stack, char **argv)
+static void	save_cmd(t_cmds **stack, char **argv, char **ins, char **outs)
 {
 	t_cmds	*tmp;
 	if (*stack == NULL)
-		*stack = ft_lstnew(argv);
+		*stack = ft_lstnew(argv, ins, outs);
 	else
 	{
-		tmp = ft_lstnew(argv);
+		tmp = ft_lstnew(argv, ins, outs);
 		ft_lstadd_back(stack, tmp);
 	}
 }
@@ -109,9 +109,12 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 	char	**cmd;
 	char	**token;
 	int		i;
-	char	**aux;
+	char	**ins;
+	char	**outs;
 
 	i = 0;
+	ins = NULL;
+	outs = NULL;
 	cmd = ft_mod_split(str, '|');
 	if (!unquoted_marks(cmd))
 	{
@@ -127,15 +130,13 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 			free(cmd);
 			return (0);
 		}*/
-		aux = ft_get_inputs(&token, '<');
-//		aux2 = ft_get_inputs(&token, '>') ;
+		ins = ft_get_inputs(&token, '<');
+		outs = ft_get_inputs(&token, '>');
 		ft_expand(token, env);
-		save_cmd(table, token);
-		free_matrix(token);
+		save_cmd(table, token, ins, outs);
+		//free_matrix(token);
 		i++;
 	}
-	if (aux)
-		printf("Soy el print %s\n", *aux);
 /*	while (*table)
 	{
 		i = 0;

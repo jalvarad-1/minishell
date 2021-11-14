@@ -100,7 +100,7 @@ void	ft_dollar_detect(char **str, char **env);
 void	ft_trim_plus(char **str, t_parse prs);
 int		operator_identifier(char **str);
 /*Lst utils*/
-t_cmds	*ft_lstnew(char **content);
+t_cmds	*ft_lstnew(char **content, char **ins, char **outs);
 void	ft_lstadd_back(t_cmds **lst, t_cmds *new);
 int		ft_lstsize(t_cmds *lst);
 void	ft_free_table(t_cmds **table);

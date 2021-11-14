@@ -1,4 +1,5 @@
 #include "minishell.h"
+
 void close_unnecessary(t_pipe_var info, int a, int b)
 {
 	int i;

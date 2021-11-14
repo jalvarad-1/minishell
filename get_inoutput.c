@@ -21,7 +21,7 @@ void	move_out_quotes(char **token, int i, int *j)
 	}
 }
 
-int	redirection_counter(char **token, char operator)
+static int	redirection_counter(char **token, char operator)
 {
 	int i;
 	int j;
@@ -44,19 +44,17 @@ int	redirection_counter(char **token, char operator)
 	return (redirections);
 }
 
-int	fd_len(char *token)
+static int	fd_len(char *token)
 {
 	int	len;
 
 	len = 0;
 	while (token[len] && token[len] != '<' && token[len] != '>')
-	{
 		len++;
-	}
 	return (len);
 }
 
-char *save_fd_name(char **token, int *i, int *j)
+static char *save_fd_name(char **token, int *i, int *j)
 {
 	char	*fd_name;
 	int		name_size;
@@ -76,7 +74,7 @@ char *save_fd_name(char **token, int *i, int *j)
 	return (fd_name);
 }
 
-void mod_move_out_quotes(char *token, int *i)
+static void mod_move_out_quotes(char *token, int *i)
 {
 	if (!token || !token[*i])
 		return ;
@@ -105,7 +103,7 @@ void mod_move_out_quotes(char *token, int *i)
 	}
 }
 
-char *token_in_one_str(char **token, char optr)
+static char *token_in_one_str(char **token, char optr)
 {
 	char	*ltt_tk;
 	char	*aux;
@@ -140,7 +138,7 @@ char *token_in_one_str(char **token, char optr)
 	return (ltt_tk);
 }
 
-char **remove_ops_files(char **token, char optr)
+static char **remove_ops_files(char **token, char optr)
 {
 	char **nw_tk;
 	char *ltt_tk;
@@ -173,7 +171,7 @@ char **ft_get_inputs(char ***token, char oprt)
 		while (token[0][i][j])
 		{
 			move_out_quotes(token[0], i, &j);
-			if (token[0][i][j] == '<' && token[0][i][j + 1] != '<')
+			if (token[0][i][j] == oprt && token[0][i][j + 1] != oprt)
 			{
 				if (token[0][i][++j])
 				{
@@ -188,14 +186,14 @@ char **ft_get_inputs(char ***token, char oprt)
 					b++;
 				}
 			}
-			else if(token[0][i][j] == '<' && token[0][i][j + 1] == '<')
+			else if(token[0][i][j] == oprt && token[0][i][j + 1] == oprt)
 				j++;
 			j++;
 		}
 		i++;
 	}
 	fds[b] = NULL;
-	new_token = remove_ops_files(*token, '<');
+	new_token = remove_ops_files(*token, oprt);
 	free_matrix(*token);
 	*token = new_token;
 	return (fds);

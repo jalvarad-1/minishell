@@ -6,6 +6,8 @@ void	free_matrix(char **str)
 	size_t	len;
 
 	i = 0;
+	if (!str)
+		return ;
 	len = ft_split_len(str);
 	while (i < len)
 	{
