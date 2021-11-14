@@ -109,6 +109,7 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 	char	**cmd;
 	char	**token;
 	int		i;
+	char	**aux;
 
 	i = 0;
 	cmd = ft_mod_split(str, '|');
@@ -126,7 +127,7 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 			free(cmd);
 			return (0);
 		}*/
-//		aux = input ;
+		aux = ft_get_inputs(&token);
 //		aux2 =auput ;
 //		ft_outputs(table, &token);
 		ft_expand(token, env);
@@ -134,13 +135,14 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 		free_matrix(token);
 		i++;
 	}
-/*	while (table)
+	while (*table)
 	{
 		i = 0;
-		while (table->content[i])
-			printf("%s\n", table->content[i++]);
-		table = table->next;
-	}*/
+		while ((*table)->content[i])
+			printf("%s\n", (*table)->content[i++]);
+		*table = (*table)->next;
+	}
+	exit (0);
 	free_matrix(cmd);
 	return (1);
 }

@@ -13,6 +13,7 @@ SRC = 	main.c \
 		lst_utils.c \
 		pipex2.0.c \
 		pipex2.0utils.c \
+		get_inoutput.c \
 	#	parser_4.c \
 
 RED 			= \033[0;31m
@@ -24,7 +25,7 @@ LIBFT_DIR = ./libft/
 LIBFT = libft.a
 HEADER = minishell.h
 
-CFLAGS = -Wall -Wextra -fsanitize=address #-Werror
+CFLAGS = -Wall -Wextra #-fsanitize=address #-Werror
 
 all: proyect make-libft $(NAME) $(HEADER)
 	@echo "Proyect $(NAME) ready!"

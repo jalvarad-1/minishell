@@ -105,4 +105,5 @@ void	ft_free_table(t_cmds **table);
 /*pipex*/
 char	*search_path(char *argv, char **envp);
 void	pipex(char ***envp, t_cmds *cmd);
+char **ft_get_inputs(char ***token);
 #endif

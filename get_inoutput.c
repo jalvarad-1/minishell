@@ -1,20 +1,20 @@
 #include "minishell.h"
-void move_out_quotes(char **token, int *i, int *j)
+void move_out_quotes(char **token, int i, int *j)
 {
-	if (!token || !token[*i])
+	if (!token || !token[i])
 		return ;
-	if (token[*i][*j] == '\'' || token[*i][*j] == '"')
+	if (token[i][*j] == '\'' || token[i][*j] == '"')
 	{
-		if (token[*i][*j] == '\'')
+		if (token[i][*j] == '\'')
 		{
 			(*j)++;
-			while(token[*i][*j] && token[*i][*j] != '\'')
+			while(token[i][*j] && token[i][*j] != '\'')
 				(*j)++;
 		}
-		else if (token[*i][*j] == '"')
+		else if (token[i][*j] == '"')
 		{
 			(*j)++;
-			while (token[*i][*j] && token[*i][*j] != '"')
+			while (token[i][*j] && token[i][*j] != '"')
 				(*j)++;
 		}
 	}
@@ -33,7 +33,7 @@ int redirection_counter(char **token, char operator)
 		j = 0;
 		while (token[i][j])
 		{
-			move_out_quotes(token, &i, &j);
+			move_out_quotes(token, i, &j);
 			if (token[i][j] == operator && token[i][j + 1] != operator)
 				redirections++;
 			j++;
@@ -54,6 +54,7 @@ int	fd_len(char *token)
 	}
 	return (len);
 }
+
 char *save_fd_name(char **token, int *i, int *j)
 {
 	char	*fd_name;
@@ -74,19 +75,79 @@ char *save_fd_name(char **token, int *i, int *j)
 	return (fd_name);
 }
 
+void mod_move_out_quotes(char *token, int *i)
+{
+	if (!token || !token[*i])
+		return ;
+	if (token[*i] == '\'' || token[*i]== '"')
+	{
+		if (token[*i] == '\'')
+		{
+			token[*i] = ' ';
+			(*i)++;
+			while(token[*i] && token[*i] != '\'')
+			{
+				token[*i] = ' ';
+				(*i)++;
+			}
+		}
+		else if (token[*i] == '"')
+		{
+			token[*i] = ' ';
+			(*i)++;
+			while (token[*i] && token[*i] != '"')
+			{
+				token[*i] = ' ';
+				(*i)++;
+			}
+		}
+	}
+}
+
+char *token_in_one_str(char **token, char optr)
+{
+	char	*ltt_tk;
+	char	*aux;
+	int		i;
+
+	i = 0;
+	ltt_tk = ft_strjoin(token[i], " ");
+	while (token[++i])
+	{
+		aux = ft_strjoin(ltt_tk, token[i]);
+		free(ltt_tk);
+		ltt_tk = ft_strjoin(aux, " ");
+		free(aux);
+	}
+	i = 0;
+	while (ltt_tk[i])
+	{
+		move_out_quotes(&ltt_tk, 0, &i);
+		if (ltt_tk[i] == optr)
+		{
+			ltt_tk[i] = ' ';
+			while (ltt_tk[i] && ltt_tk[i] == ' ')
+				i++;
+			while (ltt_tk[i] && ltt_tk[i] != ' ')
+			{
+				mod_move_out_quotes(ltt_tk, &i);
+				ltt_tk[i++] = ' ';
+			}
+		}
+		i++;
+	}
+	return (ltt_tk);
+}
+
 char **remove_ops_files(char **token, char optr)
 {
 	char **nw_tk;
 	char *ltt_tk;
-	char *aux;
 
-	while (token[i])
-	{
-
-		while()
-	}
-
-	
+	ltt_tk = token_in_one_str(token, optr);
+	nw_tk = ft_mod_split(ltt_tk,' ');
+	free (ltt_tk);
+	return (nw_tk);
 }
 
 char **ft_get_inputs(char ***token)
@@ -104,12 +165,16 @@ char **ft_get_inputs(char ***token)
 	fds = (char **)malloc(sizeof(char *) * (i + 1));
 	if (!fds)
 		return (NULL);
+	i = 0;
 	while(token[0][i])
 	{
 		j = 0;
 		while (token[0][i][j])
 		{
-			move_out_quotes(token[0], &i, &j);
+			//printf("Antes %s\n", token[0][i]);
+			move_out_quotes(token[0], i, &j);
+			//printf("Despues %s\n", token[0][i]);
+			//printf("pta madre %c\n", token[0][i][j]);
 			if (token[0][i][j] == '<' && token[0][i][j + 1] != '<')
 			{
 				j++;
@@ -123,7 +188,9 @@ char **ft_get_inputs(char ***token)
 		i++;
 	}
 	fds[b] = NULL;
-	new_token = remove_ops_files(*token, '<');/* falta hacer esta función */
+	new_token = remove_ops_files(*token, '<');
+	free_matrix(*token);
+	*token = new_token;
 	return (fds);
 }
 /*  remove_ops_files(char **token):
