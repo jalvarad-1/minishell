@@ -54,7 +54,7 @@ static int	fd_len(char *token)
 	return (len);
 }
 
-static char *save_fd_name(char **token, int *i, int *j)
+char *save_fd_name(char **token, int *i, int *j)
 {
 	char	*fd_name;
 	int		name_size;
@@ -138,7 +138,7 @@ static char *token_in_one_str(char **token, char optr)
 	return (ltt_tk);
 }
 
-static char **remove_ops_files(char **token, char optr)
+char **remove_ops_files(char **token, char optr)
 {
 	char **nw_tk;
 	char *ltt_tk;

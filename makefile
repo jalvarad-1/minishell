@@ -1,5 +1,6 @@
 NAME = minishell
 SRC = 	main.c \
+		heredoc_intput.c \
 		signals_1.c \
 		builtins_1.c \
 		ft_pwd.c \
@@ -14,7 +15,7 @@ SRC = 	main.c \
 		pipex2.0.c \
 		pipex2.0utils.c \
 		get_inoutput.c \
-	#	parser_4.c \
+	#	parser_4.c
 
 RED 			= \033[0;31m
 GREEN 			= \033[0;32m

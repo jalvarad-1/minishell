@@ -15,7 +15,7 @@ void	ft_free_table(t_cmds **table)
 	}
 }
 
-t_cmds	*ft_lstnew(char **content, char **ins, char **outs)
+t_cmds	*ft_lstnew(char **content, t_fds *fds)
 {
 	t_cmds	*a;
 
@@ -23,8 +23,9 @@ t_cmds	*ft_lstnew(char **content, char **ins, char **outs)
 	if (!a)
 		return (NULL);
 	a->content = content;
-	a->input_fd = ins;
-	a->output_fd = outs;
+	a->input_fd = fds->ins;
+	a->output_fd = fds->outs;
+	a->heredoc_end = fds->h_end;
 	a->next = NULL;
 	return (a);
 }

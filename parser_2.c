@@ -51,14 +51,14 @@ static int	unquoted_marks(char **str)
 }
 
 //Hay que revisar esta funcion porque no esta guardando bien los comandos en la tabla ni crea mas de un NODO
-static void	save_cmd(t_cmds **stack, char **argv, char **ins, char **outs)
+static void	save_cmd(t_cmds **stack, char **argv, t_fds *fds)
 {
 	t_cmds	*tmp;
 	if (*stack == NULL)
-		*stack = ft_lstnew(argv, ins, outs);
+		*stack = ft_lstnew(argv, fds);
 	else
 	{
-		tmp = ft_lstnew(argv, ins, outs);
+		tmp = ft_lstnew(argv, fds);
 		ft_lstadd_back(stack, tmp);
 	}
 }
@@ -106,15 +106,13 @@ static void	ft_expand(char **token, char **env)
 
 int	get_command_table(char *str, char **env, t_cmds **table)
 {
-	char	**cmd;
 	char	**token;
+	char	**cmd;
 	int		i;
-	char	**ins;
-	char	**outs;
+	t_fds	*aux;
 
 	i = 0;
-	ins = NULL;
-	outs = NULL;
+	aux = &((t_fds){NULL, NULL, NULL});
 	cmd = ft_mod_split(str, '|');
 	if (!unquoted_marks(cmd))
 	{
@@ -130,18 +128,18 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 			free(cmd);
 			return (0);
 		}*/
-		ins = ft_get_inputs(&token, '<');
-		outs = ft_get_inputs(&token, '>');
+		aux->h_end = get_heredoc_input(&token, '<');
+		aux->ins = ft_get_inputs(&token, '<');
+		aux->outs = ft_get_inputs(&token, '>');
 		ft_expand(token, env);
-		save_cmd(table, token, ins, outs);
-		//free_matrix(token);
+		save_cmd(table, token, aux);
 		i++;
 	}
 /*	while (*table)
 	{
 		i = 0;
-		while ((*table)->content[i])
-			printf("%s\n", (*table)->content[i++]);
+		while ((*table)->input_fd[i])
+			printf("%s\n", (*table)->input_fd[i++]);
 		*table = (*table)->next;
 	}*/
 	free_matrix(cmd);

@@ -68,10 +68,16 @@ typedef struct s_cmds
 	char			**content;
 	char			**input_fd;
 	char			**output_fd; //Guardamos las redirecciones
-	char			*heredoc_end;
+	char			**heredoc_end;
 	struct s_cmds	*next;
 }	t_cmds;
 
+typedef struct	s_fds
+{
+	char	**ins;
+	char	**outs;
+	char	**h_end;
+}	t_fds;
 void	rl_replace_line (const char *text, int clear_undo);
 /*Signals*/
 void	sig_handler(int signal);
@@ -100,7 +106,7 @@ void	ft_dollar_detect(char **str, char **env);
 void	ft_trim_plus(char **str, t_parse prs);
 int		operator_identifier(char **str);
 /*Lst utils*/
-t_cmds	*ft_lstnew(char **content, char **ins, char **outs);
+t_cmds	*ft_lstnew(char **content, t_fds *fds);
 void	ft_lstadd_back(t_cmds **lst, t_cmds *new);
 int		ft_lstsize(t_cmds *lst);
 void	ft_free_table(t_cmds **table);
@@ -108,4 +114,8 @@ void	ft_free_table(t_cmds **table);
 char	*search_path(char *argv, char **envp);
 void	pipex(char ***envp, t_cmds *cmd);
 char	**ft_get_inputs(char ***token, char oprt);
+char	**get_heredoc_input(char ***token, char opr);
+char	*save_fd_name(char **token, int *i, int *j);
+char	**remove_ops_files(char **token, char optr);
+
 #endif
