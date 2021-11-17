@@ -157,9 +157,8 @@ void	pipex(char ***envp, t_cmds *cmd)
 	i = 0;
 	info.size = ft_lstsize(cmd) - 1;
 	info.fd2 = create_doble_array(cmd);
+	info.pid = 1;
 	info.path = NULL;
-	close (19); // Esto a mi me la suda. Discutir cuando hayamos terminado
-	close (21);
 	aux = cmd;
 	i = 0;
 	info.fd1 = -42;
@@ -169,13 +168,15 @@ void	pipex(char ***envp, t_cmds *cmd)
 		{
 			info.path = search_path(aux->content[0], *envp);
 			info.pid = fork();
+			i = 1;
 		}
 		g_common.pid = info.pid;
 		if (is_builtin(aux->content))
 			built_in_identifier(aux->content, envp, 1);
 		if (info.pid == 0)
+		{
 			only_son(info, aux, envp);
-		i = 1;
+		}
 	}
 
 	while (aux && info.size > 0)
