@@ -49,7 +49,7 @@ static int	fd_len(char *token)
 	int	len;
 
 	len = 0;
-	while (token[len] && token[len] != '<' && token[len] != '>')
+	while (token && token[len] && token[len] != '<' && token[len] != '>')
 		len++;
 	return (len);
 }
@@ -146,6 +146,7 @@ static char **remove_ops_files(char **token, char optr)
 	ltt_tk = token_in_one_str(token, optr);
 	nw_tk = ft_mod_split(ltt_tk,' ');
 	free (ltt_tk);
+	//printf("|a%s|\n", ltt_tk);
 	return (nw_tk);
 }
 

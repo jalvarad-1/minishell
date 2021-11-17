@@ -56,6 +56,7 @@ typedef struct s_pipe_var
 	int		fd1;
 	int		size;
 	int		**fd2;
+	int		aux_fds[2];
 	int		status;
 	pid_t	pid;
 	char	*path;

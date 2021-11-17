@@ -143,7 +143,9 @@ char	**ft_mod_split(const char *s, char c)
 	char	**aux;
 
 	if (!s)
+	{
 		return (NULL);
+	}
 	if (*s == 0)
 	{
 		aux = (char **)malloc(sizeof(char *));
@@ -151,6 +153,8 @@ char	**ft_mod_split(const char *s, char c)
 		return (aux);
 	}
 	words = mod_word_count(s, c);
+	if (!words)
+		return (NULL);
 	aux = (char **)malloc(sizeof(char *) * (words + 1));
 	if (!aux)
 		return (NULL);

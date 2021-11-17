@@ -185,6 +185,8 @@ void	ft_dollar_detect(char **str, char **env)
 
 	i = 0;
 	prs = (t_parse){0, 0, 0, 0};
+	if (!str)
+		return ;
 	while (str[i])
 	{
 		j = 0;

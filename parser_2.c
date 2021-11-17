@@ -72,6 +72,8 @@ static void	ft_trim_quotes(char **str)
 
 	i = 0;
 	prs = (t_parse){0, 0 ,0 ,0};
+	if (!str)
+		return ;
 	while (str[i])
 	{
 		j = 0;
@@ -134,7 +136,6 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 		outs = ft_get_inputs(&token, '>');
 		ft_expand(token, env);
 		save_cmd(table, token, ins, outs);
-		//free_matrix(token);
 		i++;
 	}
 /*	while (*table)

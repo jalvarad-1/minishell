@@ -164,7 +164,7 @@ void	pipex(char ***envp, t_cmds *cmd)
 	info.fd1 = -42;
 	if (aux && !info.size)
 	{
-		if (!is_builtin(aux->content))
+		if (!is_builtin(aux->content) && aux->content)
 		{
 			info.path = search_path(aux->content[0], *envp);
 			info.pid = fork();
@@ -172,13 +172,19 @@ void	pipex(char ***envp, t_cmds *cmd)
 		}
 		g_common.pid = info.pid;
 		if (is_builtin(aux->content))
-			built_in_identifier(aux->content, envp, 1);
+		{
+			info.aux_fds[READ_END] = dup(STDIN_FILENO);
+			make_in_redirections(&info, cmd->input_fd);
+			if (info.fd1 != -1)
+				built_in_identifier(aux->content, envp, 1);
+			dup2(info.aux_fds[READ_END],STDIN_FILENO);
+			close(info.aux_fds[READ_END]);
+		}
 		if (info.pid == 0)
 		{
 			only_son(info, aux, envp);
 		}
 	}
-
 	while (aux && info.size > 0)
 	{
 		if (i < info.size)
