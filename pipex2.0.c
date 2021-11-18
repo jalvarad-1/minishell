@@ -1,5 +1,31 @@
 #include "minishell.h"
 
+void make_out_redirections(t_pipe_var *info, char **outputs)
+{
+	int i;
+
+	i = 0;
+	if (!outputs)
+		return ;
+	while (outputs && outputs[i])
+	{
+		info->fd1 = open(outputs[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (info->fd1 == -1)
+		{
+			free(info->path);
+			info->path = NULL;
+			ft_putstr_fd("pipex: ", 1);
+			ft_putstr_fd(outputs[i], 1);
+			ft_putstr_fd(": No such file or directory or permission denied\n",
+				 1);
+			return ;
+		}
+		dup2(info->fd1, STDOUT_FILENO);
+		close(info->fd1);
+		i++;
+	}
+}
+
 void make_in_redirections(t_pipe_var *info, char **inputs)
 {
 	int i;
@@ -43,14 +69,18 @@ void close_unnecessary(t_pipe_var info, int a, int b)
 
 void	only_son(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
+	make_in_redirections(&info, cmd->input_fd);
 	if (info.fd1 == -1)
 	{
-		free(info.path);
-		info.path = NULL;
-		ft_putstr_fd("pipex: ", 1);
-		ft_putstr_fd(": No such file or directory or permission denied\n", 1);
+		close_unnecessary(info, -8, -8);
+		exit (-1);
 	}
-
+	make_out_redirections(&info, cmd->output_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
 	execve(info.path, cmd->content, *envp);
 	exit (0);
 }
@@ -67,6 +97,12 @@ void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 	}
 	dup2(info.fd2[0][WRITE_END], STDOUT_FILENO);
 	close(info.fd2[0][WRITE_END]);
+	make_out_redirections(&info, cmd->output_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
 	built_in_identifier(cmd->content, envp, 0);
 	execve(info.path, cmd->content, *envp);
 	exit (0);
@@ -86,6 +122,12 @@ void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 	//system("lsof -c pipex");
 	dup2(info.fd2[info.n_p][WRITE_END], STDOUT_FILENO);
 	close(info.fd2[info.n_p][WRITE_END]);
+	make_out_redirections(&info, cmd->output_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
 	built_in_identifier(cmd->content, envp, 0);
 	execve(info.path, cmd->content, *envp);
 	exit (1);
@@ -103,6 +145,12 @@ void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
 	close(info.fd2[info.l_p][READ_END]);
 	make_in_redirections(&info, cmd->input_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
+	make_out_redirections(&info, cmd->output_fd);
 	if (info.fd1 == -1)
 	{
 		close_unnecessary(info, -8, -8);
@@ -175,10 +223,14 @@ void	pipex(char ***envp, t_cmds *cmd)
 		{
 			info.aux_fds[READ_END] = dup(STDIN_FILENO);
 			make_in_redirections(&info, cmd->input_fd);
+			info.aux_fds[WRITE_END] = dup(STDOUT_FILENO);
+			make_out_redirections(&info, cmd->output_fd);
 			if (info.fd1 != -1)
 				built_in_identifier(aux->content, envp, 1);
 			dup2(info.aux_fds[READ_END],STDIN_FILENO);
 			close(info.aux_fds[READ_END]);
+			dup2(info.aux_fds[WRITE_END], STDOUT_FILENO);
+			close(info.aux_fds[WRITE_END]);
 		}
 		if (info.pid == 0)
 		{
