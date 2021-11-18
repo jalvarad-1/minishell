@@ -21,27 +21,32 @@ void	move_out_quotes(char **token, int i, int *j)
 	}
 }
 
-static int	redirection_counter(char **token, char operator)
+static int	redirection_counter(char **token, char opr)
 {
 	int i;
 	int j;
-	int redirections;
+	int rdc;
 
 	i = 0;
-	redirections = 0;
+	rdc = 0;
 	while (token && token[i])
 	{
 		j = 0;
 		while (token[i][j])
 		{
 			move_out_quotes(token, i, &j);
-			if (token[i][j] == operator && token[i][j + 1] != operator)
-				redirections++;
+			if (token[i][j] == opr)
+			{
+				rdc++;
+				j++;
+				if (token[i][j] == opr)
+					j++;
+			}
 			j++;
 		}
 		i++;
 	}
-	return (redirections);
+	return (rdc);
 }
 
 static int	fd_len(char *token)
@@ -103,7 +108,7 @@ static void mod_move_out_quotes(char *token, int *i)
 	}
 }
 
-static char *token_in_one_str(char **token, char optr)
+static char *token_in_one_str(char **token)
 {
 	char	*ltt_tk;
 	char	*aux;
@@ -122,16 +127,10 @@ static char *token_in_one_str(char **token, char optr)
 	while (ltt_tk[i])
 	{
 		move_out_quotes(&ltt_tk, 0, &i);
-		if (ltt_tk[i] == optr)
+		while (ltt_tk[i] == '<' || ltt_tk[i] == '>')
 		{
 			ltt_tk[i] = ' ';
-			while (ltt_tk[i] && ltt_tk[i] == ' ')
-				i++;
-			while (ltt_tk[i] && ltt_tk[i] != ' ')
-			{
-				mod_move_out_quotes(ltt_tk, &i);
-				ltt_tk[i++] = ' ';
-			}
+			i++;
 		}
 		i++;
 	}
@@ -143,21 +142,33 @@ char **remove_ops_files(char **token, char optr)
 	char **nw_tk;
 	char *ltt_tk;
 
-	ltt_tk = token_in_one_str(token, optr);
-	nw_tk = ft_mod_split(ltt_tk,' ');
+	ltt_tk = token_in_one_str(token);
+	nw_tk = ft_mod_split(ltt_tk, ' ');
 	free (ltt_tk);
 	return (nw_tk);
 }
 
-char **ft_get_inputs(char ***token, char oprt)
+char	*do_heredoc(char **token, int *i, int *j)
 {
-	char **new_token;
-	char **fds;
-	int i;
-	int j;
-	int b;
+	*j += 1;
+	if (!token[*i][*j])
+	{
+		i++;
+		return (save_fd_name(token, i, j));
+	}
+	else
+		return (save_fd_name(token i, j));
+}
 
-	i = redirection_counter(*token, oprt); /// contador de redirecciones;
+t_fds *ft_get_inputs(char ***token, char opr)
+{
+	char	**new_token;
+	t_fds	*fds;
+	int		i;
+	int		j;
+	int		b;
+
+	i = redirection_counter(*token); /// contador de redirecciones;
 	if (!i)
 		return (NULL);
 	b = 0;
@@ -168,32 +179,40 @@ char **ft_get_inputs(char ***token, char oprt)
 	while(token[0][i])
 	{
 		j = 0;
-		while (token[0][i][j])
+		if(token[0][i][j] == opr)
 		{
-			move_out_quotes(token[0], i, &j);
-			if (token[0][i][j] == oprt && token[0][i][j + 1] != oprt)
+			if (token[0][i][++j])
 			{
-				if (token[0][i][++j])
+				if (token[0][i][j] == opr)
 				{
-					fds[b] = save_fd_name(token[0], &i, &j);
-					b++;
+					j++;
+					fds[b].fds = save_fd_name(token[0], &i, &j);
+					if (opr == '<')
+						fds[b].is_hdoc = 1;
+					else
+						fds[b].is_hdoc = 0;
 				}
 				else
 				{
-					i++;
-					j = 0;
-					fds[b] = save_fd_name(token[0], &i, &j);
-					b++;
+					fds[b].fds = save_fd_name(token[0], &i, &j);
+					fds[b].is_hdoc = 0;
 				}
+				b++;
 			}
-			else if(token[0][i][j] == oprt && token[0][i][j + 1] == oprt)
-				j++;
-			j++;
+			else
+			{
+				i++;
+				j = 0;
+				fds[b].fds = save_fd_name(token[0], &i, &j);
+				fds[b].is_hdoc = 0;
+				b++;
+			}
 		}
-		i++;
+		j++;
 	}
+	i++;
 	fds[b] = NULL;
-	new_token = remove_ops_files(*token, oprt);
+	new_token = remove_ops_files(*token);
 	free_matrix(*token);
 	*token = new_token;
 	return (fds);

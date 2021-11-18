@@ -127,8 +127,6 @@ void	pipex(char ***envp, t_cmds *cmd)
 	info.size = ft_lstsize(cmd) - 1;
 	info.fd2 = create_doble_array(cmd);
 	info.path = NULL;
-	close (19); // Esto a mi me la suda. Discutir cuando hayamos terminado
-	close (21);
 	aux = cmd;
 	i = 0;
 	if (aux && !info.size)

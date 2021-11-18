@@ -1,5 +1,7 @@
 # include "minishell.h"
 
+/*TODO MODIFICAR FUNCION PARA QUE DEVUELVS STRUCT DE INPUTS Y OUTPUTS*/
+/*JUNTAR HEREDOC E INOUT EN UNA FUNCION*/
 static int	ft_get_n_heredoc(char **token, char opr)
 {
 	int		i;

@@ -8,14 +8,14 @@ void	ft_free_table(t_cmds **table)
 	{
 		aux = (*table)->next;
 		free_matrix((*table)->content);
-		free_matrix((*table)->input_fd);
-		free_matrix((*table)->output_fd);
+	//	free_matrix((*table)->input_fd);
+	//	free_matrix((*table)->output_fd);
 		free(*table);
 		*table = aux;
 	}
 }
 
-t_cmds	*ft_lstnew(char **content, t_fds *fds)
+t_cmds	*ft_lstnew(char **content, t_fds *ins, t_fds *outs)
 {
 	t_cmds	*a;
 
@@ -23,9 +23,8 @@ t_cmds	*ft_lstnew(char **content, t_fds *fds)
 	if (!a)
 		return (NULL);
 	a->content = content;
-	a->input_fd = fds->ins;
-	a->output_fd = fds->outs;
-	a->heredoc_end = fds->h_end;
+	a->fd_in = ins;
+	a->fd_out = outs;
 	a->next = NULL;
 	return (a);
 }

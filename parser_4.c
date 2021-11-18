@@ -23,6 +23,7 @@ static int	heredoc_parser(char **str, int *i, int *j, char opr)
 			return (0);
 		while (str[*i][*j])
 		{
+			move_out_quotes(str, i, &j);
 			if (str[*i][*j] == forbbiden_chars(str[*i][*j], opr))
 				return (0);
 			*j+=1;
@@ -35,6 +36,7 @@ static int	heredoc_parser(char **str, int *i, int *j, char opr)
 		{
 			while (str[i][j])
 			{
+				move_out_quotes(str, i, &j);
 				if (forbbiden_chars(str[i][j], NULL))
 					return (0);
 				j+=1;
@@ -69,6 +71,7 @@ int	operator_identifier(char **str)
 					j++;
 					while (str[i][j])
 					{
+						move_out_quotes(str, i, &j);
 						if (!forbbiden_chars(str[i][j], '<'))
 							return (0);
 						j++;
@@ -87,6 +90,7 @@ int	operator_identifier(char **str)
 					j++;
 					while (str[i][j])
 					{
+						move_out_quotes(str, i, &j);
 						if (forbbiden_chars(str[i][j], '<'))
 							return (0);
 						j++;
