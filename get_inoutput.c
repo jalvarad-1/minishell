@@ -29,7 +29,7 @@ static int	redirection_counter(char **token, char opr)
 
 	i = 0;
 	rdc = 0;
-	while (token && token[i])
+	while (token[i])
 	{
 		j = 0;
 		while (token[i][j])
@@ -38,11 +38,11 @@ static int	redirection_counter(char **token, char opr)
 			if (token[i][j] == opr)
 			{
 				rdc++;
-				j++;
-				if (token[i][j] == opr)
+				while (token[i][j] == opr)
 					j++;
 			}
-			j++;
+			if (token[i][j])
+				j++;
 		}
 		i++;
 	}
@@ -81,9 +81,10 @@ char *save_fd_name(char **token, int *i, int *j)
 
 static void mod_move_out_quotes(char *token, int *i)
 {
+	printf("Entro y peto %d\n", *i);
 	if (!token || !token[*i])
 		return ;
-	if (token[*i] == '\'' || token[*i]== '"')
+	if (token[*i] == '\'' || token[*i] == '"')
 	{
 		if (token[*i] == '\'')
 		{
@@ -126,7 +127,8 @@ static char *token_in_one_str(char **token, char opr)
 	i = 0;
 	while (ltt_tk[i])
 	{
-		mod_move_out_quotes(&ltt_tk[i], &i);
+		printf("%s \n", ltt_tk);
+		mod_move_out_quotes(ltt_tk, &i);
 		while (ltt_tk[i] == opr)
 		{
 			ltt_tk[i] = ' ';
@@ -179,6 +181,7 @@ t_fds *ft_get_inputs(char ***token, char opr)
 	while(token[0][i])
 	{
 		j = 0;
+		move_out_quotes(token[0], i, &j);
 		if(token[0][i][j] == opr)
 		{
 			if (token[0][i][++j])
@@ -207,11 +210,12 @@ t_fds *ft_get_inputs(char ***token, char opr)
 				fds[b].is_hdoc = 0;
 				b++;
 			}
+			j++;
 		}
-		j++;
+		i++;
 	}
-	i++;
 //	fds[b] = NULL;
+	printf("Llego \n");
 	new_token = remove_ops_files(*token, opr);
 	free_matrix(*token);
 	*token = new_token;
