@@ -108,7 +108,7 @@ static void mod_move_out_quotes(char *token, int *i)
 	}
 }
 
-static char *token_in_one_str(char **token)
+static char *token_in_one_str(char **token, char opr)
 {
 	char	*ltt_tk;
 	char	*aux;
@@ -126,8 +126,8 @@ static char *token_in_one_str(char **token)
 	i = 0;
 	while (ltt_tk[i])
 	{
-		move_out_quotes(&ltt_tk, 0, &i);
-		while (ltt_tk[i] == '<' || ltt_tk[i] == '>')
+		mod_move_out_quotes(&ltt_tk[i], &i);
+		while (ltt_tk[i] == opr)
 		{
 			ltt_tk[i] = ' ';
 			i++;
@@ -137,12 +137,12 @@ static char *token_in_one_str(char **token)
 	return (ltt_tk);
 }
 
-char **remove_ops_files(char **token, char optr)
+char **remove_ops_files(char **token, char opr)
 {
 	char **nw_tk;
 	char *ltt_tk;
 
-	ltt_tk = token_in_one_str(token);
+	ltt_tk = token_in_one_str(token, opr);
 	nw_tk = ft_mod_split(ltt_tk, ' ');
 	free (ltt_tk);
 	return (nw_tk);
@@ -157,7 +157,7 @@ char	*do_heredoc(char **token, int *i, int *j)
 		return (save_fd_name(token, i, j));
 	}
 	else
-		return (save_fd_name(token i, j));
+		return (save_fd_name(token, i, j));
 }
 
 t_fds *ft_get_inputs(char ***token, char opr)
@@ -168,11 +168,11 @@ t_fds *ft_get_inputs(char ***token, char opr)
 	int		j;
 	int		b;
 
-	i = redirection_counter(*token); /// contador de redirecciones;
+	i = redirection_counter(*token, opr); /// contador de redirecciones;
 	if (!i)
 		return (NULL);
 	b = 0;
-	fds = (char **)malloc(sizeof(char *) * (i + 1));
+	fds = malloc(sizeof(t_fds) * (i + 1));
 	if (!fds)
 		return (NULL);
 	i = 0;
@@ -211,8 +211,8 @@ t_fds *ft_get_inputs(char ***token, char opr)
 		j++;
 	}
 	i++;
-	fds[b] = NULL;
-	new_token = remove_ops_files(*token);
+//	fds[b] = NULL;
+	new_token = remove_ops_files(*token, opr);
 	free_matrix(*token);
 	*token = new_token;
 	return (fds);
