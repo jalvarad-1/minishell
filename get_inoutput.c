@@ -177,35 +177,38 @@ t_fds *ft_get_inputs(char ***token, char opr)
 	{
 		j = 0;
 		move_out_quotes(token[0], i, &j);
-		if(token[0][i][j] == opr)
+		while (token[0][i][j])
 		{
-			if (token[0][i][++j])
+			if(token[0][i][j] == opr)
 			{
-				if (token[0][i][j] == opr)
+				if (token[0][i][++j])
 				{
-					j++;
-					if (!token [0][i][j])
+					if (token[0][i][j] == opr)
 					{
-						i++;
-						j = 0;
+						j++;
+						if (!token [0][i][j])
+						{
+							i++;
+							j = 0;
+						}
+						fds[b].fds = save_fd_name(token[0], &i, &j);
+						fds[b].is_hdoc = 1;
 					}
-					fds[b].fds = save_fd_name(token[0], &i, &j);
-					fds[b].is_hdoc = 1;
+					else
+					{
+						fds[b].fds = save_fd_name(token[0], &i, &j);
+						fds[b].is_hdoc = 0;
+					}
+					b++;
 				}
 				else
 				{
+					i++;
+					j = 0;
 					fds[b].fds = save_fd_name(token[0], &i, &j);
 					fds[b].is_hdoc = 0;
+					b++;
 				}
-				b++;
-			}
-			else
-			{
-				i++;
-				j = 0;
-				fds[b].fds = save_fd_name(token[0], &i, &j);
-				fds[b].is_hdoc = 0;
-				b++;
 			}
 			j++;
 		}

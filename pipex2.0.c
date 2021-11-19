@@ -55,11 +55,12 @@ void make_in_redirections(t_pipe_var *info, t_fds *inputs)
 	int b;
 
 	i = 0;
-	b = dup(STDIN_FILENO);
 	if (!inputs)
 		return ;
 	while (inputs && inputs[i].fds)
 	{
+		if (inputs[i + 1].fds)
+			b = dup(STDIN_FILENO);
 		if (inputs[i].is_hdoc == 0)
 		{
 			info->fd1 = open(inputs[i].fds, O_RDONLY);
@@ -71,16 +72,26 @@ void make_in_redirections(t_pipe_var *info, t_fds *inputs)
 				ft_putstr_fd(inputs[i].fds, 1);
 				ft_putstr_fd(": No such file or directory or permission denied\n",
 					 1);
+				close(b);
 				return ;
 			}
 			dup2(info->fd1, STDIN_FILENO);
 			close(info->fd1);
+			if (inputs[i + 1].fds)
+			{
+				dup2(b, STDIN_FILENO);
+				close(b);
+			}
 		}
 		//printf("%s", inputs[i +1].fds);
 		if (inputs[i].is_hdoc == 1)
 		{
 			ft_heredoc(inputs[i].fds);
-			printf("%d\n", i);
+			if (inputs[i + 1].fds)
+			{
+				dup2(b, STDIN_FILENO);
+				close(b);
+			}
 		}
 		i++;
 	}
