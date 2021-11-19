@@ -1,19 +1,46 @@
 # include "minishell.h"
-
-char	**ft_get_heredoc_cmd(char ***token, char *oprt)
+void	heredoc_doer(char *pre_aux)
 {
-	size_t	i;
-	size_t	j;
+	int		fd[2];
 
-	i = 0;
-	while (token[0][i])
+	pipe(fd);
+	ft_putstr_fd(pre_aux, fd[WRITE_END]);
+	close(fd[WRITE_END]);
+	dup2(fd[READ_END], STDIN_FILENO);
+	close(fd[READ_END]);
+}
+// La idea seria tener una estatica i = 0. i + 1 seria el comando al que va dirigido.
+// Si no toca cambiar las funciones para que guarden bien las cosas
+void	ft_heredoc(char *table)
+{
+	char	*str;
+	char	*aux;
+	char	*pre_aux;
+
+	str = NULL;
+	aux = NULL;
+	pre_aux = NULL;
+	if (table)
 	{
-		j = 0;
-		while (token[0][i][j])
+		while (1)
 		{
-			move_out_quotes(token[0], i, &j);
-			if (ft_strstr(token[0][i] + j, oprt))
+			str = readline(">");
+			if (!str || !ft_strcmp(str, table))
+				break ;
+			aux = ft_strjoin(pre_aux, str);
+			if (pre_aux)
+			{
+				free(pre_aux);
+				pre_aux = NULL;
+				free(str);
+				str = NULL;
+			}
+			pre_aux = ft_strjoin(aux, "\n");
 		}
-		i++;
+		if (str)
+			free(str);
+		if (aux)
+			free(aux);
 	}
+	heredoc_doer(pre_aux);
 }

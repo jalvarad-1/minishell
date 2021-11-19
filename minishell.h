@@ -64,11 +64,17 @@ typedef struct s_pipe_var
 	int		n_p;/// next_pipe
 }	t_pipe_var;
 
+typedef struct	s_fds
+{
+	char	*fds;
+	int		is_hdoc;
+}	t_fds;
+
 typedef struct s_cmds
 {
 	char			**content;
-	char			**input_fd;
-	char			**output_fd; //Guardamos las redirecciones
+	t_fds			*input_fd;
+	t_fds			*output_fd; //Guardamos las redirecciones
 	char			*heredoc_end;
 	struct s_cmds	*next;
 }	t_cmds;
@@ -101,12 +107,13 @@ void	ft_dollar_detect(char **str, char **env);
 void	ft_trim_plus(char **str, t_parse prs);
 int		operator_identifier(char **str);
 /*Lst utils*/
-t_cmds	*ft_lstnew(char **content, char **ins, char **outs);
+t_cmds	*ft_lstnew(char **content, t_fds *ins, t_fds *outs);
 void	ft_lstadd_back(t_cmds **lst, t_cmds *new);
 int		ft_lstsize(t_cmds *lst);
 void	ft_free_table(t_cmds **table);
 /*pipex*/
 char	*search_path(char *argv, char **envp);
 void	pipex(char ***envp, t_cmds *cmd);
-char	**ft_get_inputs(char ***token, char oprt);
+t_fds	*ft_get_inputs(char ***token, char opr);
+void	ft_heredoc(char *table);
 #endif

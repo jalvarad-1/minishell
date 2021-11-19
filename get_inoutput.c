@@ -21,27 +21,32 @@ void	move_out_quotes(char **token, int i, int *j)
 	}
 }
 
-static int	redirection_counter(char **token, char operator)
+static int	redirection_counter(char **token, char opr)
 {
 	int i;
 	int j;
-	int redirections;
+	int rdc;
 
 	i = 0;
-	redirections = 0;
+	rdc = 0;
 	while (token && token[i])
 	{
 		j = 0;
 		while (token[i][j])
 		{
 			move_out_quotes(token, i, &j);
-			if (token[i][j] == operator && token[i][j + 1] != operator)
-				redirections++;
-			j++;
+			if (token[i][j] == opr)
+			{
+				rdc++;
+				while (token[i][j] == opr)
+					j++;
+			}
+			if (token[i][j])
+				j++;
 		}
 		i++;
 	}
-	return (redirections);
+	return (rdc);
 }
 
 static int	fd_len(char *token)
@@ -49,12 +54,12 @@ static int	fd_len(char *token)
 	int	len;
 
 	len = 0;
-	while (token && token[len] && token[len] != '<' && token[len] != '>')
+	while (token[len] && token[len] != '<' && token[len] != '>')
 		len++;
 	return (len);
 }
 
-static char *save_fd_name(char **token, int *i, int *j)
+char *save_fd_name(char **token, int *i, int *j)
 {
 	char	*fd_name;
 	int		name_size;
@@ -78,7 +83,7 @@ static void mod_move_out_quotes(char *token, int *i)
 {
 	if (!token || !token[*i])
 		return ;
-	if (token[*i] == '\'' || token[*i]== '"')
+	if (token[*i] == '\'' || token[*i] == '"')
 	{
 		if (token[*i] == '\'')
 		{
@@ -124,7 +129,11 @@ static char *token_in_one_str(char **token, char optr)
 		move_out_quotes(&ltt_tk, 0, &i);
 		if (ltt_tk[i] == optr)
 		{
-			ltt_tk[i] = ' ';
+			while (ltt_tk[i] == optr)
+			{
+				ltt_tk[i] = ' ';
+				i++;
+			}
 			while (ltt_tk[i] && ltt_tk[i] == ' ')
 				i++;
 			while (ltt_tk[i] && ltt_tk[i] != ' ')
@@ -137,64 +146,73 @@ static char *token_in_one_str(char **token, char optr)
 	}
 	return (ltt_tk);
 }
-
-static char **remove_ops_files(char **token, char optr)
+char **remove_ops_files(char **token, char opr)
 {
 	char **nw_tk;
 	char *ltt_tk;
 
-	ltt_tk = token_in_one_str(token, optr);
-	nw_tk = ft_mod_split(ltt_tk,' ');
+	ltt_tk = token_in_one_str(token, opr);
+	nw_tk = ft_mod_split(ltt_tk, ' ');
 	free (ltt_tk);
-	//printf("|a%s|\n", ltt_tk);
 	return (nw_tk);
 }
 
-char **ft_get_inputs(char ***token, char oprt)
+t_fds *ft_get_inputs(char ***token, char opr)
 {
-	char **new_token;
-	char **fds;
-	int i;
-	int j;
-	int b;
+	char	**new_token;
+	t_fds	*fds;
+	int		i;
+	int		j;
+	int		b;
 
-	i = redirection_counter(*token, oprt); /// contador de redirecciones;
+	i = redirection_counter(*token, opr); /// contador de redirecciones;
 	if (!i)
 		return (NULL);
 	b = 0;
-	fds = (char **)malloc(sizeof(char *) * (i + 1));
+	fds = malloc(sizeof(t_fds) * (i + 1));
 	if (!fds)
 		return (NULL);
 	i = 0;
 	while(token[0][i])
 	{
 		j = 0;
-		while (token[0][i][j])
+		move_out_quotes(token[0], i, &j);
+		if(token[0][i][j] == opr)
 		{
-			move_out_quotes(token[0], i, &j);
-			if (token[0][i][j] == oprt && token[0][i][j + 1] != oprt)
+			if (token[0][i][++j])
 			{
-				if (token[0][i][++j])
+				if (token[0][i][j] == opr)
 				{
-					fds[b] = save_fd_name(token[0], &i, &j);
-					b++;
+					j++;
+					if (!token [0][i][j])
+					{
+						i++;
+						j = 0;
+					}
+					fds[b].fds = save_fd_name(token[0], &i, &j);
+					fds[b].is_hdoc = 1;
 				}
 				else
 				{
-					i++;
-					j = 0;
-					fds[b] = save_fd_name(token[0], &i, &j);
-					b++;
+					fds[b].fds = save_fd_name(token[0], &i, &j);
+					fds[b].is_hdoc = 0;
 				}
+				b++;
 			}
-			else if(token[0][i][j] == oprt && token[0][i][j + 1] == oprt)
-				j++;
+			else
+			{
+				i++;
+				j = 0;
+				fds[b].fds = save_fd_name(token[0], &i, &j);
+				fds[b].is_hdoc = 0;
+				b++;
+			}
 			j++;
 		}
 		i++;
 	}
-	fds[b] = NULL;
-	new_token = remove_ops_files(*token, oprt);
+	fds[b].fds = NULL;
+	new_token = remove_ops_files(*token, opr);
 	free_matrix(*token);
 	*token = new_token;
 	return (fds);

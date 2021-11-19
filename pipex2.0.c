@@ -1,53 +1,87 @@
 #include "minishell.h"
 
-void make_out_redirections(t_pipe_var *info, char **outputs)
+void make_out_redirections(t_pipe_var *info, t_fds *outputs)
 {
+	char			buffer;
 	int i;
 
 	i = 0;
 	if (!outputs)
 		return ;
-	while (outputs && outputs[i])
+	while (outputs && outputs[i].fds)
 	{
-		info->fd1 = open(outputs[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (info->fd1 == -1)
+		if (outputs[i].is_hdoc == 0)
 		{
-			free(info->path);
-			info->path = NULL;
-			ft_putstr_fd("pipex: ", 1);
-			ft_putstr_fd(outputs[i], 1);
-			ft_putstr_fd(": No such file or directory or permission denied\n",
-				 1);
-			return ;
+			info->fd1 = open(outputs[i].fds, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (info->fd1 == -1)
+			{
+				free(info->path);
+				info->path = NULL;
+				ft_putstr_fd("pipex: ", 1);
+				ft_putstr_fd(outputs[i].fds, 1);
+				ft_putstr_fd(": No such file or directory or permission denied\n",
+					 1);
+				return ;
+			}
+			dup2(info->fd1, STDOUT_FILENO);
+			close(info->fd1);
+			i++;
 		}
-		dup2(info->fd1, STDOUT_FILENO);
-		close(info->fd1);
-		i++;
+		else if (outputs[i].is_hdoc == 1)
+		{
+			info->fd1 = open(outputs[i].fds, O_RDWR | O_CREAT, 0644);
+			if (info->fd1 == -1)
+			{
+				free(info->path);
+				info->path = NULL;
+				ft_putstr_fd("pipex: ", 1);
+				ft_putstr_fd(outputs[i].fds, 1);
+				ft_putstr_fd(": No such file or directory or permission denied\n",
+					 1);
+				return ;
+			}
+			while (read(info->fd1, &buffer, 1))
+				;
+			dup2(info->fd1, STDOUT_FILENO);
+			close(info->fd1);
+			i++;
+		}
 	}
 }
 
-void make_in_redirections(t_pipe_var *info, char **inputs)
+void make_in_redirections(t_pipe_var *info, t_fds *inputs)
 {
 	int i;
+	int b;
 
 	i = 0;
+	b = dup(STDIN_FILENO);
 	if (!inputs)
 		return ;
-	while (inputs && inputs[i])
+	while (inputs && inputs[i].fds)
 	{
-		info->fd1 = open(inputs[i], O_RDONLY);
-		if (info->fd1 == -1)
+		if (inputs[i].is_hdoc == 0)
 		{
-			free(info->path);
-			info->path = NULL;
-			ft_putstr_fd("pipex: ", 1);
-			ft_putstr_fd(inputs[i], 1);
-			ft_putstr_fd(": No such file or directory or permission denied\n",
-				 1);
-			return ;
+			info->fd1 = open(inputs[i].fds, O_RDONLY);
+			if (info->fd1 == -1)
+			{
+				free(info->path);
+				info->path = NULL;
+				ft_putstr_fd("pipex: ", 1);
+				ft_putstr_fd(inputs[i].fds, 1);
+				ft_putstr_fd(": No such file or directory or permission denied\n",
+					 1);
+				return ;
+			}
+			dup2(info->fd1, STDIN_FILENO);
+			close(info->fd1);
 		}
-		dup2(info->fd1, STDIN_FILENO);
-		close(info->fd1);
+		//printf("%s", inputs[i +1].fds);
+		if (inputs[i].is_hdoc == 1)
+		{
+			ft_heredoc(inputs[i].fds);
+			printf("%d\n", i);
+		}
 		i++;
 	}
 }
@@ -103,6 +137,7 @@ void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 		close_unnecessary(info, -8, -8);
 		exit (-1);
 	}
+	close_unnecessary(info, info.fd2[0][READ_END], info.fd2[0][WRITE_END]);
 	built_in_identifier(cmd->content, envp, 0);
 	execve(info.path, cmd->content, *envp);
 	exit (0);
@@ -128,6 +163,7 @@ void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 		close_unnecessary(info, -8, -8);
 		exit (-1);
 	}
+	close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
 	built_in_identifier(cmd->content, envp, 0);
 	execve(info.path, cmd->content, *envp);
 	exit (1);
@@ -156,6 +192,7 @@ void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 		close_unnecessary(info, -8, -8);
 		exit (-1);
 	}
+	close_unnecessary(info, info.fd2[info.l_p][READ_END], -7);
 	built_in_identifier(cmd->content, envp, 0);
 	execve(info.path, cmd->content, *envp);
 	exit (1);

@@ -51,7 +51,7 @@ static int	unquoted_marks(char **str)
 }
 
 //Hay que revisar esta funcion porque no esta guardando bien los comandos en la tabla ni crea mas de un NODO
-static void	save_cmd(t_cmds **stack, char **argv, char **ins, char **outs)
+static void	save_cmd(t_cmds **stack, char **argv, t_fds *ins, t_fds *outs)
 {
 	t_cmds	*tmp;
 	if (*stack == NULL)
@@ -111,8 +111,8 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 	char	**cmd;
 	char	**token;
 	int		i;
-	char	**ins;
-	char	**outs;
+	t_fds	*ins;
+	t_fds	*outs;
 
 	i = 0;
 	ins = NULL;

@@ -14,6 +14,7 @@ SRC = 	main.c \
 		pipex2.0.c \
 		pipex2.0utils.c \
 		get_inoutput.c \
+		here_doc.c \
 	#	parser_4.c \
 
 RED 			= \033[0;31m
