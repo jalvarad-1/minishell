@@ -1,6 +1,6 @@
 NAME = minishell
 SRC = 	main.c \
-		heredoc_intput.c \
+		here_doc.c \
 		signals_1.c \
 		builtins_1.c \
 		ft_pwd.c \
