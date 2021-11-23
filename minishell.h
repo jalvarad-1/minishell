@@ -56,6 +56,7 @@ typedef struct s_pipe_var
 	int		fd1;
 	int		size;
 	int		**fd2;
+	int		aux_fds[2];
 	int		status;
 	pid_t	pid;
 	char	*path;
@@ -72,11 +73,11 @@ typedef struct	s_fds
 typedef struct s_cmds
 {
 	char			**content;
-	t_fds			*fd_in;
-	t_fds			*fd_out;
+	t_fds			*input_fd;
+	t_fds			*output_fd; //Guardamos las redirecciones
+	char			*heredoc_end;
 	struct s_cmds	*next;
 }	t_cmds;
-
 
 void	rl_replace_line (const char *text, int clear_undo);
 /*Signals*/
@@ -114,7 +115,5 @@ void	ft_free_table(t_cmds **table);
 char	*search_path(char *argv, char **envp);
 void	pipex(char ***envp, t_cmds *cmd);
 t_fds	*ft_get_inputs(char ***token, char opr);
-char	*save_fd_name(char **token, int *i, int *j);
-char	**remove_ops_files(char **token, char optr);
-
+void	ft_heredoc(char *table);
 #endif

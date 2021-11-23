@@ -97,8 +97,7 @@ int main (int argc, char **argv, char **envp)
 		{
 			if (get_command_table(str, env_v, &cmd_table))
 			{
-				printf("puta\n");
-//				pipex(&env_v, cmd_table);
+				pipex(&env_v, cmd_table);
 			}
 			ft_free_table(&cmd_table);
 		}

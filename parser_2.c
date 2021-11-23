@@ -72,6 +72,8 @@ static void	ft_trim_quotes(char **str)
 
 	i = 0;
 	prs = (t_parse){0, 0 ,0 ,0};
+	if (!str)
+		return ;
 	while (str[i])
 	{
 		j = 0;
@@ -106,15 +108,15 @@ static void	ft_expand(char **token, char **env)
 
 int	get_command_table(char *str, char **env, t_cmds **table)
 {
-	char	**token;
 	char	**cmd;
+	char	**token;
 	int		i;
-	t_fds	*aux_in;
-	t_fds	*aux_out;
+	t_fds	*ins;
+	t_fds	*outs;
 
 	i = 0;
-	aux_in = &((t_fds){NULL, 0});
-	aux_out = &((t_fds){NULL, 0});
+	ins = NULL;
+	outs = NULL;
 	cmd = ft_mod_split(str, '|');
 	if (!unquoted_marks(cmd))
 	{
@@ -130,17 +132,17 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 			free(cmd);
 			return (0);
 		}*/
-		aux_in = ft_get_inputs(&token, '<');
-		aux_out = ft_get_inputs(&token, '>');
+		ins = ft_get_inputs(&token, '<');
+		outs = ft_get_inputs(&token, '>');
 		ft_expand(token, env);
-		save_cmd(table, token, aux_in, aux_out);
+		save_cmd(table, token, ins, outs);
 		i++;
 	}
 /*	while (*table)
 	{
 		i = 0;
-		while ((*table)->input_fd[i])
-			printf("%s\n", (*table)->input_fd[i++]);
+		while ((*table)->content[i])
+			printf("%s\n", (*table)->content[i++]);
 		*table = (*table)->next;
 	}*/
 	free_matrix(cmd);

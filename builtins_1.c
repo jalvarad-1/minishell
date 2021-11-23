@@ -38,6 +38,8 @@ void	ft_echo(char **str, int f_or_s)
 ////f_or_s = father_or_son 0 si es padre 1 si es hijo
 void	built_in_identifier(char **argv, char ***env, int f_or_s)
 {
+	if (!argv)
+		return ;
 	if (!ft_strcmp(argv[0], "echo"))
 		ft_echo(argv, f_or_s);
 	else if (!ft_strcmp(argv[0], "cd"))
@@ -56,6 +58,8 @@ void	built_in_identifier(char **argv, char ***env, int f_or_s)
 
 int	is_builtin(char **argv)
 {
+	if (!argv)
+		return (0);
 	if (!ft_strcmp(argv[0], "echo"))
 		return (1);
 	else if (!ft_strcmp(argv[0], "cd"))

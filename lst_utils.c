@@ -1,5 +1,18 @@
 #include "minishell.h"
+void	free_struct(t_fds *content)
+{
+	int i;
 
+	i = 0;
+	if (!content)
+		return ;
+	while (content[i].fds) //// esta funcion libera el array de estructuras
+	{
+		free(content[i].fds);
+		i++;
+	}
+	free(content);
+}
 void	ft_free_table(t_cmds **table)
 {
 	t_cmds *aux;
@@ -8,8 +21,8 @@ void	ft_free_table(t_cmds **table)
 	{
 		aux = (*table)->next;
 		free_matrix((*table)->content);
-	//	free_matrix((*table)->input_fd);
-	//	free_matrix((*table)->output_fd);
+		free_struct((*table)->input_fd);
+		free_struct((*table)->output_fd);
 		free(*table);
 		*table = aux;
 	}
@@ -23,8 +36,8 @@ t_cmds	*ft_lstnew(char **content, t_fds *ins, t_fds *outs)
 	if (!a)
 		return (NULL);
 	a->content = content;
-	a->fd_in = ins;
-	a->fd_out = outs;
+	a->input_fd = ins;
+	a->output_fd = outs;
 	a->next = NULL;
 	return (a);
 }

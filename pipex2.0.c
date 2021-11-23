@@ -1,5 +1,102 @@
 #include "minishell.h"
 
+void make_out_redirections(t_pipe_var *info, t_fds *outputs)
+{
+	char			buffer;
+	int i;
+
+	i = 0;
+	if (!outputs)
+		return ;
+	while (outputs && outputs[i].fds)
+	{
+		if (outputs[i].is_hdoc == 0)
+		{
+			info->fd1 = open(outputs[i].fds, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (info->fd1 == -1)
+			{
+				free(info->path);
+				info->path = NULL;
+				ft_putstr_fd("pipex: ", 1);
+				ft_putstr_fd(outputs[i].fds, 1);
+				ft_putstr_fd(": No such file or directory or permission denied\n",
+					 1);
+				return ;
+			}
+			dup2(info->fd1, STDOUT_FILENO);
+			close(info->fd1);
+			i++;
+		}
+		else if (outputs[i].is_hdoc == 1)
+		{
+			info->fd1 = open(outputs[i].fds, O_RDWR | O_CREAT, 0644);
+			if (info->fd1 == -1)
+			{
+				free(info->path);
+				info->path = NULL;
+				ft_putstr_fd("pipex: ", 1);
+				ft_putstr_fd(outputs[i].fds, 1);
+				ft_putstr_fd(": No such file or directory or permission denied\n",
+					 1);
+				return ;
+			}
+			while (read(info->fd1, &buffer, 1))
+				;
+			dup2(info->fd1, STDOUT_FILENO);
+			close(info->fd1);
+			i++;
+		}
+	}
+}
+
+void make_in_redirections(t_pipe_var *info, t_fds *inputs)
+{
+	int i;
+	int b;
+
+	i = 0;
+	if (!inputs)
+		return ;
+	while (inputs && inputs[i].fds)
+	{
+		if (inputs[i + 1].fds)
+			b = dup(STDIN_FILENO);
+		if (inputs[i].is_hdoc == 0)
+		{
+			info->fd1 = open(inputs[i].fds, O_RDONLY);
+			if (info->fd1 == -1)
+			{
+				free(info->path);
+				info->path = NULL;
+				ft_putstr_fd("pipex: ", 1);
+				ft_putstr_fd(inputs[i].fds, 1);
+				ft_putstr_fd(": No such file or directory or permission denied\n",
+					 1);
+				close(b);
+				return ;
+			}
+			dup2(info->fd1, STDIN_FILENO);
+			close(info->fd1);
+			if (inputs[i + 1].fds)
+			{
+				dup2(b, STDIN_FILENO);
+				close(b);
+			}
+		}
+		//printf("%s", inputs[i +1].fds);
+		if (inputs[i].is_hdoc == 1)
+		{
+			ft_heredoc(inputs[i].fds);
+			if (inputs[i + 1].fds)
+			{
+				dup2(b, STDIN_FILENO);
+				close(b);
+			}
+		}
+		i++;
+	}
+}
+
 void close_unnecessary(t_pipe_var info, int a, int b)
 {
 	int i;
@@ -15,58 +112,75 @@ void close_unnecessary(t_pipe_var info, int a, int b)
 	}
 }
 
-void	only_son(t_pipe_var info, char **argv, char ***envp)
+void	only_son(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
+	make_in_redirections(&info, cmd->input_fd);
 	if (info.fd1 == -1)
 	{
-		free(info.path);
-		info.path = NULL;
-		ft_putstr_fd("pipex: ", 1);
-		ft_putstr_fd(": No such file or directory or permission denied\n", 1);
+		close_unnecessary(info, -8, -8);
+		exit (-1);
 	}
-
-	execve(info.path, argv, *envp);
+	make_out_redirections(&info, cmd->output_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
+	execve(info.path, cmd->content, *envp);
 	exit (0);
 }
 
-void	kamikaze_son1(t_pipe_var info, char **argv, char ***envp)
+void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
-	if (info.fd1 == -1)
-	{
-		free(info.path);
-		info.path = NULL;
-		ft_putstr_fd("pipex: ", 1);
-		ft_putstr_fd(": No such file or directory or permission denied\n", 1);
-	}
 	close_unnecessary(info, info.fd2[0][READ_END], info.fd2[0][WRITE_END]);
 	close(info.fd2[0][READ_END]);
+	make_in_redirections(&info, cmd->input_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
 	dup2(info.fd2[0][WRITE_END], STDOUT_FILENO);
 	close(info.fd2[0][WRITE_END]);
-	built_in_identifier(argv, envp, 0);
-	execve(info.path, argv, *envp);
+	make_out_redirections(&info, cmd->output_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
+	close_unnecessary(info, info.fd2[0][READ_END], info.fd2[0][WRITE_END]);
+	built_in_identifier(cmd->content, envp, 0);
+	execve(info.path, cmd->content, *envp);
 	exit (0);
 }
 
-void	kamikaze_sonX(t_pipe_var info, char **argv, char ***envp)
+void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
-	if (info.fd1 == -1)
-	{
-		ft_putstr_fd("pipex: ", 1);
-		ft_putstr_fd(": Permission denied\n", 1);
-		exit(-1);
-	}
 	close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
 	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
 	close(info.fd2[info.l_p][READ_END]);
+	make_in_redirections(&info, cmd->input_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
 	//system("lsof -c pipex");
 	dup2(info.fd2[info.n_p][WRITE_END], STDOUT_FILENO);
 	close(info.fd2[info.n_p][WRITE_END]);
-	built_in_identifier(argv, envp, 0);
-	execve(info.path, argv, *envp);
+	make_out_redirections(&info, cmd->output_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
+	close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
+	built_in_identifier(cmd->content, envp, 0);
+	execve(info.path, cmd->content, *envp);
 	exit (1);
 }
 
-void	kamikaze_son2(t_pipe_var info, char **argv, char ***envp)
+void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
 	if (info.fd1 == -1)
 	{
@@ -77,18 +191,31 @@ void	kamikaze_son2(t_pipe_var info, char **argv, char ***envp)
 	close_unnecessary(info, info.fd2[info.l_p][READ_END], -7);
 	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
 	close(info.fd2[info.l_p][READ_END]);
-	built_in_identifier(argv, envp, 0);
-	execve(info.path, argv, *envp);
+	make_in_redirections(&info, cmd->input_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
+	make_out_redirections(&info, cmd->output_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
+	close_unnecessary(info, info.fd2[info.l_p][READ_END], -7);
+	built_in_identifier(cmd->content, envp, 0);
+	execve(info.path, cmd->content, *envp);
 	exit (1);
 }
 
-void	psycho_parent(t_pipe_var info, char **argv, char ***envp)
+void	psycho_parent(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
 	info.pid = fork();
 	if (info.pid == -1)
 		exit(-1);
 	if (info.pid == 0)
-		kamikaze_son2(info, argv, envp);
+		kamikaze_son2(info, cmd, envp);
 	else
 		close(info.fd2[info.l_p][READ_END]);
 }
@@ -126,24 +253,38 @@ void	pipex(char ***envp, t_cmds *cmd)
 	i = 0;
 	info.size = ft_lstsize(cmd) - 1;
 	info.fd2 = create_doble_array(cmd);
+	info.pid = 1;
 	info.path = NULL;
 	aux = cmd;
 	i = 0;
+	info.fd1 = -42;
 	if (aux && !info.size)
 	{
-		if (!is_builtin(aux->content))
+		if (!is_builtin(aux->content) && aux->content)
 		{
 			info.path = search_path(aux->content[0], *envp);
 			info.pid = fork();
+			i = 1;
 		}
 		g_common.pid = info.pid;
 		if (is_builtin(aux->content))
-			built_in_identifier(aux->content, envp, 1);
+		{
+			info.aux_fds[READ_END] = dup(STDIN_FILENO);
+			make_in_redirections(&info, cmd->input_fd);
+			info.aux_fds[WRITE_END] = dup(STDOUT_FILENO);
+			make_out_redirections(&info, cmd->output_fd);
+			if (info.fd1 != -1)
+				built_in_identifier(aux->content, envp, 1);
+			dup2(info.aux_fds[READ_END],STDIN_FILENO);
+			close(info.aux_fds[READ_END]);
+			dup2(info.aux_fds[WRITE_END], STDOUT_FILENO);
+			close(info.aux_fds[WRITE_END]);
+		}
 		if (info.pid == 0)
-			only_son(info, aux->content, envp);
-		i = 1;
+		{
+			only_son(info, aux, envp);
+		}
 	}
-
 	while (aux && info.size > 0)
 	{
 		if (i < info.size)
@@ -155,11 +296,11 @@ void	pipex(char ***envp, t_cmds *cmd)
 		if (info.pid == -1)
 			exit(-1);
 		if (aux->next && info.pid == 0 && i == 0)
-			kamikaze_son1(info, aux->content, envp);
+			kamikaze_son1(info, aux, envp);
 		if (aux->next && i != 0 && info.pid == 0)
-			kamikaze_sonX(info, aux->content, envp);
+			kamikaze_sonX(info, aux, envp);
 		if (!aux->next && info.pid != 0)
-			psycho_parent(info, aux->content, envp);
+			psycho_parent(info, aux, envp);
 		if (info.pid != 0)
 		{
 			if (info.path != NULL)

@@ -29,7 +29,7 @@ static int	redirection_counter(char **token, char opr)
 
 	i = 0;
 	rdc = 0;
-	while (token[i])
+	while (token && token[i])
 	{
 		j = 0;
 		while (token[i][j])
@@ -81,7 +81,6 @@ char *save_fd_name(char **token, int *i, int *j)
 
 static void mod_move_out_quotes(char *token, int *i)
 {
-	printf("Entro y peto %d\n", *i);
 	if (!token || !token[*i])
 		return ;
 	if (token[*i] == '\'' || token[*i] == '"')
@@ -109,7 +108,7 @@ static void mod_move_out_quotes(char *token, int *i)
 	}
 }
 
-static char *token_in_one_str(char **token, char opr)
+static char *token_in_one_str(char **token, char optr)
 {
 	char	*ltt_tk;
 	char	*aux;
@@ -127,18 +126,26 @@ static char *token_in_one_str(char **token, char opr)
 	i = 0;
 	while (ltt_tk[i])
 	{
-		printf("%s \n", ltt_tk);
-		mod_move_out_quotes(ltt_tk, &i);
-		while (ltt_tk[i] == opr)
+		move_out_quotes(&ltt_tk, 0, &i);
+		if (ltt_tk[i] == optr)
 		{
-			ltt_tk[i] = ' ';
-			i++;
+			while (ltt_tk[i] == optr)
+			{
+				ltt_tk[i] = ' ';
+				i++;
+			}
+			while (ltt_tk[i] && ltt_tk[i] == ' ')
+				i++;
+			while (ltt_tk[i] && ltt_tk[i] != ' ')
+			{
+				mod_move_out_quotes(ltt_tk, &i);
+				ltt_tk[i++] = ' ';
+			}
 		}
 		i++;
 	}
 	return (ltt_tk);
 }
-
 char **remove_ops_files(char **token, char opr)
 {
 	char **nw_tk;
@@ -148,18 +155,6 @@ char **remove_ops_files(char **token, char opr)
 	nw_tk = ft_mod_split(ltt_tk, ' ');
 	free (ltt_tk);
 	return (nw_tk);
-}
-
-char	*do_heredoc(char **token, int *i, int *j)
-{
-	*j += 1;
-	if (!token[*i][*j])
-	{
-		i++;
-		return (save_fd_name(token, i, j));
-	}
-	else
-		return (save_fd_name(token, i, j));
 }
 
 t_fds *ft_get_inputs(char ***token, char opr)
@@ -182,40 +177,44 @@ t_fds *ft_get_inputs(char ***token, char opr)
 	{
 		j = 0;
 		move_out_quotes(token[0], i, &j);
-		if(token[0][i][j] == opr)
+		while (token[0][i][j])
 		{
-			if (token[0][i][++j])
+			if(token[0][i][j] == opr)
 			{
-				if (token[0][i][j] == opr)
+				if (token[0][i][++j])
 				{
-					j++;
-					fds[b].fds = save_fd_name(token[0], &i, &j);
-					if (opr == '<')
+					if (token[0][i][j] == opr)
+					{
+						j++;
+						if (!token [0][i][j])
+						{
+							i++;
+							j = 0;
+						}
+						fds[b].fds = save_fd_name(token[0], &i, &j);
 						fds[b].is_hdoc = 1;
+					}
 					else
+					{
+						fds[b].fds = save_fd_name(token[0], &i, &j);
 						fds[b].is_hdoc = 0;
+					}
+					b++;
 				}
 				else
 				{
+					i++;
+					j = 0;
 					fds[b].fds = save_fd_name(token[0], &i, &j);
 					fds[b].is_hdoc = 0;
+					b++;
 				}
-				b++;
-			}
-			else
-			{
-				i++;
-				j = 0;
-				fds[b].fds = save_fd_name(token[0], &i, &j);
-				fds[b].is_hdoc = 0;
-				b++;
 			}
 			j++;
 		}
 		i++;
 	}
-//	fds[b] = NULL;
-	printf("Llego \n");
+	fds[b].fds = NULL;
 	new_token = remove_ops_files(*token, opr);
 	free_matrix(*token);
 	*token = new_token;
