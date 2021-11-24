@@ -3,12 +3,17 @@
 static int	check_format(char *str)
 {
 	int	i;
+	int	len;
 
 	i = 0;
-	if (ft_isdigit(str[i]))
+	if (ft_isdigit(str[0]))
 		return (0);
-	i++;
-	while (str[i] && str[i] != '=')
+	len = 0;
+	while (str[len] != '=' && str[len])
+		len++;
+	if (!len)
+		return (0);
+	while (i < len)
 	{
 		if (str[i] != '_' && !ft_isalnum(str[i])) //Chequear antes del '='
 			return (0);
