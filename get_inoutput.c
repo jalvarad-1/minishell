@@ -49,13 +49,31 @@ static int	redirection_counter(char **token, char opr)
 	return (rdc);
 }
 
-static int	fd_len(char *token)
+static int	fd_len(char *token, int *start)
 {
 	int	len;
 
 	len = 0;
 	while (token[len] && token[len] != '<' && token[len] != '>')
+	{
+		if (token[len] == '"')
+		{
+			len++;
+			*start = len;
+			while (token[len] != '"')
+				len++;
+			return (len - 1);
+		}
+		else if (token[len] == '\'')
+		{
+			len++;
+			*start = len;
+			while (token[len] != '\'')
+				len++;
+			return (len - 1);
+		}
 		len++;
+	}
 	return (len);
 }
 
@@ -74,7 +92,7 @@ char *save_fd_name(char **token, int *i, int *j)
 		else
 			(*i)++;
 	}
-	name_size = fd_len(token[*i] + *j);
+	name_size = fd_len(token[*i] + *j, j);
 	fd_name = ft_substr(token[*i], *j, name_size);
 	return (fd_name);
 }
@@ -192,6 +210,7 @@ t_fds *ft_get_inputs(char ***token, char opr)
 							j = 0;
 						}
 						fds[b].fds = save_fd_name(token[0], &i, &j);
+						printf("NOOOO %s\n", fds[b].fds);
 						fds[b].is_hdoc = 1;
 					}
 					else
