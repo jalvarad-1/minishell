@@ -219,8 +219,9 @@ void	ft_dollar_detect(char **str, char **env)
 			}
 			j++;
 		}
-		if (prs.n_dollar && ft_strchr(str[i], '$'))
+		if (prs.n_dollar)
 			ft_dollar_expand(&str[i], env, prs);
+		prs.n_dollar = 0;
 		i++;
 	}
 	if (prs.n_dollar)
