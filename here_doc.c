@@ -16,10 +16,13 @@ void	ft_heredoc(char *table, char **env)
 	char	*str;
 	char	*aux;
 	char	*pre_aux;
+	char	**split;
+	int		i;
 
 	str = NULL;
 	aux = NULL;
 	pre_aux = NULL;
+	split = NULL;
 	if (table)
 	{
 		while (1)
@@ -36,12 +39,29 @@ void	ft_heredoc(char *table, char **env)
 				str = NULL;
 			}
 			pre_aux = ft_strjoin(aux, "\n");
-			ft_expand(&pre_aux, env);
 		}
 		if (str)
 			free(str);
 		if (aux)
 			free(aux);
+		split = ft_mod_split(pre_aux, '\n');
+		ft_expand(split, env);
+		if (pre_aux)
+			free(pre_aux);
+		i = 0;
+		aux = NULL;
+		pre_aux = NULL;
+		while (split[i])
+		{
+			aux = ft_strjoin(pre_aux, split[i]);
+			if (pre_aux)
+			{
+					free(pre_aux);
+					pre_aux = NULL;
+			}
+			pre_aux = ft_strjoin(aux, "\n");
+			i++;
+		}
 	}
 	heredoc_doer(pre_aux);
 }
