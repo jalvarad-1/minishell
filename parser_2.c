@@ -100,7 +100,7 @@ static void	ft_trim_quotes(char **str)
 	}
 }
 
-static void	ft_expand(char **token, char **env)
+void	ft_expand(char **token, char **env)
 {
 	ft_dollar_detect(token, env);
 	// $$ te da el numero de proceso de bash. Deberiamos dar el ps de minishell?

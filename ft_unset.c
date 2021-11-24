@@ -82,12 +82,14 @@ void	ft_unset(char **str, char ***env, int f_or_s)
 		return ;
 	while (str[i])
 	{
-		if (!ft_strchr(str[i], '='))
+		if (check_format(str[i]))
+		{
 			j = locate_var(*env, str[i]);
+			if (j >= 0)
+				*env = destroy_var(*env, j);
+		}
 		else
-			printf("unset : %s: invalid parameter\n", str[i]);
-		if (j >= 0)
-			*env = destroy_var(*env, j);
+			printf("export: `%s': not a valid identifier\n", str[i]);
 		i++;
 	}
 	if (!f_or_s)

@@ -1,6 +1,6 @@
 # include "minishell.h"
 
-static int	check_format(char *str)
+int	check_format(char *str)
 {
 	int	i;
 	int	len;
@@ -83,7 +83,7 @@ void	ft_export(char **str, char ***env, int f_or_s)
 				*env = change_var_value(*env, str[i], j);
 		}
 		else
-			printf("Bad format\n");
+			printf("export: `%s': not a valid identifier\n", str[i]);
 		i++;
 	}
 	if (!f_or_s)

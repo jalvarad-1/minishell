@@ -11,7 +11,7 @@ void	heredoc_doer(char *pre_aux)
 }
 // La idea seria tener una estatica i = 0. i + 1 seria el comando al que va dirigido.
 // Si no toca cambiar las funciones para que guarden bien las cosas
-void	ft_heredoc(char *table)
+void	ft_heredoc(char *table, char **env)
 {
 	char	*str;
 	char	*aux;
@@ -36,6 +36,7 @@ void	ft_heredoc(char *table)
 				str = NULL;
 			}
 			pre_aux = ft_strjoin(aux, "\n");
+			ft_expand(&pre_aux, env);
 		}
 		if (str)
 			free(str);
