@@ -103,6 +103,7 @@ char	*cut_compare(char *str);
 char	**doublepointer_dup(char **array);
 void	move_out_quotes(char **token, int i, int *j);
 void	ft_expand(char **token, char **env);
+void	ft_trim_quotes(char **str);
 /*Parser*/
 int		get_command_table(char *str, char **env, t_cmds **table);
 void	ft_dollar_detect(char **str, char **env);

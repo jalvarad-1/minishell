@@ -64,10 +64,11 @@ static void	save_cmd(t_cmds **stack, char **argv, t_fds *ins, t_fds *outs)
 }
 
 
-static void	ft_trim_quotes(char **str)
+int	ft_trim_quotes(char **str)
 {
 	size_t	i;
 	size_t	j;
+	int		flag;
 	t_parse	prs;
 
 	i = 0;

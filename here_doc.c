@@ -44,24 +44,28 @@ void	ft_heredoc(char *table, char **env)
 			free(str);
 		if (aux)
 			free(aux);
-		split = ft_mod_split(pre_aux, '\n');
-		ft_expand(split, env);
 		if (pre_aux)
-			free(pre_aux);
-		i = 0;
-		aux = NULL;
-		pre_aux = NULL;
-		while (split[i])
 		{
-			aux = ft_strjoin(pre_aux, split[i]);
+			split = ft_mod_split(pre_aux, '\n');
+			ft_expand(split, env);
 			if (pre_aux)
+				free(pre_aux);
+			i = 0;
+			aux = NULL;
+			pre_aux = NULL;
+			while (split[i])
 			{
-					free(pre_aux);
-					pre_aux = NULL;
+				aux = ft_strjoin(pre_aux, split[i]);
+				if (pre_aux)
+				{
+						free(pre_aux);
+						pre_aux = NULL;
+				}
+				pre_aux = ft_strjoin(aux, "\n");
+				i++;
 			}
-			pre_aux = ft_strjoin(aux, "\n");
-			i++;
 		}
 	}
 	heredoc_doer(pre_aux);
+	free(pre_aux);
 }

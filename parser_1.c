@@ -220,10 +220,11 @@ void	ft_dollar_detect(char **str, char **env)
 			j++;
 		}
 		if (prs.n_dollar)
+		{
 			ft_dollar_expand(&str[i], env, prs);
+			free(prs.pos_dollar);
+		}
 		prs.n_dollar = 0;
 		i++;
 	}
-	if (prs.n_dollar)
-		free(prs.pos_dollar);
 }
