@@ -68,6 +68,7 @@ typedef struct	s_fds
 {
 	char	*fds;
 	int		is_hdoc;
+	int		expand;
 }	t_fds;
 
 typedef struct s_cmds
@@ -103,7 +104,7 @@ char	*cut_compare(char *str);
 char	**doublepointer_dup(char **array);
 void	move_out_quotes(char **token, int i, int *j);
 void	ft_expand(char **token, char **env);
-void	ft_trim_quotes(char **str);
+int		ft_trim_quotes(char **str);
 /*Parser*/
 int		get_command_table(char *str, char **env, t_cmds **table);
 void	ft_dollar_detect(char **str, char **env);
@@ -118,5 +119,5 @@ void	ft_free_table(t_cmds **table);
 char	*search_path(char *argv, char **envp);
 void	pipex(char ***envp, t_cmds *cmd);
 t_fds	*ft_get_inputs(char ***token, char opr);
-void	ft_heredoc(char *table, char **env);
+void	ft_heredoc(char *table, char **env, int expand);
 #endif

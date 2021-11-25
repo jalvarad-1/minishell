@@ -72,9 +72,10 @@ int	ft_trim_quotes(char **str)
 	t_parse	prs;
 
 	i = 0;
+	flag = 0;
 	prs = (t_parse){0, 0 ,0 ,0};
 	if (!str)
-		return ;
+		return(0);
 	while (str[i])
 	{
 		j = 0;
@@ -83,6 +84,7 @@ int	ft_trim_quotes(char **str)
 			if (str[i][j] == '"')
 			{
 				j++;
+				flag = 1;
 				while (str[i][j] != '"')
 					j++;
 				prs.d_q+=2;
@@ -90,6 +92,7 @@ int	ft_trim_quotes(char **str)
 			else if (str[i][j] == '\'')
 			{
 				j++;
+				flag = 1;
 				while (str[i][j] != '\'')
 					j++;
 				prs.s_q+=2;
@@ -99,6 +102,7 @@ int	ft_trim_quotes(char **str)
 		ft_trim_plus(&str[i], prs);
 		i++;
 	}
+	return (flag);
 }
 
 void	ft_expand(char **token, char **env)

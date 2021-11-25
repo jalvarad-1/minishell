@@ -86,7 +86,7 @@ void make_in_redirections(t_pipe_var *info, t_fds *inputs, char **env)
 		//printf("%s", inputs[i +1].fds);
 		if (inputs[i].is_hdoc == 1)
 		{
-			ft_heredoc(inputs[i].fds, env);
+			ft_heredoc(inputs[i].fds, env, inputs[i].expand);
 			if (inputs[i + 1].fds)
 			{
 				dup2(b, STDIN_FILENO);

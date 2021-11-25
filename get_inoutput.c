@@ -80,11 +80,14 @@ char *save_fd_name(char **token, int *i, int *j)
 }
 
 //Hay que eliminar todas y cada una de las comillas. Si las encuentra, no expande nada. Flag de expansion needed
-char *save_hdoc_end(char **token, int *i)
+char *save_hdoc_end(char **token, int *i, t_fds *fds)
 {
 	char	*end;
 
-	ft_trim_quotes(&token[*i]);
+	if (ft_trim_quotes(&token[*i]))
+		fds->expand = 1;
+	else
+		fds->expand = 0;
 	end = ft_strdup(token[*i]);
 	return (end);
 }
@@ -200,7 +203,7 @@ t_fds *ft_get_inputs(char ***token, char opr)
 							i++;
 							j = 0;
 						}
-						fds[b].fds = save_hdoc_end(token[0], &i);
+						fds[b].fds = save_hdoc_end(token[0], &i, &fds[b]);
 						fds[b].is_hdoc = 1;
 					}
 					else

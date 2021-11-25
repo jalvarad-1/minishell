@@ -11,7 +11,7 @@ void	heredoc_doer(char *pre_aux)
 }
 // La idea seria tener una estatica i = 0. i + 1 seria el comando al que va dirigido.
 // Si no toca cambiar las funciones para que guarden bien las cosas
-void	ft_heredoc(char *table, char **env)
+void	ft_heredoc(char *table, char **env, int expand)
 {
 	char	*str;
 	char	*aux;
@@ -47,7 +47,8 @@ void	ft_heredoc(char *table, char **env)
 		if (pre_aux)
 		{
 			split = ft_mod_split(pre_aux, '\n');
-			ft_expand(split, env);
+			if (!expand)
+				ft_expand(split, env);
 			if (pre_aux)
 				free(pre_aux);
 			i = 0;
