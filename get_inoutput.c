@@ -203,8 +203,16 @@ t_fds *ft_get_inputs(char ***token, char opr)
 							i++;
 							j = 0;
 						}
-						fds[b].fds = save_hdoc_end(token[0], &i, &fds[b]);
-						fds[b].is_hdoc = 1;
+						if (opr == '<')
+						{
+							fds[b].fds = save_hdoc_end(token[0], &i, &fds[b]);
+							fds[b].is_hdoc = 1;
+						}
+						else if (opr == '>')
+						{
+							fds[b].fds = save_fd_name(token[0], &i, &j);
+							fds[b].is_hdoc = 0;
+						}
 					}
 					else
 					{
