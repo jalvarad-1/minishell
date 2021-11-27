@@ -83,12 +83,16 @@ char *save_fd_name(char **token, int *i, int *j)
 char *save_hdoc_end(char **token, int *i, t_fds *fds)
 {
 	char	*end;
+	int		j;
 
+	j = 0;
+	while (token[*i][j] == '<')
+		j++;
 	if (ft_trim_quotes(&token[*i]))
 		fds->expand = 1;
 	else
 		fds->expand = 0;
-	end = ft_strdup(token[*i]);
+	end = ft_substr(token[*i], j, ft_strlen(token[*i]));
 	return (end);
 }
 static void mod_move_out_quotes(char *token, int *i)
