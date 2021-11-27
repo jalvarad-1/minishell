@@ -1,5 +1,27 @@
 # include "minishell.h"
 
+int	check_format(char *str)
+{
+	int	i;
+	int	len;
+
+	i = 0;
+	if (ft_isdigit(str[0]))
+		return (0);
+	len = 0;
+	while (str[len] != '=' && str[len])
+		len++;
+	if (!len)
+		return (0);
+	while (i < len)
+	{
+		if (str[i] != '_' && !ft_isalnum(str[i])) //Chequear antes del '='
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 static char	**change_var_value(char **dst, char *str, int j)
 {
 	char	*tmp;
@@ -52,11 +74,16 @@ void	ft_export(char **str, char ***env, int f_or_s)
 	}
 	while (str[i])
 	{
-		j = locate_var(*env, str[i]);
-		if (j < 0)
-			*env = add_variable(str[i], *env);
+		if (check_format(str[i]))
+		{
+			j = locate_var(*env, str[i]);
+			if (j < 0)
+				*env = add_variable(str[i], *env);
+			else
+				*env = change_var_value(*env, str[i], j);
+		}
 		else
-			*env = change_var_value(*env, str[i], j);
+			printf("export: `%s': not a valid identifier\n", str[i]);
 		i++;
 	}
 	if (!f_or_s)

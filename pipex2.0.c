@@ -49,7 +49,7 @@ void make_out_redirections(t_pipe_var *info, t_fds *outputs)
 	}
 }
 
-void make_in_redirections(t_pipe_var *info, t_fds *inputs)
+void make_in_redirections(t_pipe_var *info, t_fds *inputs, char **env)
 {
 	int i;
 	int b;
@@ -86,7 +86,7 @@ void make_in_redirections(t_pipe_var *info, t_fds *inputs)
 		//printf("%s", inputs[i +1].fds);
 		if (inputs[i].is_hdoc == 1)
 		{
-			ft_heredoc(inputs[i].fds);
+			ft_heredoc(inputs[i].fds, env, inputs[i].expand);
 			if (inputs[i + 1].fds)
 			{
 				dup2(b, STDIN_FILENO);
@@ -114,7 +114,8 @@ void close_unnecessary(t_pipe_var info, int a, int b)
 
 void	only_son(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
-	make_in_redirections(&info, cmd->input_fd);
+	son_signal();
+	make_in_redirections(&info, cmd->input_fd, *envp);
 	if (info.fd1 == -1)
 	{
 		close_unnecessary(info, -8, -8);
@@ -132,9 +133,10 @@ void	only_son(t_pipe_var info, t_cmds *cmd, char ***envp)
 
 void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
+	son_signal();
 	close_unnecessary(info, info.fd2[0][READ_END], info.fd2[0][WRITE_END]);
 	close(info.fd2[0][READ_END]);
-	make_in_redirections(&info, cmd->input_fd);
+	make_in_redirections(&info, cmd->input_fd, *envp);
 	if (info.fd1 == -1)
 	{
 		close_unnecessary(info, -8, -8);
@@ -156,10 +158,11 @@ void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 
 void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
+	son_signal();
 	close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
 	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
 	close(info.fd2[info.l_p][READ_END]);
-	make_in_redirections(&info, cmd->input_fd);
+	make_in_redirections(&info, cmd->input_fd, *envp);
 	if (info.fd1 == -1)
 	{
 		close_unnecessary(info, -8, -8);
@@ -182,6 +185,7 @@ void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 
 void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
+	son_signal();
 	if (info.fd1 == -1)
 	{
 		ft_putstr_fd("pipex: ", 1);
@@ -191,7 +195,7 @@ void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 	close_unnecessary(info, info.fd2[info.l_p][READ_END], -7);
 	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
 	close(info.fd2[info.l_p][READ_END]);
-	make_in_redirections(&info, cmd->input_fd);
+	make_in_redirections(&info, cmd->input_fd, *envp);
 	if (info.fd1 == -1)
 	{
 		close_unnecessary(info, -8, -8);
@@ -212,6 +216,7 @@ void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 void	psycho_parent(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
 	info.pid = fork();
+	parent_signal();
 	if (info.pid == -1)
 		exit(-1);
 	if (info.pid == 0)
@@ -270,7 +275,7 @@ void	pipex(char ***envp, t_cmds *cmd)
 		if (is_builtin(aux->content))
 		{
 			info.aux_fds[READ_END] = dup(STDIN_FILENO);
-			make_in_redirections(&info, cmd->input_fd);
+			make_in_redirections(&info, cmd->input_fd, *envp);
 			info.aux_fds[WRITE_END] = dup(STDOUT_FILENO);
 			make_out_redirections(&info, cmd->output_fd);
 			if (info.fd1 != -1)

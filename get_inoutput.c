@@ -79,6 +79,22 @@ char *save_fd_name(char **token, int *i, int *j)
 	return (fd_name);
 }
 
+//Hay que eliminar todas y cada una de las comillas. Si las encuentra, no expande nada. Flag de expansion needed
+char *save_hdoc_end(char **token, int *i, t_fds *fds)
+{
+	char	*end;
+	int		j;
+
+	j = 0;
+	while (token[*i][j] == '<')
+		j++;
+	if (ft_trim_quotes(&token[*i], 1))
+		fds->expand = 1;
+	else
+		fds->expand = 0;
+	end = ft_substr(token[*i], j, ft_strlen(token[*i]));
+	return (end);
+}
 static void mod_move_out_quotes(char *token, int *i)
 {
 	if (!token || !token[*i])
@@ -191,8 +207,16 @@ t_fds *ft_get_inputs(char ***token, char opr)
 							i++;
 							j = 0;
 						}
-						fds[b].fds = save_fd_name(token[0], &i, &j);
-						fds[b].is_hdoc = 1;
+						if (opr == '<')
+						{
+							fds[b].fds = save_hdoc_end(token[0], &i, &fds[b]);
+							fds[b].is_hdoc = 1;
+						}
+						else if (opr == '>')
+						{
+							fds[b].fds = save_fd_name(token[0], &i, &j);
+							fds[b].is_hdoc = 0;
+						}
 					}
 					else
 					{

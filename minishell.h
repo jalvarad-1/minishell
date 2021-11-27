@@ -68,6 +68,7 @@ typedef struct	s_fds
 {
 	char	*fds;
 	int		is_hdoc;
+	int		expand;
 }	t_fds;
 
 typedef struct s_cmds
@@ -83,6 +84,8 @@ void	rl_replace_line (const char *text, int clear_undo);
 /*Signals*/
 void	sig_handler(int signal);
 void	signal_receiver(void);
+void	son_signal(void);
+void	parent_signal(void);
 /*Readline*/
 char	*print_promt(void);
 /*Built_ins*/
@@ -95,15 +98,18 @@ void	ft_export(char **str, char ***env, int f_or_s);
 void	ft_env(char **env, bool assigned, int f_or_s);
 void	ft_exit(char **str);
 void	ft_echo(char **str, int f_or_s);
+int		check_format(char *str);
 /*Generic utils*/
 void	free_matrix(char **str);
 int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
 char	**doublepointer_dup(char **array);
 void	move_out_quotes(char **token, int i, int *j);
+void	ft_expand(char **token, char **env, int flag);
+int		ft_trim_quotes(char **str, int out);
 /*Parser*/
 int		get_command_table(char *str, char **env, t_cmds **table);
-void	ft_dollar_detect(char **str, char **env);
+void	ft_dollar_detect(char **str, char **env, int flag);
 void	ft_trim_plus(char **str, t_parse prs);
 int		operator_identifier(char **str);
 /*Lst utils*/
@@ -115,5 +121,5 @@ void	ft_free_table(t_cmds **table);
 char	*search_path(char *argv, char **envp);
 void	pipex(char ***envp, t_cmds *cmd);
 t_fds	*ft_get_inputs(char ***token, char opr);
-void	ft_heredoc(char *table);
+void	ft_heredoc(char *table, char **env, int expand);
 #endif

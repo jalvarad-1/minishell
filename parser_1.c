@@ -107,7 +107,7 @@ static void	ft_seek_n_destroy(char **str, char **env, char **var)
 		return ;
 	while ((*str)[i])
 	{
-		if ((*str)[i] == '$')
+		if ((*str)[i] == '$' && (*str)[i + 1] && (*str)[i + 1] != '$')
 		{
 			pos = locate_var(env, var[len]);
 			if (pos >= 0)
@@ -177,7 +177,8 @@ static size_t	*get_pos_dollar(size_t j, t_parse prs, size_t **pos)
 	return (aux);
 }
 
-void	ft_dollar_detect(char **str, char **env)
+// $$ Da EL PID DE BASH. Podriamos o ignorarlo o coger el PID de la minishell
+void	ft_dollar_detect(char **str, char **env, int flag)
 {
 	size_t	i;
 	size_t	j;
@@ -197,7 +198,7 @@ void	ft_dollar_detect(char **str, char **env)
 				j++;
 				while (str[i][j] != '"')
 				{
-					if (str[i][j] == '$')
+					if (str[i][j] == '$' && str[i][j + 1] && str[i][j + 1] != '"')
 					{
 						prs.n_dollar++;
 						prs.pos_dollar = get_pos_dollar(j + 1, prs, &prs.pos_dollar);
@@ -211,7 +212,7 @@ void	ft_dollar_detect(char **str, char **env)
 				while (str[i][j] != '\'')
 					j++;
 			}
-			else if (str[i][j] == '$')
+			else if (str[i][j] == '$' && str[i][j + 1] && str[i][j + 1] != '$')
 			{
 				prs.n_dollar++;
 				prs.pos_dollar = get_pos_dollar(j + 1, prs, &prs.pos_dollar);
@@ -219,38 +220,13 @@ void	ft_dollar_detect(char **str, char **env)
 			j++;
 		}
 		if (prs.n_dollar)
+		{
 			ft_dollar_expand(&str[i], env, prs);
+			free(prs.pos_dollar);
+		}
+		prs.n_dollar = 0;
+		if (flag)
+			return ;
 		i++;
 	}
-	if (prs.n_dollar)
-		free(prs.pos_dollar);
 }
-
-/*3.1.2.1 Escape Character
-A non-quoted backslash ‘\’ is the Bash escape character.
-It preserves the literal value of the next character that follows,
-with the exception of newline. If a \newline pair appears,
-and the backslash itself is not quoted, the \newline is treated as a line continuation
-(that is, it is removed from the input stream and effectively ignored).
-Next: Double Quotes, Previous: Escape Character, Up: Quoting   [Contents][Index]
-3.1.2.2 Single Quotes
-Enclosing characters in single quotes (‘'’)
-preserves the literal value of each character within the quotes.
-A single quote may not occur between single quotes, even when preceded by a backslash.
-Next: ANSI-C Quoting, Previous: Single Quotes, Up: Quoting   [Contents][Index]
-3.1.2.3 Double Quotes
-Enclosing characters in double quotes (‘"’)
-preserves the literal value of all characters within the quotes,
-with the exception of ‘$’, ‘`’, ‘\’, and, when history expansion is enabled, ‘!’.
-When the shell is in POSIX mode (see Bash POSIX Mode),
-the ‘!’ has no special meaning within double quotes, even when history expansion is enabled.
-The characters ‘$’ and ‘`’ retain their special meaning within double quotes (see Shell Expansions).
-The backslash retains its special meaning only when followed by
-one of the following characters: ‘$’, ‘`’, ‘"’, ‘\’, or newline. Within double quotes,
-backslashes that are followed by one of these characters are removed.
-Backslashes preceding characters without a special meaning are left unmodified.
-A double quote may be quoted within double quotes by preceding it with a backslash.
-If enabled, history expansion will be performed unless an ‘!’ appearing in double quotes
-is escaped using a backslash. The backslash preceding the ‘!’ is not removed.
-The special parameters ‘*’ and ‘@’ have special meaning when in double quotes
-(see Shell Parameter Expansion).*/
