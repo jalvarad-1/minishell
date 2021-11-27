@@ -19,10 +19,16 @@ void	sig_handler(int signal)
 //TODO DE ESTA MANERA ES SOLO EL HIJO EL QUE LAS INTERPRETA SIN NECESIDAD DE VARIABLE GLOBAL
 void	signal_receiver(void)
 {
-	struct sigaction	sa;
-
-	sa.sa_handler = &sig_handler;
-	sa.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &sa, NULL);
+	signal(SIGINT, sig_handler);
 //	signal(SIGQUIT, SIG_IGN);
+}
+
+void	son_signal(void)
+{
+	signal(SIGINT, SIG_DFL);
+}
+
+void	parent_signal(void)
+{
+	signal(SIGINT, SIG_IGN);
 }

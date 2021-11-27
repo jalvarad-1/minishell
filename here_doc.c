@@ -48,7 +48,7 @@ void	ft_heredoc(char *table, char **env, int expand)
 		{
 			split = ft_mod_split(pre_aux, '\n');
 			if (!expand)
-				ft_expand(split, env);
+				ft_expand(split, env, 0);
 			if (pre_aux)
 				free(pre_aux);
 			i = 0;

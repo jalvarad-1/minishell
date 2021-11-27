@@ -114,6 +114,7 @@ void close_unnecessary(t_pipe_var info, int a, int b)
 
 void	only_son(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
+	son_signal();
 	make_in_redirections(&info, cmd->input_fd, *envp);
 	if (info.fd1 == -1)
 	{
@@ -132,6 +133,7 @@ void	only_son(t_pipe_var info, t_cmds *cmd, char ***envp)
 
 void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
+	son_signal();
 	close_unnecessary(info, info.fd2[0][READ_END], info.fd2[0][WRITE_END]);
 	close(info.fd2[0][READ_END]);
 	make_in_redirections(&info, cmd->input_fd, *envp);
@@ -156,6 +158,7 @@ void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 
 void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
+	son_signal();
 	close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
 	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
 	close(info.fd2[info.l_p][READ_END]);
@@ -182,6 +185,7 @@ void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 
 void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
+	son_signal();
 	if (info.fd1 == -1)
 	{
 		ft_putstr_fd("pipex: ", 1);
@@ -212,6 +216,7 @@ void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 void	psycho_parent(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
 	info.pid = fork();
+	parent_signal();
 	if (info.pid == -1)
 		exit(-1);
 	if (info.pid == 0)

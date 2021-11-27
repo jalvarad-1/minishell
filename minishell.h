@@ -84,6 +84,8 @@ void	rl_replace_line (const char *text, int clear_undo);
 /*Signals*/
 void	sig_handler(int signal);
 void	signal_receiver(void);
+void	son_signal(void);
+void	parent_signal(void);
 /*Readline*/
 char	*print_promt(void);
 /*Built_ins*/
@@ -103,11 +105,11 @@ int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
 char	**doublepointer_dup(char **array);
 void	move_out_quotes(char **token, int i, int *j);
-void	ft_expand(char **token, char **env);
-int		ft_trim_quotes(char **str);
+void	ft_expand(char **token, char **env, int flag);
+int		ft_trim_quotes(char **str, int out);
 /*Parser*/
 int		get_command_table(char *str, char **env, t_cmds **table);
-void	ft_dollar_detect(char **str, char **env);
+void	ft_dollar_detect(char **str, char **env, int flag);
 void	ft_trim_plus(char **str, t_parse prs);
 int		operator_identifier(char **str);
 /*Lst utils*/

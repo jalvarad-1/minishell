@@ -88,7 +88,7 @@ char *save_hdoc_end(char **token, int *i, t_fds *fds)
 	j = 0;
 	while (token[*i][j] == '<')
 		j++;
-	if (ft_trim_quotes(&token[*i]))
+	if (ft_trim_quotes(&token[*i], 1))
 		fds->expand = 1;
 	else
 		fds->expand = 0;

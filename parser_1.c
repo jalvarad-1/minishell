@@ -178,7 +178,7 @@ static size_t	*get_pos_dollar(size_t j, t_parse prs, size_t **pos)
 }
 
 // $$ Da EL PID DE BASH. Podriamos o ignorarlo o coger el PID de la minishell
-void	ft_dollar_detect(char **str, char **env)
+void	ft_dollar_detect(char **str, char **env, int flag)
 {
 	size_t	i;
 	size_t	j;
@@ -225,6 +225,8 @@ void	ft_dollar_detect(char **str, char **env)
 			free(prs.pos_dollar);
 		}
 		prs.n_dollar = 0;
+		if (flag)
+			return ;
 		i++;
 	}
 }
