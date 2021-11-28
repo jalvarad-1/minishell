@@ -112,6 +112,7 @@ int		get_command_table(char *str, char **env, t_cmds **table);
 void	ft_dollar_detect(char **str, char **env, int flag);
 void	ft_trim_plus(char **str, t_parse prs);
 int		operator_identifier(char **str);
+int		rev_vertial_bars(char *str);
 /*Lst utils*/
 t_cmds	*ft_lstnew(char **content, t_fds *ins, t_fds *outs);
 void	ft_lstadd_back(t_cmds **lst, t_cmds *new);

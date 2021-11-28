@@ -125,6 +125,8 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 	i = 0;
 	ins = NULL;
 	outs = NULL;
+	if (!rev_vertial_bars(str))
+		return (0);
 	cmd = ft_mod_split(str, '|');
 	if (!unquoted_marks(cmd))
 	{
@@ -134,12 +136,11 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 	while (cmd[i])
 	{
 		token = ft_mod_split(cmd[i], ' ');
-/*		if (!operator_identifier(token))
+		if (!operator_identifier(token))
 		{
-			printf("Syntax error\n");
 			free(cmd);
 			return (0);
-		}*/
+		}
 		ins = ft_get_inputs(&token, '<');
 		outs = ft_get_inputs(&token, '>');
 		ft_expand(&ins->fds, env, 1);
