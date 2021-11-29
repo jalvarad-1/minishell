@@ -54,17 +54,24 @@ static size_t var_len(char **env, char **var, size_t j)
 	char	*tmp;
 
 	len = 0;
+	errno = 288;
 	while (var[len])
 	{
-		pos = locate_var(env, var[len]);
-		if (pos >= 0)
-		{
-			tmp = ft_strchr(env[pos], '=');
-			j += ft_strlen(tmp + 1);
-		}
+		printf("%zu\n", j);
+		if (var[len][0] == '?')
+			j += (size_t)ft_str_int_len(errno) - 2;
 		else
-			j++;
-		j -= ft_strlen(var[len]);
+		{
+			pos = locate_var(env, var[len]);
+			if (pos >= 0)
+			{
+				tmp = ft_strchr(env[pos], '=');
+				j += ft_strlen(tmp + 1);
+			}
+			else
+				j++;
+			j -= ft_strlen(var[len]);
+		}
 		len++;
 	}
 	return (j);
@@ -92,7 +99,7 @@ Si no la encuentra deja un espacio*/
 
 /* TODO $? Debe expandirse al estado de salida del último comando*/
 
-static void	get_exit_status(char *aux, size_t *j)
+static void	get_exit_status(char *aux, size_t *j, char *var)
 {
 	char	*tmp;
 	int		i;
@@ -100,8 +107,11 @@ static void	get_exit_status(char *aux, size_t *j)
 	tmp = ft_itoa(errno);
 	i = 0;
 	while (tmp[i])
-		aux[*j++] = tmp[i++];
+		aux[(*j)++] = tmp[i++];
 	free(tmp);
+	i = 1;
+	while (var[i])
+		aux[(*j)++] = var[i++];
 }
 
 static void	ft_seek_n_destroy(char **str, char **env, char **var)
@@ -123,7 +133,7 @@ static void	ft_seek_n_destroy(char **str, char **env, char **var)
 		if ((*str)[i] == '$' && (*str)[i + 1] && (*str)[i + 1] != '$')
 		{
 			if ((*str)[i + 1] == '?')
-				get_exit_status(aux, &j);
+				get_exit_status(aux, &j, var[len]);
 			else
 			{
 				pos = locate_var(env, var[len]);
