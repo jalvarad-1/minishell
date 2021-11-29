@@ -91,6 +91,19 @@ Si no la encuentra deja un espacio*/
 	Coger la longitud de la cadena entera, sumar la longitud del valor de la variable*/
 
 /* TODO $? Debe expandirse al estado de salida del último comando*/
+
+static void	get_exit_status(char *aux, size_t *j)
+{
+	char	*tmp;
+	int		i;
+
+	tmp = ft_itoa(errno);
+	i = 0;
+	while (tmp[i])
+		aux[*j++] = tmp[i++];
+	free(tmp);
+}
+
 static void	ft_seek_n_destroy(char **str, char **env, char **var)
 {
 	char	*aux;
@@ -109,11 +122,16 @@ static void	ft_seek_n_destroy(char **str, char **env, char **var)
 	{
 		if ((*str)[i] == '$' && (*str)[i + 1] && (*str)[i + 1] != '$')
 		{
-			pos = locate_var(env, var[len]);
-			if (pos >= 0)
-				copy_var(aux, &j, env[pos]);
+			if ((*str)[i + 1] == '?')
+				get_exit_status(aux, &j);
 			else
-				aux[j++] = ' ';
+			{
+				pos = locate_var(env, var[len]);
+				if (pos >= 0)
+					copy_var(aux, &j, env[pos]);
+				else
+					aux[j++] = ' ';
+			}
 			i+= ft_strlen(var[len++]);
 		}
 		else
@@ -172,8 +190,8 @@ static size_t	*get_pos_dollar(size_t j, t_parse prs, size_t **pos)
 		i++;
 	}
 	aux[i] = j;
-	if (*pos)
-		free(*pos);
+//	if (*pos)
+//		free(*pos);
 	return (aux);
 }
 
