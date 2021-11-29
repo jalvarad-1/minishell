@@ -59,7 +59,7 @@ static int	fd_len(char *token)
 	return (len);
 }
 
-char *save_fd_name(char **token, int *i, int *j)
+char *save_fd_name(char **token, int *i, int *j, char **env)
 {
 	char	*fd_name;
 	int		name_size;
@@ -76,6 +76,7 @@ char *save_fd_name(char **token, int *i, int *j)
 	}
 	name_size = fd_len(token[*i] + *j);
 	fd_name = ft_substr(token[*i], *j, name_size);
+	ft_expand(&fd_name, env, 1);
 	return (fd_name);
 }
 
@@ -173,7 +174,7 @@ char **remove_ops_files(char **token, char opr)
 	return (nw_tk);
 }
 
-t_fds *ft_get_inputs(char ***token, char opr)
+t_fds *ft_get_inputs(char ***token, char opr, char **env)
 {
 	char	**new_token;
 	t_fds	*fds;
@@ -214,13 +215,13 @@ t_fds *ft_get_inputs(char ***token, char opr)
 						}
 						else if (opr == '>')
 						{
-							fds[b].fds = save_fd_name(token[0], &i, &j);
+							fds[b].fds = save_fd_name(token[0], &i, &j, env);
 							fds[b].is_hdoc = 0;
 						}
 					}
 					else
 					{
-						fds[b].fds = save_fd_name(token[0], &i, &j);
+						fds[b].fds = save_fd_name(token[0], &i, &j, env);
 						fds[b].is_hdoc = 0;
 					}
 					b++;
@@ -229,7 +230,7 @@ t_fds *ft_get_inputs(char ***token, char opr)
 				{
 					i++;
 					j = 0;
-					fds[b].fds = save_fd_name(token[0], &i, &j);
+					fds[b].fds = save_fd_name(token[0], &i, &j, env);
 					fds[b].is_hdoc = 0;
 					b++;
 				}

@@ -121,6 +121,6 @@ void	ft_free_table(t_cmds **table);
 /*pipex*/
 char	*search_path(char *argv, char **envp);
 void	pipex(char ***envp, t_cmds *cmd);
-t_fds	*ft_get_inputs(char ***token, char opr);
+t_fds	*ft_get_inputs(char ***token, char opr, char **env);
 void	ft_heredoc(char *table, char **env, int expand);
 #endif

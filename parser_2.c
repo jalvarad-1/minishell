@@ -141,10 +141,8 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 			free(cmd);
 			return (0);
 		}
-		ins = ft_get_inputs(&token, '<');
-		outs = ft_get_inputs(&token, '>');
-		ft_expand(&ins->fds, env, 1);
-		ft_expand(&outs->fds, env, 1);
+		ins = ft_get_inputs(&token, '<', env);
+		outs = ft_get_inputs(&token, '>', env);
 		ft_expand(token, env, 0);
 		save_cmd(table, token, ins, outs);
 		i++;
