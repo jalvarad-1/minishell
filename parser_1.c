@@ -54,10 +54,8 @@ static size_t var_len(char **env, char **var, size_t j)
 	char	*tmp;
 
 	len = 0;
-	errno = 288;
 	while (var[len])
 	{
-		printf("%zu\n", j);
 		if (var[len][0] == '?')
 			j += (size_t)ft_str_int_len(errno) - 2;
 		else
