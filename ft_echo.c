@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-
-// Revisar funcionamiento. TODOS los -n justo despues de echo deben ser eliminados
 static void	echo_doer(char **str, int i, int flag)
 {
 	if (flag == 0)
@@ -22,6 +20,29 @@ static void	echo_doer(char **str, int i, int flag)
 		printf("%s ", str[i++]);
 	if (flag == 0)
 		printf("\n");
+}
+
+static int	pass_flags(char **str, int *i, int *flag)
+{
+	int	j;
+
+	j = 0;
+	if (str[*i][j] == '-' && str[*i][j + 1] == 'n')
+	{
+		j++;
+		while (str[*i][j])
+		{
+			if (str[*i][j] != 'n')
+				break ;
+			j++;
+		}
+		if (!str[*i][j])
+			*flag = 1;
+		j = 0;
+		(*i)++;
+		return (1);
+	}
+	return (0);
 }
 
 void	ft_echo(char **str, int f_or_s)
@@ -38,19 +59,10 @@ void	ft_echo(char **str, int f_or_s)
 		return ;
 	}
 	j = 0;
-	if (str[i][j] == '-' && str[i][j + 1] == 'n')
+	while (str[i])
 	{
-		j++;
-		while (str[i][j])
-		{
-			if (str[i][j] != 'n')
-				break;
-			j++;
-		}
-		if (!str[i][j])
-			flag = 1;
-		j = 0;
-		i++;
+		if (!pass_flags(str, &i, &flag))
+			break ;
 	}
 	echo_doer(str, i, flag);
 	if (!f_or_s)
