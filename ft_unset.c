@@ -1,7 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_unset.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/02 10:37:12 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/02 10:37:16 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-/*Hace una especide de realloc a lo guarro. En esencia elimina la cadena anterior
-para copiarse en la nueva, excepto la variable que no deseamos en pos*/
 static char	**destroy_var(char **var, int pos)
 {
 	char		**tmp;
@@ -29,13 +39,10 @@ static char	**destroy_var(char **var, int pos)
 	return (tmp);
 }
 
-/*Devuelve la posicion de la variable a eliminar si la encuentra.
-	En caso de no encontrarla devuelve -1*/
-/*STRNSTR O STRNCMP deberian funcionar para comprarar la cadena hasta encontrar el '=' Hay que encontrar la cadena exacta hasta el igual*/
-char *cut_compare(char *str)
+char	*cut_compare(char *str)
 {
 	char	*aux;
-	size_t 	len;
+	size_t	len;
 
 	len = 0;
 	while (str[len] != '=' && str[len])
@@ -68,9 +75,7 @@ int	locate_var(char **env, char *str)
 	}
 	return (-1);
 }
-/*Printea cada error que ve, pero ejecuta todo lo que puede*/
 
-/*Una variable de entorno puede empezar por letra o '_' y contener caracteres alfanumericos*/
 void	ft_unset(char **str, char ***env, int f_or_s)
 {
 	size_t		i;

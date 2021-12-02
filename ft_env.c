@@ -1,8 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_env.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/02 10:35:28 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/02 10:35:39 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-/*Assigned 1 = Mostrar solo variables asignadas*/
-/*Assigned 0 = Ordenar y mostrar todas las variables precedido de declare -x*/
-/*Export muestra cada valor entre comillas ""*/
+#include "minishell.h"
 
 static void	add_quotation_marks(char *env, size_t add)
 {
@@ -15,7 +23,7 @@ static void	add_quotation_marks(char *env, size_t add)
 	aux = ft_calloc(sizeof(char), ft_strlen(env) + add);
 	if (!aux)
 		return ;
-	while(env[i] && env[i] != '=')
+	while (env[i] && env[i] != '=')
 		aux[j++] = env[i++];
 	if (add == 3)
 	{

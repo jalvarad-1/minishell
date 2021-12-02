@@ -1,23 +1,37 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lst_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/01 12:28:29 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/01 12:28:33 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
+
 void	free_struct(t_fds *content)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!content)
 		return ;
-	while (content[i].fds) //// esta funcion libera el array de estructuras
+	while (content[i].fds)
 	{
 		free(content[i].fds);
 		i++;
 	}
 	free(content);
 }
+
 void	ft_free_table(t_cmds **table)
 {
-	t_cmds *aux;
+	t_cmds	*aux;
 
-	while(*table)
+	while (*table)
 	{
 		aux = (*table)->next;
 		free_matrix((*table)->content);

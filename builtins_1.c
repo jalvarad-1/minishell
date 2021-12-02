@@ -16,45 +16,6 @@ void	free_matrix(char **str)
 	}
 	free(str);
 }
-
-void	ft_echo(char **str, int f_or_s)
-{
-	int	i;
-	int flag;
-	int j;
-
-	i = 1;
-	flag = 0;
-	if (!str[i])
-	{
-		printf("\n");
-		return ;
-	}
-	j = 0;
-	if (str[i][j] == '-' && str[i][j + 1] == 'n')
-	{
-		j++;
-		while (str[i][j])
-		{
-			if (str[i][j] != 'n')
-				break;
-			j++;
-		}
-		if (!str[i][j])
-			flag = 1;
-		j = 0;
-		i++;
-	}
-	if (flag == 0)
-		i = 1;
-	while (str[i])
-		printf("%s ", str[i++]);
-	if (flag == 0)
-		printf("\n");
-	if (!f_or_s)
-		exit (0);
-}
-
 ////f_or_s = father_or_son 0 si es padre 1 si es hijo
 void	built_in_identifier(char **argv, char ***env, int f_or_s)
 {

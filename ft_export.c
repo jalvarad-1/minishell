@@ -1,4 +1,16 @@
-# include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/02 10:43:39 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/02 10:43:42 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 int	check_format(char *str)
 {
@@ -15,7 +27,7 @@ int	check_format(char *str)
 		return (0);
 	while (i < len)
 	{
-		if (str[i] != '_' && !ft_isalnum(str[i])) //Chequear antes del '='
+		if (str[i] != '_' && !ft_isalnum(str[i]))
 			return (0);
 		i++;
 	}
@@ -59,14 +71,12 @@ static char	**add_variable(char *str, char **var)
 	return (tmp);
 }
 
-/*Añade o cambia el valor de una variable de entorno*/
 void	ft_export(char **str, char ***env, int f_or_s)
 {
 	int	i;
 	int	j;
 
 	i = 1;
-	j = 0;
 	if (!str[i])
 	{
 		ft_env(*env, 0, f_or_s);

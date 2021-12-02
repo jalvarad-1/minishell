@@ -86,8 +86,6 @@ void	sig_handler(int signal);
 void	signal_receiver(void);
 void	son_signal(void);
 void	parent_signal(void);
-/*Readline*/
-char	*print_promt(void);
 /*Built_ins*/
 int		is_builtin(char **argv);
 void	built_in_identifier(char **str, char ***env, int f_or_s);

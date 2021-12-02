@@ -1,5 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/02 12:25:22 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/02 12:25:25 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-/* La ARG_MAX se pone pq en stackoverflow un jambo dice que es el maximo que cabe en una variable de netorno */
+
 void    ft_pwd(int f_or_s)
 {
 	char drt[ARG_MAX];

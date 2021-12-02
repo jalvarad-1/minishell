@@ -1,5 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/02 10:43:02 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/02 10:43:07 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-/*p_value = valor del proceso,,, 1 = padre , 0 = hijo*/
+
 int	ft_str_is_numeric(char *str)
 {
 	int	a;
@@ -30,7 +42,7 @@ int	ft_str_is_numeric(char *str)
 void	ft_exit(char **str)
 {
 	int	argc;
-	int i;
+	int	i;
 
 	argc = 0;
 	i = 0;
