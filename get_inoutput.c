@@ -216,7 +216,7 @@ t_fds *ft_get_inputs(char ***token, char opr, char **env)
 						else if (opr == '>')
 						{
 							fds[b].fds = save_fd_name(token[0], &i, &j, env);
-							fds[b].is_hdoc = 0;
+							fds[b].is_hdoc = 1;
 						}
 					}
 					else

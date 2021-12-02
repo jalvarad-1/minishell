@@ -265,6 +265,11 @@ void	pipex(char ***envp, t_cmds *cmd)
 	info.fd1 = -42;
 	if (aux && !info.size)
 	{
+		if (!aux->content)
+		{
+			info.pid = fork();
+			i = 1;
+		}
 		if (!is_builtin(aux->content) && aux->content)
 		{
 			info.path = search_path(aux->content[0], *envp);
