@@ -52,6 +52,7 @@ void	ft_heredoc(char *table, char **env, int expand)
 			}
 			pre_aux = ft_strjoin(aux, "\n");
 		}
+		printf("salgo\n");
 		if (str)
 			free(str);
 		if (aux)
