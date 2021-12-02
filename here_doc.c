@@ -1,4 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/02 12:30:43 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/02 12:30:45 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # include "minishell.h"
+
 void	heredoc_doer(char *pre_aux)
 {
 	int		fd[2];
@@ -9,8 +22,7 @@ void	heredoc_doer(char *pre_aux)
 	dup2(fd[READ_END], STDIN_FILENO);
 	close(fd[READ_END]);
 }
-// La idea seria tener una estatica i = 0. i + 1 seria el comando al que va dirigido.
-// Si no toca cambiar las funciones para que guarden bien las cosas
+
 void	ft_heredoc(char *table, char **env, int expand)
 {
 	char	*str;

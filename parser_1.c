@@ -46,7 +46,6 @@ void	ft_trim_plus(char **str, t_parse prs)
 	free(aux);
 }
 
-/*Busca el valor de la variable en env y saca la longitud*/
 static size_t var_len(char **env, char **var, size_t j)
 {
 	size_t	len;
@@ -89,13 +88,6 @@ static void	copy_var(char *aux, size_t *j, char *env)
 		i++;
 	}
 }
-
-/*Devuelve la cadena, ahora sí, con la variable que toca en env
-Si no la encuentra deja un espacio*/
-/*Para guardar memoria adecuadamente :
-	Coger la longitud de la cadena entera, sumar la longitud del valor de la variable*/
-
-/* TODO $? Debe expandirse al estado de salida del último comando*/
 
 static void	get_exit_status(char *aux, size_t *j, char *var)
 {
@@ -176,13 +168,6 @@ static void	ft_dollar_expand(char **str, char **env, t_parse prs)
 	free_matrix(aux);
 }
 
-/*0 si está todo ok
-1 si da error*/
-/*Hay que distinguir entre comillas simples y dobles*/
-/*Backslash precede un caracter especial para printearlo
-EJ = // el primero hace posible que se imprima el segundo
-EJ 2 = /" Hace que se imprima la comilla y por tanto
-no cuenta para el contador de comillas cerradas*/
 static size_t	*get_pos_dollar(size_t j, t_parse prs, size_t **pos)
 {
 	size_t	*aux;
@@ -198,12 +183,11 @@ static size_t	*get_pos_dollar(size_t j, t_parse prs, size_t **pos)
 		i++;
 	}
 	aux[i] = j;
-//	if (*pos)
-//		free(*pos);
+	if (*pos)
+		free(*pos);
 	return (aux);
 }
 
-// $$ Da EL PID DE BASH. Podriamos o ignorarlo o coger el PID de la minishell
 void	ft_dollar_detect(char **str, char **env, int flag)
 {
 	size_t	i;

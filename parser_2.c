@@ -1,15 +1,5 @@
 #include "minishell.h"
 
-/* PARSE0 GAMEPLAN
-
--1 : Unclosed quotation marks
--2 : Lexer / Parser
--3 : Expand variables
--4 : Executer (DONE BY JALVARAD)
--5 : ?????
--6 : Profit
-
-*/
 static int	unquoted_marks(char **str)
 {
 	size_t	i;

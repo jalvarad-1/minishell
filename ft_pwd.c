@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void    ft_pwd(int f_or_s)
+void	ft_pwd(int f_or_s)
 {
 	char drt[ARG_MAX];
 
