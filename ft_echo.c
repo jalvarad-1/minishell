@@ -49,7 +49,6 @@ void	ft_echo(char **str, int f_or_s)
 {
 	int	i;
 	int	flag;
-	int	j;
 
 	i = 1;
 	flag = 0;
@@ -58,7 +57,6 @@ void	ft_echo(char **str, int f_or_s)
 		printf("\n");
 		return ;
 	}
-	j = 0;
 	while (str[i])
 	{
 		if (!pass_flags(str, &i, &flag))
