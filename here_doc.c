@@ -40,7 +40,7 @@ void	ft_heredoc(char *table, char **env, int expand)
 			if (!str || !ft_strcmp(str, table))
 				break ;
 			if (!expand)
-				ft_expand(&str, env, 1);
+				ft_dollar_detect(&str, env, 1);
 			aux = ft_strjoin(pre_aux, str);
 			if (pre_aux)
 			{
