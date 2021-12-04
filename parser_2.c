@@ -53,50 +53,6 @@ static void	save_cmd(t_cmds **stack, char **argv, t_fds *ins, t_fds *outs)
 	}
 }
 
-
-int	ft_trim_quotes(char **str, int out)
-{
-	size_t	i;
-	size_t	j;
-	int		flag;
-	t_parse	prs;
-
-	i = 0;
-	flag = 0;
-	prs = (t_parse){0, 0 ,0 ,0};
-	if (!str)
-		return(0);
-	while (str[i])
-	{
-		j = 0;
-		while (str[i][j])
-		{
-			if (str[i][j] == '"')
-			{
-				j++;
-				flag = 1;
-				while (str[i][j] != '"')
-					j++;
-				prs.d_q+=2;
-			}
-			else if (str[i][j] == '\'')
-			{
-				j++;
-				flag = 1;
-				while (str[i][j] != '\'')
-					j++;
-				prs.s_q+=2;
-			}
-			j++;
-		}
-		ft_trim_plus(&str[i], prs);
-		if (out)
-			return (flag);
-		i++;
-	}
-	return (flag);
-}
-
 void	ft_expand(char **token, char **env, int flag)
 {
 	ft_dollar_detect(token, env, flag);
@@ -137,13 +93,6 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 		save_cmd(table, token, ins, outs);
 		i++;
 	}
-/*	while (*table)
-	{
-		i = 0;
-		while ((*table)->content[i])
-			printf("%s\n", (*table)->content[i++]);
-		*table = (*table)->next;
-	}*/
 	free_matrix(cmd);
 	return (1);
 }

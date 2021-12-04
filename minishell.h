@@ -88,6 +88,7 @@ void	son_signal(void);
 void	parent_signal(void);
 /*Built_ins*/
 int		is_builtin(char **argv);
+int		check_format(char *str);
 void	built_in_identifier(char **str, char ***env, int f_or_s);
 void	ft_unset(char **str, char ***env, int f_or_s);
 void	ft_pwd(int f_or_s);
@@ -96,17 +97,14 @@ void	ft_export(char **str, char ***env, int f_or_s);
 void	ft_env(char **env, bool assigned, int f_or_s);
 void	ft_exit(char **str);
 void	ft_echo(char **str, int f_or_s);
-int		check_format(char *str);
 /*Generic utils*/
 void	free_matrix(char **str);
 int		locate_var(char **env, char *str);
 char	*cut_compare(char *str);
 char	**doublepointer_dup(char **array);
 void	move_out_quotes(char **token, int i, int *j);
-int		ft_trim_quotes(char **str, int out);
 /*Parser*/
 int		get_command_table(char *str, char **env, t_cmds **table);
-void	ft_trim_plus(char **str, t_parse prs);
 int		operator_identifier(char **str);
 int		rev_vertial_bars(char *str);
 /*Lst utils*/
@@ -125,5 +123,7 @@ void	ft_dollar_detect(char **str, char **env, int flag);
 size_t	*get_pos_dollar(size_t j, t_parse *prs, size_t **pos);
 void	ft_dollar_expand(char **str, char **env, t_parse prs);
 void	ft_seek_env(char **str, char **env, char **var);
+/*Trimming*/
+int		ft_trim_quotes(char **str, int out);
 
 #endif
