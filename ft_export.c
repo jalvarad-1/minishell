@@ -28,7 +28,10 @@ int	check_format(char *str)
 	while (i < len)
 	{
 		if (str[i] != '_' && !ft_isalnum(str[i]))
+		{
+			g_common.exit_status = 1;
 			return (0);
+		}
 		i++;
 	}
 	return (1);
@@ -91,6 +94,7 @@ void	ft_export(char **str, char ***env, int f_or_s)
 				*env = add_variable(str[i], *env);
 			else
 				*env = change_var_value(*env, str[i], j);
+			g_common.exit_status = 0;
 		}
 		else
 			printf("export: `%s': not a valid identifier\n", str[i]);

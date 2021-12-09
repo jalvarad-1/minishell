@@ -18,6 +18,7 @@ void	ft_pwd(int f_or_s)
 
 	getcwd(drt, ARG_MAX);
 	printf("%s\n", drt);
+	g_common.exit_status = 0;
 	if (!f_or_s)
 		exit (0);
 }

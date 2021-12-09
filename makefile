@@ -17,6 +17,9 @@ SRC = 	main.c \
 		get_inoutput.c \
 		here_doc.c \
 		parser_4.c \
+		expand_01.c \
+		expand_02.c \
+		expand_03.c
 
 RED 			= \033[0;31m
 GREEN 			= \033[0;32m

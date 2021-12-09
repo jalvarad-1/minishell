@@ -18,9 +18,15 @@ static void	no_str_case(char **str, char ***env_v)
 
 	i = locate_var(*env_v, "HOME");
 	if (i >= 0 && ((*env_v)[i])[4] != 0)
+	{
+		g_common.exit_status = 0;
 		*str = (*env_v)[i] + 5;
+	}
 	else
+	{
+		g_common.exit_status = 1;
 		printf("Burrishell : cd: HOME not set\n");
+	}
 }
 
 static void	is_str_case(char *aux, char ***env_v)
@@ -49,6 +55,7 @@ static void	is_str_case(char *aux, char ***env_v)
 		getcwd(aux, ARG_MAX);
 		(*env_v)[i] = ft_strjoin("PWD=", aux);
 	}
+	g_common.exit_status = 0;
 }
 
 void	ft_cd(char ***env_v, char **str, int f_or_s)
@@ -64,7 +71,10 @@ void	ft_cd(char ***env_v, char **str, int f_or_s)
 		if (chdir(aux_str) == 0)
 			is_str_case(aux, env_v);
 		else
+		{
+			g_common.exit_status = 1;
 			printf("Burrishell : cd: %s No such file or directory\n", aux_str);
+		}
 	}
 	if (!f_or_s)
 		exit(0);

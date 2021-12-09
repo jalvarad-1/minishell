@@ -55,6 +55,20 @@ static int	fd_len(char *token)
 
 	len = 0;
 	while (token[len] && token[len] != '<' && token[len] != '>')
+	{
+		if (token[len] == '"')
+		{
+			len++;
+			while (token[len] != '"' && token[len])
+				len++;
+		}
+		else if (token[len] == '\'')
+		{
+			len++;
+			while (token[len] != '\'' && token[len])
+				len++;
+		}
+	}
 		len++;
 	return (len);
 }
@@ -75,12 +89,11 @@ char *save_fd_name(char **token, int *i, int *j, char **env)
 			(*i)++;
 	}
 	name_size = fd_len(token[*i] + *j);
+	ft_expand(&token[*i], env, 1);
 	fd_name = ft_substr(token[*i], *j, name_size);
-	ft_expand(&fd_name, env, 1);
 	return (fd_name);
 }
 
-//Hay que eliminar todas y cada una de las comillas. Si las encuentra, no expande nada. Flag de expansion needed
 char *save_hdoc_end(char **token, int *i, t_fds *fds)
 {
 	char	*end;
@@ -96,6 +109,7 @@ char *save_hdoc_end(char **token, int *i, t_fds *fds)
 	end = ft_substr(token[*i], j, ft_strlen(token[*i]));
 	return (end);
 }
+
 static void mod_move_out_quotes(char *token, int *i)
 {
 	if (!token || !token[*i])
