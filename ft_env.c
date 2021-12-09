@@ -103,6 +103,7 @@ void	ft_env(char **env, bool assigned, int f_or_s)
 		order_export(ptr);
 		free_matrix(ptr);
 	}
+	g_common.exit_status = 0;
 	if (!f_or_s)
 		exit(0);
 }

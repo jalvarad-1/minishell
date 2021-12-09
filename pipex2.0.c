@@ -332,7 +332,8 @@ void	pipex(char ***envp, t_cmds *cmd)
 	}
 	while (info.pid != 0 && i > 0)
 	{
-		wait(&info.status);
+		wait(&g_common.exit_status);
+//		g_common.exit_status = info.status;
 		i--;
 	}
 	g_common.pid = 0;

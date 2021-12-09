@@ -10,7 +10,7 @@ static size_t var_len(char **env, char **var, size_t j)
 	while (var[len])
 	{
 		if (var[len][0] == '?')
-			j += (size_t)ft_str_int_len(errno) - 2;
+			j += (size_t)ft_str_int_len(g_common.exit_status) - 2;
 		else
 		{
 			pos = locate_var(env, var[len]);
@@ -48,7 +48,7 @@ static void	get_exit_status(char *aux, size_t *j, char *var)
 	char	*tmp;
 	int		i;
 
-	tmp = ft_itoa(errno);
+	tmp = ft_itoa(g_common.exit_status);
 	i = 0;
 	while (tmp[i])
 		aux[(*j)++] = tmp[i++];

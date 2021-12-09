@@ -92,6 +92,7 @@ void	ft_unset(char **str, char ***env, int f_or_s)
 			j = locate_var(*env, str[i]);
 			if (j >= 0)
 				*env = destroy_var(*env, j);
+			g_common.exit_status = 0;
 		}
 		else
 			printf("export: `%s': not a valid identifier\n", str[i]);

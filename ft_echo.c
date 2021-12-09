@@ -63,6 +63,7 @@ void	ft_echo(char **str, int f_or_s)
 			break ;
 	}
 	echo_doer(str, i, flag);
+	g_common.exit_status = 0;
 	if (!f_or_s)
 		exit (0);
 }
