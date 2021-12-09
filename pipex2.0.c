@@ -133,42 +133,45 @@ void	only_son(t_pipe_var info, t_cmds *cmd, char ***envp)
 
 void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
-	son_signal();
-	close_unnecessary(info, info.fd2[0][READ_END], info.fd2[0][WRITE_END]);
-	close(info.fd2[0][READ_END]);
 	make_in_redirections(&info, cmd->input_fd, *envp);
-	if (info.fd1 == -1)
+		if (info.fd1 == -1)
+		{
+			close_unnecessary(info, -8, -8);
+			exit (-1);
+		}
+		dup2(info.fd2[0][WRITE_END], STDOUT_FILENO);
+		close(info.fd2[0][WRITE_END]);
+		make_out_redirections(&info, cmd->output_fd);
+		if (info.fd1 == -1)
+		{
+			close_unnecessary(info, -8, -8);
+			exit (-1);
+		}
+		close_unnecessary(info, info.fd2[0][READ_END], info.fd2[0][WRITE_END]);
+	info.pid = fork();
+	if (info.pid == -1)
+		exit(-1);
+	if (info.pid == 0)
 	{
-		close_unnecessary(info, -8, -8);
-		exit (-1);
+		son_signal();
+		close(info.fd2[0][READ_END]);
+		built_in_identifier(cmd->content, envp, 0);
+		execve(info.path, cmd->content, *envp);
+		exit (0);
 	}
-	dup2(info.fd2[0][WRITE_END], STDOUT_FILENO);
-	close(info.fd2[0][WRITE_END]);
-	make_out_redirections(&info, cmd->output_fd);
-	if (info.fd1 == -1)
-	{
-		close_unnecessary(info, -8, -8);
-		exit (-1);
-	}
-	close_unnecessary(info, info.fd2[0][READ_END], info.fd2[0][WRITE_END]);
-	built_in_identifier(cmd->content, envp, 0);
-	execve(info.path, cmd->content, *envp);
-	exit (0);
 }
 
 void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
-	son_signal();
-	close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
 	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
 	close(info.fd2[info.l_p][READ_END]);
 	make_in_redirections(&info, cmd->input_fd, *envp);
-	if (info.fd1 == -1)
+		//close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
+	if (info.fd1 == -1 )
 	{
 		close_unnecessary(info, -8, -8);
 		exit (-1);
 	}
-	//system("lsof -c pipex");
 	dup2(info.fd2[info.n_p][WRITE_END], STDOUT_FILENO);
 	close(info.fd2[info.n_p][WRITE_END]);
 	make_out_redirections(&info, cmd->output_fd);
@@ -177,24 +180,23 @@ void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 		close_unnecessary(info, -8, -8);
 		exit (-1);
 	}
-	close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
-	built_in_identifier(cmd->content, envp, 0);
-	execve(info.path, cmd->content, *envp);
-	exit (1);
+	info.pid = fork();
+	if (info.pid == -1)
+		exit(-1);
+	if (info.pid == 0)
+	{
+		son_signal();
+		close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
+		built_in_identifier(cmd->content, envp, 0);
+		execve(info.path, cmd->content, *envp);
+		exit (1);
+	}
 }
 
 void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
-	son_signal();
-	if (info.fd1 == -1)
-	{
-		ft_putstr_fd("pipex: ", 1);
-		ft_putstr_fd(": Permission denied\n", 1);
-		exit(-1);
-	}
-	close_unnecessary(info, info.fd2[info.l_p][READ_END], -7);
 	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
-	close(info.fd2[info.l_p][READ_END]);
+	close_unnecessary(info, -7, -7);
 	make_in_redirections(&info, cmd->input_fd, *envp);
 	if (info.fd1 == -1)
 	{
@@ -204,25 +206,28 @@ void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 	make_out_redirections(&info, cmd->output_fd);
 	if (info.fd1 == -1)
 	{
+		ft_putstr_fd("pipex: ", 1);
+		ft_putstr_fd(": Permission denied\n", 1);
 		close_unnecessary(info, -8, -8);
 		exit (-1);
 	}
-	close_unnecessary(info, info.fd2[info.l_p][READ_END], -7);
-	built_in_identifier(cmd->content, envp, 0);
-	execve(info.path, cmd->content, *envp);
-	exit (1);
+	info.pid = fork();
+	if (info.pid == -1)
+		exit(-1);
+	if (info.pid == 0)
+	{
+		son_signal();
+		built_in_identifier(cmd->content, envp, 0);
+		execve(info.path, cmd->content, *envp);
+		exit (1);
+	}
 }
 
 void	psycho_parent(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
-	info.pid = fork();
 	parent_signal();
-	if (info.pid == -1)
-		exit(-1);
-	if (info.pid == 0)
-		kamikaze_son2(info, cmd, envp);
-	else
-		close(info.fd2[info.l_p][READ_END]);
+	kamikaze_son2(info, cmd, envp);
+	close(info.fd2[info.l_p][READ_END]);
 }
 
 int		**create_doble_array(t_cmds *cmd)
@@ -263,6 +268,8 @@ void	pipex(char ***envp, t_cmds *cmd)
 	aux = cmd;
 	i = 0;
 	info.fd1 = -42;
+	int b;
+	int c;
 	if (aux && !info.size)
 	{
 		if (!aux->content)
@@ -297,19 +304,17 @@ void	pipex(char ***envp, t_cmds *cmd)
 	}
 	while (aux && info.size > 0)
 	{
+		b = dup(STDIN_FILENO);
+		c = dup(STDOUT_FILENO);
 		if (i < info.size)
 			pipe(info.fd2[i]);
 		if (!is_builtin(aux->content))
 			info.path = search_path(aux->content[0], *envp);
-		if (aux->next)
-			info.pid = fork();
-		if (info.pid == -1)
-			exit(-1);
-		if (aux->next && info.pid == 0 && i == 0)
+		if (aux->next && i == 0)
 			kamikaze_son1(info, aux, envp);
-		if (aux->next && i != 0 && info.pid == 0)
+		else if (aux->next && i != 0 )
 			kamikaze_sonX(info, aux, envp);
-		if (!aux->next && info.pid != 0)
+		else if (!aux->next && info.pid != 0)
 			psycho_parent(info, aux, envp);
 		if (info.pid != 0)
 		{
@@ -329,7 +334,17 @@ void	pipex(char ***envp, t_cmds *cmd)
 			i++;
 			info.n_p = i;
 		}
+		dup2(b, STDIN_FILENO);
+		close(b);
+		dup2(c, STDOUT_FILENO);
+		close(c);
 	}
+	int d;
+	d = 0;
+	if (info.fd2 != NULL)
+		while (d < i - 1)
+			free(info.fd2[d++]);
+	free(info.fd2);
 	while (info.pid != 0 && i > 0)
 	{
 		wait(&g_common.exit_status);
@@ -338,4 +353,3 @@ void	pipex(char ***envp, t_cmds *cmd)
 	}
 	g_common.pid = 0;
 }
-//TODO LIBERAR INFO.FD2 INT_ARRAY HACER OTRA FUNCION
