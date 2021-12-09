@@ -298,9 +298,7 @@ void	pipex(char ***envp, t_cmds *cmd)
 			close(info.aux_fds[WRITE_END]);
 		}
 		if (info.pid == 0)
-		{
 			only_son(info, aux, envp);
-		}
 	}
 	while (aux && info.size > 0)
 	{
@@ -342,9 +340,11 @@ void	pipex(char ***envp, t_cmds *cmd)
 	int d;
 	d = 0;
 	if (info.fd2 != NULL)
+	{
 		while (d < i - 1)
 			free(info.fd2[d++]);
-	free(info.fd2);
+		free(info.fd2);
+	}
 	while (info.pid != 0 && i > 0)
 	{
 		wait(&info.status);

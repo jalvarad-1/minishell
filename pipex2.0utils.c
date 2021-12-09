@@ -1,13 +1,5 @@
 #include "minishell.h"
 
-void	rev_and_exe(char *path, char **argv, char **envp)
-{
-	//char	**cmd_args;
-
-	//cmd_args = ft_split(argv, ' ');
-	execve(path, argv, envp);
-}
-
 void	error_of_cmd(char **cmd)
 {
 	ft_putstr_fd(cmd[0], 1);
@@ -21,6 +13,11 @@ static char	*search_path_aux(char **split_paths, char **cmd)
 	int		i;
 
 	i = 0;
+	if (open(cmd[0], O_DIRECTORY) != -1)
+	{
+		printf("Burrishell: \"%s\": is a directory\n", cmd[0]);
+		return (NULL);
+	}
 	if (access(cmd[0], X_OK) == 0)
 		return (cmd[0]);
 	while (split_paths[i])
