@@ -38,7 +38,9 @@ void	ft_heredoc(char *table, char **env, int expand)
 		{
 			str = readline(">");
 			if (!str || !ft_strcmp(str, table))
+			{
 				break ;
+			}
 			if (!expand)
 				ft_dollar_detect(&str, env, 1);
 			aux = ft_strjoin(pre_aux, str);
@@ -52,9 +54,15 @@ void	ft_heredoc(char *table, char **env, int expand)
 			pre_aux = ft_strjoin(aux, "\n");
 		}
 		if (str)
+		{
 			free(str);
+			str = NULL;
+		}
 		if (aux)
+		{
 			free(aux);
+			aux = NULL;
+		}
 	}
 	heredoc_doer(pre_aux);
 	free(pre_aux);

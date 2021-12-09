@@ -16,6 +16,8 @@ static char	*search_path_aux(char **split_paths, char **cmd)
 	if (open(cmd[0], O_DIRECTORY) != -1)
 	{
 		printf("Burrishell: \"%s\": is a directory\n", cmd[0]);
+		free_matrix(cmd);
+		free_matrix(split_paths);
 		return (NULL);
 	}
 	if (access(cmd[0], X_OK) == 0)
