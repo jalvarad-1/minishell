@@ -27,7 +27,6 @@ static char	*search_path_aux(char **split_paths, char **cmd)
 		aux = ft_strjoin(split_paths[i], "/");
 		path = ft_strjoin(aux, cmd[0]);
 		free(aux);
-		aux = NULL;
 		if (access(path, X_OK) == 0)
 		{
 			free_matrix(cmd);

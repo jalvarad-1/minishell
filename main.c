@@ -86,6 +86,7 @@ int	main(int argc, char **argv, char **envp)
 	env_v = create_envp(envp);
 	while (1)
 	{
+		system("leaks minishell");
 		signal_receiver();
 		cmd_table = NULL;
 		str = print_promt();

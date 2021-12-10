@@ -232,7 +232,7 @@ void	psycho_parent(t_pipe_var info, t_cmds *cmd, char ***envp)
 
 int		**create_doble_array(t_cmds *cmd)
 {
-	int **pipe_array;
+	int		**pipe_array;
 	int		i;
 	int		b;
 	i = 0;
@@ -254,6 +254,7 @@ int		**create_doble_array(t_cmds *cmd)
 	return (pipe_array);
 }
 
+//echo $USER > jajant | wc -l | ls < puta
 void	pipex(char ***envp, t_cmds *cmd)
 {
 	t_pipe_var	info;
@@ -298,7 +299,9 @@ void	pipex(char ***envp, t_cmds *cmd)
 			close(info.aux_fds[WRITE_END]);
 		}
 		if (info.pid == 0)
+		{
 			only_son(info, aux, envp);
+		}
 	}
 	while (aux && info.size > 0)
 	{
@@ -351,5 +354,7 @@ void	pipex(char ***envp, t_cmds *cmd)
 //		g_common.exit_status = info.status;
 		i--;
 	}
+	if (info.path)
+		free(info.path);
 	g_common.pid = 0;
 }
