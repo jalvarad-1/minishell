@@ -43,6 +43,11 @@ void	ft_heredoc(char *table, char **env, int expand)
 			}
 			if (!expand)
 				ft_dollar_detect(&str, env, 1);
+			if (!pre_aux)
+			{
+				pre_aux = malloc(1);
+				pre_aux[0] = '\0';
+			}
 			aux = ft_strjoin(pre_aux, str);
 			if (pre_aux)
 			{
@@ -52,6 +57,8 @@ void	ft_heredoc(char *table, char **env, int expand)
 				str = NULL;
 			}
 			pre_aux = ft_strjoin(aux, "\n");
+			free(aux);
+			aux = NULL;
 		}
 		if (str)
 		{
