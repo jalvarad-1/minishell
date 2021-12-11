@@ -63,7 +63,9 @@ void	ft_cd(char ***env_v, char **str, int f_or_s)
 	char	aux[ARG_MAX];
 	char	*aux_str;
 
-	aux_str = str[1];
+	aux_str = NULL;
+	if (str[1])
+		aux_str = ft_strdup(str[1]);
 	if (!aux_str)
 		no_str_case(&aux_str, env_v);
 	if (aux_str)

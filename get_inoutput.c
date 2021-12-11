@@ -1,26 +1,5 @@
 #include "minishell.h"
 
-void	move_out_quotes(char **token, int i, int *j)
-{
-	if (!token || !token[i])
-		return ;
-	if (token[i][*j] == '\'' || token[i][*j] == '"')
-	{
-		if (token[i][*j] == '\'')
-		{
-			(*j)++;
-			while(token[i][*j] && token[i][*j] != '\'')
-				(*j)++;
-		}
-		else if (token[i][*j] == '"')
-		{
-			(*j)++;
-			while (token[i][*j] && token[i][*j] != '"')
-				(*j)++;
-		}
-	}
-}
-
 static int	redirection_counter(char **token, char opr)
 {
 	int i;
@@ -68,8 +47,8 @@ static int	fd_len(char *token)
 			while (token[len] != '\'' && token[len])
 				len++;
 		}
-	}
 		len++;
+	}
 	return (len);
 }
 
@@ -204,6 +183,7 @@ t_fds *ft_get_inputs(char ***token, char opr, char **env)
 	if (!fds)
 		return (NULL);
 	i = 0;
+
 	while(token[0][i])
 	{
 		j = 0;

@@ -351,6 +351,7 @@ void	pipex(char ***envp, t_cmds *cmd)
 	while (info.pid != 0 && i > 0)
 	{
 		wait(&g_common.exit_status);
+		printf("hey soy exit estatus %d\n", g_common.exit_status);
 //		g_common.exit_status = info.status;
 		i--;
 	}

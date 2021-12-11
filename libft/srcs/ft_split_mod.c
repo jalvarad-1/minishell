@@ -11,6 +11,26 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+void	move_out_quotes(char **token, int i, int *j)
+{
+	if (!token || !token[i])
+		return ;
+	if (token[i][*j] == '\'' || token[i][*j] == '"')
+	{
+		if (token[i][*j] == '\'')
+		{
+			(*j)++;
+			while (token[i][*j] && token[i][*j] != '\'')
+				(*j)++;
+		}
+		else if (token[i][*j] == '"')
+		{
+			(*j)++;
+			while (token[i][*j] && token[i][*j] != '"')
+				(*j)++;
+		}
+	}
+}
 
 static int	mod_word_count(char const *str, char c)
 {
@@ -29,51 +49,16 @@ static int	mod_word_count(char const *str, char c)
 		{
 			count++;
 		}
-		if (str[p] == '\'' || str[p] == '"')
-		{
-			if (str[p] == '\'')
-			{
-				p++;
-				while(str[p] && str[p] != '\'')
-					p++;
-			}
-			else if (str[p] == '"')
-			{
-				p++;
-				while (str[p] && str[p] != '"')
-					p++;
-			}
-		}
+		move_out_quotes ((char **)&str, 0, &p);
 		p++;
 	}
 	return (count + 1);
 }
 
-static char	*mod_ultimate_memcpy(const char *src, char c)
+static void	aux_ultimate_memcpy(const char *src, char *dst, char c)
 {
-	size_t	i;
-	char	*dst;
+	int	i;
 
-	i = 0;
-	while (src[i] && src[i] != c)
-	{
-		if (src[i] == '\'')
-		{
-			i++;
-			while (src[i] && src[i] != '\'')
-				i++;
-		}
-		else if (src[i]== '"')
-		{
-			i++;
-			while (src[i] && src[i] != '"')
-				i++;
-		}
-		i++;
-	}
-	dst = malloc(sizeof(char) * (i + 1));
-	if (!dst)
-		return (NULL);
 	i = 0;
 	while (src[i] && src[i] != c)
 	{
@@ -87,7 +72,7 @@ static char	*mod_ultimate_memcpy(const char *src, char c)
 				i++;
 			}
 		}
-		else if (src[i]== '"')
+		else if (src[i] == '"')
 		{
 			dst[i] = src[i];
 			i++;
@@ -101,6 +86,23 @@ static char	*mod_ultimate_memcpy(const char *src, char c)
 		i++;
 	}
 	dst[i] = '\0';
+}
+
+static char	*mod_ultimate_memcpy(const char *src, char c)
+{
+	size_t	i;
+	char	*dst;
+
+	i = 0;
+	while (src[i] && src[i] != c)
+	{
+		move_out_quotes ((char **)&src, 0, (int *)&i);
+		i++;
+	}
+	dst = malloc(sizeof(char) * (i + 1));
+	if (!dst)
+		return (NULL);
+	aux_ultimate_memcpy(src, dst, c);
 	return (dst);
 }
 
@@ -118,18 +120,7 @@ static void	mod_locate_words(const char *s, char **aux, size_t words, char c)
 		aux[cont] = mod_ultimate_memcpy(s + cont2, c);
 		while (s[cont2] && s[cont2] != c)
 		{
-			if (s[cont2] == '\'')
-			{
-				cont2++;
-				while (s[cont2] && s[cont2] != '\'')
-					cont2++;
-			}
-			else if (s[cont2]== '"')
-			{
-				cont2++;
-				while (s[cont2] && s[cont2] != '"')
-					cont2++;
-			}
+			move_out_quotes ((char **)&s, 0, (int *)&cont2);
 			cont2++;
 		}
 		cont++;
@@ -143,9 +134,7 @@ char	**ft_mod_split(const char *s, char c)
 	char	**aux;
 
 	if (!s)
-	{
 		return (NULL);
-	}
 	if (*s == 0)
 	{
 		aux = (char **)malloc(sizeof(char *));

@@ -21,7 +21,12 @@ static char	*search_path_aux(char **split_paths, char **cmd)
 		return (NULL);
 	}
 	if (access(cmd[0], X_OK) == 0)
-		return (cmd[0]);
+	{
+		path = ft_strdup(cmd[0]);
+		free_matrix(cmd);
+		free_matrix(split_paths);
+		return (path);
+	}
 	while (split_paths[i])
 	{
 		aux = ft_strjoin(split_paths[i], "/");

@@ -12,6 +12,11 @@
 
 #include "minishell.h"
 
+void puta(void)
+{
+	system("leaks minishell");
+	system ("lsof -c minishell");
+}
 char	**doublepointer_dup(char **array)
 {
 	char	**env_v;
@@ -84,9 +89,11 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	env_v = create_envp(envp);
+	//atexit(puta);
 	while (1)
 	{
 		//system("leaks minishell");
+		//system ("lsof -c minishell");
 		signal_receiver();
 		cmd_table = NULL;
 		str = print_promt();
