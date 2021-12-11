@@ -86,6 +86,7 @@ void make_in_redirections(t_pipe_var *info, t_fds *inputs, char **env)
 		//printf("%s", inputs[i +1].fds);
 		if (inputs[i].is_hdoc == 1)
 		{
+			dprintf(2,"kamison\n");
 			ft_heredoc(inputs[i].fds, env, inputs[i].expand);
 			if (inputs[i + 1].fds)
 			{
@@ -163,7 +164,8 @@ void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 
 void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
-	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
+	if (!cmd->input_fd)
+		dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
 	close(info.fd2[info.l_p][READ_END]);
 	make_in_redirections(&info, cmd->input_fd, *envp);
 		//close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
@@ -195,7 +197,8 @@ void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 
 void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
-	dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
+	if (!cmd->input_fd)
+		dup2(info.fd2[info.l_p][READ_END], STDIN_FILENO);
 	close_unnecessary(info, -7, -7);
 	make_in_redirections(&info, cmd->input_fd, *envp);
 	if (info.fd1 == -1)
@@ -310,13 +313,20 @@ void	pipex(char ***envp, t_cmds *cmd)
 		if (i < info.size)
 			pipe(info.fd2[i]);
 		if (!is_builtin(aux->content))
-			info.path = search_path(aux->content[0], *envp);
+		{
+			if (aux->content)
+				info.path = search_path(aux->content[0], *envp);
+			else
+				info.path = NULL;
+		}
 		if (aux->next && i == 0)
 			kamikaze_son1(info, aux, envp);
 		else if (aux->next && i != 0 )
 			kamikaze_sonX(info, aux, envp);
 		else if (!aux->next && info.pid != 0)
+		{
 			psycho_parent(info, aux, envp);
+		}
 		if (info.pid != 0)
 		{
 			if (info.path != NULL)

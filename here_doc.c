@@ -11,7 +11,11 @@
 /* ************************************************************************** */
 
 # include "minishell.h"
-
+void del_str(char **str)
+{
+	free(*str);
+	*str = NULL;
+}
 void	heredoc_doer(char *pre_aux)
 {
 	int		fd[2];
@@ -38,38 +42,24 @@ void	ft_heredoc(char *table, char **env, int expand)
 		{
 			str = readline(">");
 			if (!str || !ft_strcmp(str, table))
-			{
 				break ;
-			}
 			if (!expand)
 				ft_dollar_detect(&str, env, 1);
 			if (!pre_aux)
-			{
-				pre_aux = malloc(1);
-				pre_aux[0] = '\0';
-			}
+				pre_aux = ft_calloc( 1, 1);
 			aux = ft_strjoin(pre_aux, str);
 			if (pre_aux)
 			{
-				free(pre_aux);
-				pre_aux = NULL;
-				free(str);
-				str = NULL;
+				del_str(&pre_aux);
+				del_str(&str);
 			}
 			pre_aux = ft_strjoin(aux, "\n");
-			free(aux);
-			aux = NULL;
+			del_str(&aux);
 		}
 		if (str)
-		{
-			free(str);
-			str = NULL;
-		}
+			del_str(&str);
 		if (aux)
-		{
-			free(aux);
-			aux = NULL;
-		}
+			del_str(&aux);
 	}
 	heredoc_doer(pre_aux);
 	free(pre_aux);
