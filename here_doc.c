@@ -16,30 +16,34 @@ void del_str(char **str)
 	free(*str);
 	*str = NULL;
 }
-void	heredoc_doer(char *pre_aux)
+/*void	heredoc_doer(char *pre_aux)
 {
-	int		fd[2];
-
-	pipe(fd);
 	ft_putstr_fd(pre_aux, fd[WRITE_END]);
 	close(fd[WRITE_END]);
 	dup2(fd[READ_END], STDIN_FILENO);
 	close(fd[READ_END]);
-}
+}*/
 
 void	ft_heredoc(char *table, char **env, int expand)
 {
 	char	*str;
 	char	*aux;
 	char	*pre_aux;
+	int		fd[2];
+	int		status;
 
 	str = NULL;
 	aux = NULL;
 	pre_aux = NULL;
-	if (table)
+	//dprintf(2,"entro \n");
+	pipe(fd);
+	status = fork();
+	if (table && status == 0)
 	{
+		son_signal();
 		while (1)
 		{
+			//dprintf(2,"entro \n");
 			str = readline(">");
 			if (!str || !ft_strcmp(str, table))
 				break ;
@@ -60,7 +64,17 @@ void	ft_heredoc(char *table, char **env, int expand)
 			del_str(&str);
 		if (aux)
 			del_str(&aux);
+		close(fd[READ_END]);
+		ft_putstr_fd(pre_aux, fd[WRITE_END]);
+		close(fd[WRITE_END]);
+		//free(pre_aux);
+		exit(0);
 	}
-	heredoc_doer(pre_aux);
-	free(pre_aux);
+	wait(&status);
+	if (status != 0)
+		g_common.ctrl_c = 1;
+	//dprintf(2,"entro %d\n", status);
+	close(fd[WRITE_END]);
+	dup2(fd[READ_END], STDIN_FILENO);
+	close(fd[READ_END]);
 }

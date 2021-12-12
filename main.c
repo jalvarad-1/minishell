@@ -95,6 +95,7 @@ int	main(int argc, char **argv, char **envp)
 		//system("leaks minishell");
 		//system ("lsof -c minishell");
 		signal_receiver();
+		g_common.ctrl_c = 0;
 		cmd_table = NULL;
 		str = print_promt();
 		if (ft_strcmp(str, ""))

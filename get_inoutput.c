@@ -47,6 +47,7 @@ static int	fd_len(char *token)
 			while (token[len] != '\'' && token[len])
 				len++;
 		}
+		dprintf(2, "%d %c\n", len, token[len]);
 		len++;
 	}
 	return (len);
@@ -202,7 +203,9 @@ static void	aux_get_inputs(char **token, char opr, char **env, t_fds *fds)
 							j = 0;
 						}
 						if (opr == '<')
+						{
 							fds[b].fds = save_hdoc_end(token, &i, &fds[b]);
+						}
 						else if (opr == '>')
 							fds[b]= (t_fds){save_fd_name(token, &i, &j, env), 1, 0};
 					}
@@ -221,6 +224,7 @@ static void	aux_get_inputs(char **token, char opr, char **env, t_fds *fds)
 		}
 		i++;
 	}
+	fds[b].fds = NULL;
 }
 
 t_fds	*ft_get_inputs(char ***token, char opr, char **env)
@@ -238,7 +242,6 @@ t_fds	*ft_get_inputs(char ***token, char opr, char **env)
 	if (!fds)
 		return (NULL);
 	aux_get_inputs(token[0], opr, env, fds);
-	fds[b].fds = NULL;
 	new_token = remove_ops_files(*token, opr);
 	free_matrix(*token);
 	*token = new_token;
