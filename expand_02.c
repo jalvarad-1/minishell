@@ -27,6 +27,8 @@ size_t	*get_pos_dollar(size_t j, t_parse *prs, size_t **pos)
 		i++;
 	}
 	aux[i] = j;
+	if (prs->pos_dollar)
+		free(prs->pos_dollar);
 	return (aux);
 }
 

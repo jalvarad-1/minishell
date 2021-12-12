@@ -100,5 +100,3 @@ void	ft_export(char **str, char ***env, int f_or_s)
 	if (!f_or_s)
 		exit (0);
 }
-
-// export puta me ha dado un leak

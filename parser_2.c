@@ -56,7 +56,6 @@ static void	save_cmd(t_cmds **stack, char **argv, t_fds *ins, t_fds *outs)
 void	ft_expand(char **token, char **env, int flag)
 {
 	ft_dollar_detect(token, env, flag);
-	// $$ te da el numero de proceso de bash. Deberiamos dar el ps de minishell?
 	ft_trim_quotes(token, flag);
 }
 
