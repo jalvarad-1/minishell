@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "minishell.h"
+#include "minishell.h"
 
 void	sig_handler(int signal)
 {
 	(void)signal;
-	if(g_common.pid == 0)
+	if (g_common.pid == 0)
 		write(1, "\n", 1);
 	if (!g_common.is_cmd)
 	{

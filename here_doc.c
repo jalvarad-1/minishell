@@ -68,6 +68,6 @@ void	ft_heredoc(char *table, char **env, int expand)
 		}
 	}
 	heredoc_doer(pre_aux);
-	free(pre_aux);
+	free(pre_aux); // Esto es muy raro que de un doble free
 	free(str);
 }

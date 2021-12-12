@@ -14,7 +14,7 @@
 
 void	ft_pwd(int f_or_s)
 {
-	char drt[ARG_MAX];
+	char	drt[ARG_MAX];
 
 	getcwd(drt, ARG_MAX);
 	printf("%s\n", drt);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_02.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/12 12:35:44 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/12 12:35:46 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 size_t	*get_pos_dollar(size_t j, t_parse *prs, size_t **pos)
@@ -15,8 +27,6 @@ size_t	*get_pos_dollar(size_t j, t_parse *prs, size_t **pos)
 		i++;
 	}
 	aux[i] = j;
-//	if (*pos)
-//		free(*pos);
 	return (aux);
 }
 
@@ -33,9 +43,11 @@ void	ft_dollar_expand(char **str, char **env, t_parse prs)
 	while (i < prs.n_dollar)
 	{
 		j = 0;
-		while (((*str)[prs.pos_dollar[i] + j] && (*str)[prs.pos_dollar[i] + j] != ' ')
-				&& (*str)[prs.pos_dollar[i] + j] != '$' && (*str)[prs.pos_dollar[i] + j] != '"'
-				&& (*str)[prs.pos_dollar[i] + j] != '\'')
+		while (((*str)[prs.pos_dollar[i] + j]
+			&& (*str)[prs.pos_dollar[i] + j] != ' ')
+			&& (*str)[prs.pos_dollar[i] + j] != '$'
+			&& (*str)[prs.pos_dollar[i] + j] != '"'
+			&& (*str)[prs.pos_dollar[i] + j] != '\'')
 			j++;
 		aux[i] = ft_substr(*str, prs.pos_dollar[i], j);
 		i++;
