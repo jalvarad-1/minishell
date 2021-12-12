@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static size_t var_len(char **env, char **var, size_t j)
+static size_t	var_len(char **env, char **var, size_t j)
 {
 	size_t	len;
 	int		pos;
@@ -38,7 +38,7 @@ static void	copy_var(char *aux, size_t *j, char *env)
 	while (tmp[i])
 	{
 		aux[*j] = tmp[i];
-		*j +=1;
+		*j += 1;
 		i++;
 	}
 }
@@ -76,6 +76,13 @@ static void	parse_init(size_t *i, size_t *j, size_t *len)
 	*len = 0;
 }
 
+static void	final_string(char **str, char *aux)
+{
+	free(*str);
+	*str = ft_strtrim(aux, " ");
+	free(aux);
+}
+
 void	ft_seek_env(char **str, char **env, char **var)
 {
 	char	*aux;
@@ -95,13 +102,11 @@ void	ft_seek_env(char **str, char **env, char **var)
 				get_exit_status(aux, &j, var[len]);
 			else
 				get_env_value(aux, var[len], env, &j);
-			i+= ft_strlen(var[len++]);
+			i += ft_strlen(var[len++]);
 		}
 		else
 			aux[j++] = (*str)[i];
 		i++;
 	}
-	free(*str);
-	*str = ft_strtrim(aux, " ");
-	free(aux);
+	final_string(str, aux);
 }

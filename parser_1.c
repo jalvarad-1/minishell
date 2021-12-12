@@ -1,4 +1,44 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_1.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/12 12:41:10 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/12 12:41:12 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
+
+static void	copy_without_quotes(char *dst, char *src)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	while (src[i])
+	{
+		if (src[i] == '"')
+		{
+			i++;
+			while (src[i] != '"')
+				dst[j++] = src[i++];
+			i++;
+		}
+		else if (src[i] == '\'')
+		{
+			i++;
+			while (src[i] != '\'')
+				dst[j++] = src[i++];
+			i++;
+		}
+		else
+			dst[j++] = src[i++];
+	}
+}
 
 static char	*ft_conditions(char *str, size_t len)
 {
@@ -11,25 +51,7 @@ static char	*ft_conditions(char *str, size_t len)
 	aux = ft_calloc(sizeof(char), len + 1);
 	if (!aux)
 		return (0);
-	while (str[i])
-	{
-		if (str[i] == '"')
-		{
-			i++;
-			while (str[i] != '"')
-				aux[j++] = str[i++];
-			i++;
-		}
-		else if (str[i] == '\'')
-		{
-			i++;
-			while (str[i] != '\'')
-				aux[j++] = str[i++];
-			i++;
-		}
-		else
-			aux[j++] = str[i++];
-	}
+	copy_without_quotes(aux, str);
 	return (aux);
 }
 
@@ -63,11 +85,11 @@ int	ft_trim_quotes(char **str, int out)
 
 	i = 0;
 	if (!str)
-		return(0);
+		return (0);
 	while (str[i])
 	{
 		j = 0;
-		prs = (t_parse){0, 0 ,0 ,0};
+		prs = (t_parse){0, 0, 0, 0};
 		while (str[i][j])
 		{
 			if (str[i][j] == '"')

@@ -1,9 +1,21 @@
-# include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signals_1.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/11 16:45:24 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/11 16:45:27 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 void	sig_handler(int signal)
 {
 	(void)signal;
-	if(g_common.pid == 0)
+	if (g_common.pid == 0)
 		write(1, "\n", 1);
 	if (!g_common.is_cmd)
 	{
@@ -11,16 +23,12 @@ void	sig_handler(int signal)
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
-//	write(1, "\b\b", 2);
-//	write(1, "  ", 2);
 }
 
-//TODO IMPLEMENTAR EL METODO DE TOMAS : CAMBIAR EL COMPORTAMIENTOS DE LAS SEÑALES A SIG_DFLT CUANDO ENTRAN AL PIPE Y LUEGO RESTAURAR.
-//TODO DE ESTA MANERA ES SOLO EL HIJO EL QUE LAS INTERPRETA SIN NECESIDAD DE VARIABLE GLOBAL
 void	signal_receiver(void)
 {
 	signal(SIGINT, sig_handler);
-//	signal(SIGQUIT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	son_signal(void)

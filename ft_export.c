@@ -81,10 +81,7 @@ void	ft_export(char **str, char ***env, int f_or_s)
 
 	i = 1;
 	if (!str[i])
-	{
 		ft_env(*env, 0, f_or_s);
-		return ;
-	}
 	while (str[i])
 	{
 		if (check_format(str[i]))
@@ -103,3 +100,5 @@ void	ft_export(char **str, char ***env, int f_or_s)
 	if (!f_or_s)
 		exit (0);
 }
+
+// export puta me ha dado un leak

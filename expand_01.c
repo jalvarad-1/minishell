@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_01.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/12 12:37:21 by robrodri          #+#    #+#             */
+/*   Updated: 2021/12/12 12:37:24 by robrodri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static void	ft_dollar_double_quotes(char **str, size_t *i, size_t *j, t_parse *prs)
+static void	ft_double_quotes(char **str, size_t *i, size_t *j, t_parse *prs)
 {
 	(*j)++;
 	while (str[*i][*j] != '"')
@@ -14,7 +26,7 @@ static void	ft_dollar_double_quotes(char **str, size_t *i, size_t *j, t_parse *p
 	}
 }
 
-static void	ft_dollar_single_quotes(char **str, size_t *i, size_t *j)
+static void	ft_single_quotes(char **str, size_t *i, size_t *j)
 {
 	(*j)++;
 	while (str[*i][*j] != '\'')
@@ -50,11 +62,12 @@ void	ft_dollar_detect(char **str, char **env, int flag)
 		while (str[prs.s_q][prs.d_q])
 		{
 			if (str[prs.s_q][prs.d_q] == '"')
-				ft_dollar_double_quotes(str, &prs.s_q, &prs.d_q, &prs);
+				ft_double_quotes(str, &prs.s_q, &prs.d_q, &prs);
 			else if (str[prs.s_q][prs.d_q] == '\'')
-				ft_dollar_single_quotes(str, &prs.s_q, &prs.d_q);
-			else if (str[prs.s_q][prs.d_q] == '$' 
-				&& str[prs.s_q][prs.d_q + 1] && str[prs.s_q][prs.d_q + 1] != '$')
+				ft_single_quotes(str, &prs.s_q, &prs.d_q);
+			else if (str[prs.s_q][prs.d_q] == '$'
+				&& str[prs.s_q][prs.d_q + 1]
+				&& str[prs.s_q][prs.d_q + 1] != '$')
 				ft_has_dollar(&prs, prs.d_q);
 			prs.d_q++;
 		}
@@ -64,3 +77,5 @@ void	ft_dollar_detect(char **str, char **env, int flag)
 		prs.s_q++;
 	}
 }
+
+//echo $USER $puta '$PWD' "$OLDPWD jeje vaya $paco" me ha dado un leak :[
