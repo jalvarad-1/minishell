@@ -1,9 +1,48 @@
 #include "minishell.h"
 
-void make_out_redirections(t_pipe_var *info, t_fds *outputs)
+int	one_out_operator(t_fds *outputs, t_pipe_var *info, int i)
 {
-	char			buffer;
-	int i;
+	info->fd1 = open(outputs[i].fds, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (info->fd1 == -1)
+	{
+		free(info->path);
+		info->path = NULL;
+		ft_putstr_fd("Burrishell: ", 1);
+		ft_putstr_fd(outputs[i].fds, 1);
+		ft_putstr_fd(": No such file or directory or permission denied\n",
+			 1);
+		return (0);
+	}
+	dup2(info->fd1, STDOUT_FILENO);
+	close(info->fd1);
+	return (1);
+}
+
+int	two_out_operator(t_fds *outputs, t_pipe_var *info, int i)
+{
+	char	buffer;
+
+	info->fd1 = open(outputs[i].fds, O_RDWR | O_CREAT, 0644);
+	if (info->fd1 == -1)
+	{
+		free(info->path);
+		info->path = NULL;
+		ft_putstr_fd("pipex: ", 1);
+		ft_putstr_fd(outputs[i].fds, 1);
+		ft_putstr_fd(": No such file or directory or permission denied\n",
+			 1);
+		return (0);
+	}
+	while (read(info->fd1, &buffer, 1))
+		;
+	dup2(info->fd1, STDOUT_FILENO);
+	close(info->fd1);
+	return (1);
+}
+
+void	make_out_redirections(t_pipe_var *info, t_fds *outputs)
+{
+	int	i;
 
 	i = 0;
 	if (!outputs)
@@ -12,95 +51,81 @@ void make_out_redirections(t_pipe_var *info, t_fds *outputs)
 	{
 		if (outputs[i].is_hdoc == 0)
 		{
-			info->fd1 = open(outputs[i].fds, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (info->fd1 == -1)
-			{
-				free(info->path);
-				info->path = NULL;
-				ft_putstr_fd("pipex: ", 1);
-				ft_putstr_fd(outputs[i].fds, 1);
-				ft_putstr_fd(": No such file or directory or permission denied\n",
-					 1);
+			if (!one_out_operator(outputs, info, i))
 				return ;
-			}
-			dup2(info->fd1, STDOUT_FILENO);
-			close(info->fd1);
-			i++;
 		}
 		else if (outputs[i].is_hdoc == 1)
 		{
-			info->fd1 = open(outputs[i].fds, O_RDWR | O_CREAT, 0644);
-			if (info->fd1 == -1)
-			{
-				free(info->path);
-				info->path = NULL;
-				ft_putstr_fd("pipex: ", 1);
-				ft_putstr_fd(outputs[i].fds, 1);
-				ft_putstr_fd(": No such file or directory or permission denied\n",
-					 1);
+			if (!two_out_operator(outputs, info, i))
 				return ;
-			}
-			while (read(info->fd1, &buffer, 1))
-				;
-			dup2(info->fd1, STDOUT_FILENO);
-			close(info->fd1);
-			i++;
-		}
-	}
-}
-
-void make_in_redirections(t_pipe_var *info, t_fds *inputs, char **env)
-{
-	int i;
-	int b;
-
-	i = 0;
-	if (!inputs)
-		return ;
-		//dprintf(2,"kamison %s\n", inputs[i].fds);
-	while (inputs && inputs[i].fds)
-	{
-		if (inputs[i + 1].fds)
-			b = dup(STDIN_FILENO);
-		if (inputs[i].is_hdoc == 0)
-		{
-			info->fd1 = open(inputs[i].fds, O_RDONLY);
-			if (info->fd1 == -1)
-			{
-				free(info->path);
-				info->path = NULL;
-				ft_putstr_fd("pipex: ", 1);
-				ft_putstr_fd(inputs[i].fds, 1);
-				ft_putstr_fd(": No such file or directory or permission denied\n",
-					 1);
-				close(b);
-				return ;
-			}
-			dup2(info->fd1, STDIN_FILENO);
-			close(info->fd1);
-			if (inputs[i + 1].fds)
-			{
-				dup2(b, STDIN_FILENO);
-				close(b);
-			}
-		}
-		//printf("%s", inputs[i +1].fds);
-		if (inputs[i].is_hdoc == 1)
-		{
-			ft_heredoc(inputs[i].fds, env, inputs[i].expand);
-			if (inputs[i + 1].fds)
-			{
-				dup2(b, STDIN_FILENO);
-				close(b);
-			}
 		}
 		i++;
 	}
 }
 
-void close_unnecessary(t_pipe_var info, int a, int b)
+int	one_in_operator(t_fds *inputs, t_pipe_var *info, int i, int b)
 {
-	int i;
+	info->fd1 = open(inputs[i].fds, O_RDONLY);
+	if (info->fd1 == -1)
+	{
+		free(info->path);
+		info->path = NULL;
+		ft_putstr_fd("pipex: ", 1);
+		ft_putstr_fd(inputs[i].fds, 1);
+		ft_putstr_fd(": No such file or directory or permission denied\n", 1);
+		close(b);
+		return (0);
+	}
+	dup2(info->fd1, STDIN_FILENO);
+	close(info->fd1);
+	if (inputs[i + 1].fds)
+	{
+		dup2(b, STDIN_FILENO);
+		close(b);
+	}
+	return (1);
+}
+
+void	two_in_operator(t_fds *inputs, int i, int b, char **env)
+{
+	char	*str;
+
+	str = NULL;
+	ft_heredoc(inputs[i].fds, env, inputs[i].expand, str);
+	if (inputs[i + 1].fds)
+	{
+		dup2(b, STDIN_FILENO);
+		close(b);
+	}
+}
+
+void	make_in_redirections(t_pipe_var *info, t_fds *inputs, char **env)
+{
+	int	i;
+	int	b;
+
+	i = 0;
+	b = 0;
+	if (!inputs)
+		return ;
+	while (inputs[i].fds)
+	{
+		if (inputs[i + 1].fds)
+			b = dup(STDIN_FILENO);
+		if (inputs[i].is_hdoc == 0)
+		{
+			if (!one_in_operator(inputs, info, i, b))
+				return ;
+		}
+		if (inputs[i].is_hdoc == 1)
+			two_in_operator(inputs, i, b, env);
+		i++;
+	}
+}
+
+void	close_unnecessary(t_pipe_var info, int a, int b)
+{
+	int	i;
 
 	i = 0;
 	while (i < info.size)
@@ -133,28 +158,10 @@ void	only_son(t_pipe_var info, t_cmds *cmd, char ***envp)
 		execve(info.path, cmd->content, *envp);
 		exit (0);
 	}
-
 }
 
-void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
+void	aux_kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 {
-	make_in_redirections(&info, cmd->input_fd, *envp);
-		if (info.fd1 == -1)
-		{
-			close_unnecessary(info, -8, -8);
-			exit (-1);
-		}
-		dup2(info.fd2[0][WRITE_END], STDOUT_FILENO);
-		close(info.fd2[0][WRITE_END]);
-	if (g_common.ctrl_c == 0)
-		make_out_redirections(&info, cmd->output_fd);
-	
-		if (info.fd1 == -1)
-		{
-			close_unnecessary(info, -8, -8);
-			exit (-1);
-		}
-		close_unnecessary(info, info.fd2[0][READ_END], info.fd2[0][WRITE_END]);
 	info.pid = fork();
 	if (info.pid == -1)
 		exit(-1);
@@ -166,7 +173,46 @@ void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
 		close(info.fd2[0][READ_END]);
 		built_in_identifier(cmd->content, envp, 0);
 		execve(info.path, cmd->content, *envp);
-		exit (0);
+		exit (2);
+	}
+}
+
+void	kamikaze_son1(t_pipe_var info, t_cmds *cmd, char ***envp)
+{
+	make_in_redirections(&info, cmd->input_fd, *envp);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
+	dup2(info.fd2[0][WRITE_END], STDOUT_FILENO);
+	close(info.fd2[0][WRITE_END]);
+	if (g_common.ctrl_c == 0)
+		make_out_redirections(&info, cmd->output_fd);
+	if (info.fd1 == -1)
+	{
+		close_unnecessary(info, -8, -8);
+		exit (-1);
+	}
+	close_unnecessary(info, info.fd2[0][READ_END], info.fd2[0][WRITE_END]);
+	aux_kamikaze_son1(info, cmd, envp);
+}
+
+void	aux_kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
+{
+	info.pid = fork();
+	if (info.pid == -1)
+		exit(-1);
+	if (info.pid == 0)
+	{
+		if (g_common.ctrl_c == 1)
+			exit(2);
+		son_signal();
+		close_unnecessary(info, info.fd2[info.l_p][READ_END],
+			info.fd2[info.n_p][WRITE_END]);
+		built_in_identifier(cmd->content, envp, 0);
+		execve(info.path, cmd->content, *envp);
+		exit (1);
 	}
 }
 
@@ -191,6 +237,11 @@ void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 		close_unnecessary(info, -8, -8);
 		exit (-1);
 	}
+	aux_kamikaze_sonX(info, cmd, envp);
+}
+
+void	aux_kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
+{
 	info.pid = fork();
 	if (info.pid == -1)
 		exit(-1);
@@ -199,7 +250,6 @@ void	kamikaze_sonX(t_pipe_var info, t_cmds *cmd, char ***envp)
 		if (g_common.ctrl_c == 1)
 			exit(2);
 		son_signal();
-		close_unnecessary(info, info.fd2[info.l_p][READ_END], info.fd2[info.n_p][WRITE_END]);
 		built_in_identifier(cmd->content, envp, 0);
 		execve(info.path, cmd->content, *envp);
 		exit (1);
@@ -227,18 +277,7 @@ void	kamikaze_son2(t_pipe_var info, t_cmds *cmd, char ***envp)
 		close_unnecessary(info, -8, -8);
 		exit (-1);
 	}
-	info.pid = fork();
-	if (info.pid == -1)
-		exit(-1);
-	if (info.pid == 0)
-	{
-		if (g_common.ctrl_c == 1)
-			exit(0);
-		son_signal();
-		built_in_identifier(cmd->content, envp, 0);
-		execve(info.path, cmd->content, *envp);
-		exit (1);
-	}
+	aux_kamikaze_son2(info, cmd, envp);
 }
 
 void	psycho_parent(t_pipe_var info, t_cmds *cmd, char ***envp)
@@ -248,11 +287,12 @@ void	psycho_parent(t_pipe_var info, t_cmds *cmd, char ***envp)
 	close(info.fd2[info.l_p][READ_END]);
 }
 
-int		**create_doble_array(t_cmds *cmd)
+int	**create_doble_array(t_cmds *cmd)
 {
 	int		**pipe_array;
 	int		i;
 	int		b;
+
 	i = 0;
 	while (cmd)
 	{
@@ -272,12 +312,13 @@ int		**create_doble_array(t_cmds *cmd)
 	return (pipe_array);
 }
 
-//echo $USER > jajant | wc -l | ls < puta
 void	pipex(char ***envp, t_cmds *cmd)
 {
 	t_pipe_var	info;
 	t_cmds		*aux;
-	int i;
+	int			i;
+	int b;
+	int c;
 
 	i = 0;
 	info.size = ft_lstsize(cmd) - 1;
@@ -287,8 +328,6 @@ void	pipex(char ***envp, t_cmds *cmd)
 	aux = cmd;
 	i = 0;
 	info.fd1 = -42;
-	int b;
-	int c;
 	if (aux && !info.size)
 	{
 		if (!aux->content)
@@ -379,12 +418,9 @@ void	pipex(char ***envp, t_cmds *cmd)
 	while (info.pid != 0 && i > 0)
 	{
 		wait(&g_common.exit_status);
-		//printf("hey soy exit estatus %d\n", g_common.exit_status);
-//		g_common.exit_status = info.status;
 		i--;
 	}
 	if (info.path)
 		free(info.path);
 	g_common.pid = 0;
-
 }

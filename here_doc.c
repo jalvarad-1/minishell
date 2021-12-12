@@ -12,31 +12,57 @@
 
 #include "minishell.h"
 
-void del_str(char **str)
+void	del_str(char **str)
 {
-	free(*str);
-	*str = NULL;
+	if (*str)
+	{
+		free(*str);
+		*str = NULL;
+	}
 }
-/*void	heredoc_doer(char *pre_aux)
+
+void	ft_wait_heredoc(int *fd, char **pre_aux)
 {
-	ft_putstr_fd(pre_aux, fd[WRITE_END]);
+	int	status;
+
+	status = 0;
+	wait(&status);
+	if (status != 0)
+		g_common.ctrl_c = 1;
+	del_str(pre_aux);
 	close(fd[WRITE_END]);
 	dup2(fd[READ_END], STDIN_FILENO);
 	close(fd[READ_END]);
-}*/
+}
 
-void	ft_heredoc(char *table, char **env, int expand)
+void	ft_heredoc_aux3(char **str, char **aux, int *fd, char *pre_aux)
 {
-	char	*str;
+	del_str(str);
+	del_str(aux);
+	close(fd[READ_END]);
+	ft_putstr_fd(pre_aux, fd[WRITE_END]);
+	close(fd[WRITE_END]);
+	exit(0);
+}
+
+void	ft_heredoc_aux2(char **aux, char **pre_aux, char **str)
+{
+	*aux = ft_strjoin(*pre_aux, *str);
+	del_str(pre_aux);
+	del_str(str);
+	*pre_aux = ft_strjoin(*aux, "\n");
+	del_str(aux);
+}
+
+void	ft_heredoc(char *table, char **env, int expand, char *str)
+{
 	char	*aux;
 	char	*pre_aux;
 	int		fd[2];
 	int		status;
 
-	str = NULL;
 	aux = NULL;
-	pre_aux = NULL;
-	//dprintf(2,"entro \n");
+	pre_aux = ft_calloc(1, 1);
 	pipe(fd);
 	status = fork();
 	if (table && status == 0)
@@ -44,38 +70,14 @@ void	ft_heredoc(char *table, char **env, int expand)
 		son_signal();
 		while (1)
 		{
-			//dprintf(2,"entro \n");
 			str = readline(">");
 			if (!str || !ft_strcmp(str, table))
 				break ;
 			if (!expand)
 				ft_dollar_detect(&str, env, 1);
-			if (!pre_aux)
-				pre_aux = ft_calloc( 1, 1);
-			aux = ft_strjoin(pre_aux, str);
-			if (pre_aux)
-			{
-				del_str(&pre_aux);
-				del_str(&str);
-			}
-			pre_aux = ft_strjoin(aux, "\n");
-			del_str(&aux);
+			ft_heredoc_aux2(&aux, &pre_aux, &str);
 		}
-		if (str)
-			del_str(&str);
-		if (aux)
-			del_str(&aux);
-		close(fd[READ_END]);
-		ft_putstr_fd(pre_aux, fd[WRITE_END]);
-		close(fd[WRITE_END]);
-		//free(pre_aux);
-		exit(0);
+		ft_heredoc_aux3(&str, &aux, fd, pre_aux);
 	}
-	wait(&status);
-	if (status != 0)
-		g_common.ctrl_c = 1;
-	//dprintf(2,"entro %d\n", status);
-	close(fd[WRITE_END]);
-	dup2(fd[READ_END], STDIN_FILENO);
-	close(fd[READ_END]);
+	ft_wait_heredoc(fd, &pre_aux);
 }
