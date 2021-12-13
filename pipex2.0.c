@@ -311,58 +311,70 @@ int	**create_doble_array(t_cmds *cmd)
 	}
 	return (pipe_array);
 }
+void	init_pipe_vars(t_pipe_var *info, t_cmds *cmd)
+{
+	info->size = ft_lstsize(cmd) - 1;
+	info->fd2 = create_doble_array(cmd);
+	info->pid = 1;
+	info->path = NULL;
+	info->fd1 = -42;
+}
+
+void	if_is_one_builtin_cmd(t_cmds *aux, t_pipe_var *info, char ***envp)
+{
+	info->aux_fds[READ_END] = dup(STDIN_FILENO);
+	make_in_redirections(info, aux->input_fd, *envp);
+	info->aux_fds[WRITE_END] = dup(STDOUT_FILENO);
+	if (g_common.ctrl_c == 0)
+		make_out_redirections(info, aux->output_fd);
+	if (info->fd1 != -1 && g_common.ctrl_c == 0)
+		built_in_identifier(aux->content, envp, 1);
+	dup2(info->aux_fds[READ_END],STDIN_FILENO);
+	close(info->aux_fds[READ_END]);
+	dup2(info->aux_fds[WRITE_END], STDOUT_FILENO);
+	close(info->aux_fds[WRITE_END]);
+}
+
+void	if_one_cmd(t_cmds *aux, t_pipe_var *info, char ***envp)
+{
+	int i;
+
+	i = 0;
+	if (!aux->content)
+			i = 1;
+	if (!is_builtin(aux->content) && aux->content)
+	{
+		info->path = search_path(aux->content[0], *envp);
+		i = 1;
+	}
+	g_common.pid = info->pid;
+	if (is_builtin(aux->content))
+		if_is_one_builtin_cmd(aux, info, envp);
+	if (i == 1)
+	{
+		info->aux_fds[READ_END] = dup(STDIN_FILENO);
+		info->aux_fds[WRITE_END] = dup(STDOUT_FILENO);
+		only_son(info[0], aux, envp);
+		dup2(info->aux_fds[READ_END],STDIN_FILENO);
+		close(info->aux_fds[READ_END]);
+		dup2(info->aux_fds[WRITE_END], STDOUT_FILENO);
+		close(info->aux_fds[WRITE_END]);
+	}
+}
 
 void	pipex(char ***envp, t_cmds *cmd)
 {
 	t_pipe_var	info;
 	t_cmds		*aux;
 	int			i;
-	int b;
-	int c;
+	int			b;
+	int			c;
 
-	i = 0;
-	info.size = ft_lstsize(cmd) - 1;
-	info.fd2 = create_doble_array(cmd);
-	info.pid = 1;
-	info.path = NULL;
+	init_pipe_vars(&info, cmd);
 	aux = cmd;
 	i = 0;
-	info.fd1 = -42;
 	if (aux && !info.size)
-	{
-		if (!aux->content)
-			i = 1;
-		if (!is_builtin(aux->content) && aux->content)
-		{
-			info.path = search_path(aux->content[0], *envp);
-			i = 1;
-		}
-		g_common.pid = info.pid;
-		if (is_builtin(aux->content))
-		{
-			info.aux_fds[READ_END] = dup(STDIN_FILENO);
-			make_in_redirections(&info, cmd->input_fd, *envp);
-			info.aux_fds[WRITE_END] = dup(STDOUT_FILENO);
-			if (g_common.ctrl_c == 0)
-				make_out_redirections(&info, cmd->output_fd);
-			if (info.fd1 != -1 && g_common.ctrl_c == 0)
-				built_in_identifier(aux->content, envp, 1);
-			dup2(info.aux_fds[READ_END],STDIN_FILENO);
-			close(info.aux_fds[READ_END]);
-			dup2(info.aux_fds[WRITE_END], STDOUT_FILENO);
-			close(info.aux_fds[WRITE_END]);
-		}
-		if (i == 1)
-		{
-			info.aux_fds[READ_END] = dup(STDIN_FILENO);
-			info.aux_fds[WRITE_END] = dup(STDOUT_FILENO);
-			only_son(info, aux, envp);
-			dup2(info.aux_fds[READ_END],STDIN_FILENO);
-			close(info.aux_fds[READ_END]);
-			dup2(info.aux_fds[WRITE_END], STDOUT_FILENO);
-			close(info.aux_fds[WRITE_END]);
-		}
-	}
+		if_one_cmd(aux, &info, envp);
 	while (aux && info.size > 0)
 	{
 		b = dup(STDIN_FILENO);
