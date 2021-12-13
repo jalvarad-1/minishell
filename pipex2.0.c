@@ -335,7 +335,7 @@ void	if_is_one_builtin_cmd(t_cmds *aux, t_pipe_var *info, char ***envp)
 	close(info->aux_fds[WRITE_END]);
 }
 
-void	if_one_cmd(t_cmds *aux, t_pipe_var *info, char ***envp)
+int	if_one_cmd(t_cmds *aux, t_pipe_var *info, char ***envp)
 {
 	int i;
 
@@ -360,6 +360,7 @@ void	if_one_cmd(t_cmds *aux, t_pipe_var *info, char ***envp)
 		dup2(info->aux_fds[WRITE_END], STDOUT_FILENO);
 		close(info->aux_fds[WRITE_END]);
 	}
+	return (i);
 }
 
 void	pipex(char ***envp, t_cmds *cmd)
@@ -374,7 +375,7 @@ void	pipex(char ***envp, t_cmds *cmd)
 	aux = cmd;
 	i = 0;
 	if (aux && !info.size)
-		if_one_cmd(aux, &info, envp);
+		i = if_one_cmd(aux, &info, envp);
 	while (aux && info.size > 0)
 	{
 		b = dup(STDIN_FILENO);
@@ -393,9 +394,7 @@ void	pipex(char ***envp, t_cmds *cmd)
 		else if (aux->next && i != 0 )
 			kamikaze_sonX(info, aux, envp);
 		else if (!aux->next && info.pid != 0)
-		{
 			psycho_parent(info, aux, envp);
-		}
 		if (info.pid != 0)
 		{
 			if (info.path != NULL)
