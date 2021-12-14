@@ -220,12 +220,10 @@ t_fds	*ft_get_inputs(char ***token, char opr, char **env)
 	char	**new_token;
 	t_fds	*fds;
 	int		i;
-	int		b;
 
 	i = redirection_counter(*token, opr);
 	if (!i)
 		return (NULL);
-	b = 0;
 	fds = malloc(sizeof(t_fds) * (i + 1));
 	if (!fds)
 		return (NULL);

@@ -42,12 +42,8 @@ static void	copy_without_quotes(char *dst, char *src)
 
 static char	*ft_conditions(char *str, size_t len)
 {
-	size_t	i;
-	size_t	j;
 	char	*aux;
 
-	i = 0;
-	j = 0;
 	aux = ft_calloc(sizeof(char), len + 1);
 	if (!aux)
 		return (0);
