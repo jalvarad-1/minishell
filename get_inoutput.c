@@ -2,30 +2,27 @@
 
 static int	redirection_counter(char **token, char opr)
 {
-	int	i;
-	int	j;
-	int	rdc;
+	t_iterator	i;
 
-	i = 0;
-	rdc = 0;
-	while (token && token[i])
+	i = (t_iterator){0, 0, 0, 0};
+	while (token && token[i.i])
 	{
-		j = 0;
-		while (token[i][j])
+		i.j = 0;
+		while (token[i.i][i.j])
 		{
-			move_out_quotes(token, i, &j);
-			if (token[i][j] == opr)
+			move_out_quotes(token, i.i, &i.j);
+			if (token[i.i][i.j] == opr)
 			{
-				rdc++;
-				while (token[i][j] == opr)
-					j++;
+				i.b++;
+				while (token[i.i][i.j] == opr)
+					i.j++;
 			}
-			if (token[i][j])
-				j++;
+			if (token[i.i][i.j])
+				i.j++;
 		}
-		i++;
+		i.i++;
 	}
-	return (rdc);
+	return (i.b);
 }
 
 static int	fd_len(char *token)
@@ -47,13 +44,12 @@ static int	fd_len(char *token)
 			while (token[len] != '\'' && token[len])
 				len++;
 		}
-		dprintf(2, "%d %c\n", len, token[len]);
 		len++;
 	}
 	return (len);
 }
 
-char	*save_fd_name(char **token, int *i, int *j, char **env)
+char	*save_fd(char **token, int *i, int *j, char **env)
 {
 	char	*fd_name;
 	int		name_size;
@@ -99,23 +95,15 @@ static void	mod_move_out_quotes(char *token, int *i)
 	{
 		if (token[*i] == '\'')
 		{
-			token[*i] = ' ';
-			(*i)++;
+			token[(*i)++] = ' ';
 			while (token[*i] && token[*i] != '\'')
-			{
-				token[*i] = ' ';
-				(*i)++;
-			}
+				token[(*i)++] = ' ';
 		}
 		else if (token[*i] == '"')
 		{
-			token[*i] = ' ';
-			(*i)++;
+			token[(*i)++] = ' ';
 			while (token[*i] && token[*i] != '"')
-			{
-				token[*i] = ' ';
-				(*i)++;
-			}
+				token[(*i)++] = ' ';
 		}
 	}
 }
@@ -177,54 +165,54 @@ char	**remove_ops_files(char **token, char opr)
 	return (nw_tk);
 }
 
+static void	found_opr_case(char **token, char **env, t_fds *fds, t_iterator *i)
+{
+	if (token[i->i][++i->j])
+	{
+		if (token[i->i][i->j++] == i->opr)
+		{
+			if (!token[i->i][i->j])
+			{
+				i->i++;
+				i->j = 0;
+			}
+			if (i->opr == '<')
+				fds[i->b].fds = save_hdoc_end(token, &i->i, &fds[i->b]);
+			else if (i->opr == '>')
+				fds[i->b] = (t_fds){save_fd(token, &i->i, &i->j, env), 1, 0};
+		}
+		else
+			fds[i->b] = (t_fds){save_fd(token, &i->i, &i->j, env), 0, 0};
+	}
+	else
+	{
+		i->i++;
+		i->j = 0;
+		fds[i->b] = (t_fds){save_fd(token, &i->i, &i->j, env), 0, 0};
+	}
+}
+
 static void	aux_get_inputs(char **token, char opr, char **env, t_fds *fds)
 {
-	int	i;
-	int j;
-	int b;
+	t_iterator	i;
 
-	b = 0;
-	i = 0;
-	while (token[i])
+	i = (t_iterator){0, 0, 0, opr};
+	while (token[i.i])
 	{
-		j = 0;
-		move_out_quotes(token, i, &j);
-		while (token[i][j])
+		i.j = 0;
+		move_out_quotes(token, i.i, &i.j);
+		while (token[i.i][i.j])
 		{
-			if (token[i][j] == opr)
+			if (token[i.i][i.j] == opr)
 			{
-				if (token[i][++j])
-				{
-					if (token[i][j++] == opr)
-					{
-						if (!token[i][j])
-						{
-							i++;
-							j = 0;
-						}
-						if (opr == '<')
-						{
-							fds[b].fds = save_hdoc_end(token, &i, &fds[b]);
-						}
-						else if (opr == '>')
-							fds[b]= (t_fds){save_fd_name(token, &i, &j, env), 1, 0};
-					}
-					else
-						fds[b] = (t_fds){save_fd_name(token, &i, &j, env), 0, 0};
-				}
-				else
-				{
-					i++;
-					j = 0;
-					fds[b] = (t_fds){save_fd_name(token, &i, &j, env), 0, 0};
-				}
-				b++;
+				found_opr_case(token, env, fds, &i);
+				i.b++;
 			}
-			j++;
+			i.j++;
 		}
-		i++;
+		i.i++;
 	}
-	fds[b].fds = NULL;
+	fds[i.b].fds = NULL;
 }
 
 t_fds	*ft_get_inputs(char ***token, char opr, char **env)
@@ -247,9 +235,3 @@ t_fds	*ft_get_inputs(char ***token, char opr, char **env)
 	*token = new_token;
 	return (fds);
 }
-/*  remove_ops_files(char **token):
-	Esta función se encarga de remover tanto los operadores ,
-	como los archivos despues a este y por lo tanto a modifica
-	Ya que es complejo determinar las dimensiones de la "new_token"
-	lo mas sencillo es crear un nuevo string completo con todo,
-	excepto los operadores y el string singuiente a los operadores. */
