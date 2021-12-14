@@ -39,7 +39,7 @@ typedef struct	s_global
 	int			is_cmd;
 	int			exit_status;
 	int			pid;
-	int			aux;
+	int			ctrl_c;
 }				t_global;
 
 t_global g_common;
@@ -117,7 +117,7 @@ void	ft_free_table(t_cmds **table);
 char	*search_path(char *argv, char **envp);
 void	pipex(char ***envp, t_cmds *cmd);
 t_fds	*ft_get_inputs(char ***token, char opr, char **env);
-void	ft_heredoc(char *table, char **env, int expand);
+void	ft_heredoc(char *table, char **env, int expand, char *str);
 /*Expand $*/
 void	ft_expand(char **token, char **env, int flag);
 void	ft_dollar_detect(char **str, char **env, int flag);

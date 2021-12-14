@@ -2,9 +2,9 @@
 
 static int	redirection_counter(char **token, char opr)
 {
-	int i;
-	int j;
-	int rdc;
+	int	i;
+	int	j;
+	int	rdc;
 
 	i = 0;
 	rdc = 0;
@@ -47,12 +47,13 @@ static int	fd_len(char *token)
 			while (token[len] != '\'' && token[len])
 				len++;
 		}
+		dprintf(2, "%d %c\n", len, token[len]);
 		len++;
 	}
 	return (len);
 }
 
-char *save_fd_name(char **token, int *i, int *j, char **env)
+char	*save_fd_name(char **token, int *i, int *j, char **env)
 {
 	char	*fd_name;
 	int		name_size;
@@ -73,7 +74,7 @@ char *save_fd_name(char **token, int *i, int *j, char **env)
 	return (fd_name);
 }
 
-char *save_hdoc_end(char **token, int *i, t_fds *fds)
+char	*save_hdoc_end(char **token, int *i, t_fds *fds)
 {
 	char	*end;
 	int		j;
@@ -86,10 +87,11 @@ char *save_hdoc_end(char **token, int *i, t_fds *fds)
 	else
 		fds->expand = 0;
 	end = ft_substr(token[*i], j, ft_strlen(token[*i]));
+	fds->is_hdoc = 1;
 	return (end);
 }
 
-static void mod_move_out_quotes(char *token, int *i)
+static void	mod_move_out_quotes(char *token, int *i)
 {
 	if (!token || !token[*i])
 		return ;
@@ -99,7 +101,7 @@ static void mod_move_out_quotes(char *token, int *i)
 		{
 			token[*i] = ' ';
 			(*i)++;
-			while(token[*i] && token[*i] != '\'')
+			while (token[*i] && token[*i] != '\'')
 			{
 				token[*i] = ' ';
 				(*i)++;
@@ -118,21 +120,10 @@ static void mod_move_out_quotes(char *token, int *i)
 	}
 }
 
-static char *token_in_one_str(char **token, char optr)
+static void	aux_token_in_one_str(char *ltt_tk, char optr)
 {
-	char	*ltt_tk;
-	char	*aux;
-	int		i;
+	int	i;
 
-	i = 0;
-	ltt_tk = ft_strjoin(token[i], " ");
-	while (token[++i])
-	{
-		aux = ft_strjoin(ltt_tk, token[i]);
-		free(ltt_tk);
-		ltt_tk = ft_strjoin(aux, " ");
-		free(aux);
-	}
 	i = 0;
 	while (ltt_tk[i])
 	{
@@ -154,12 +145,31 @@ static char *token_in_one_str(char **token, char optr)
 		}
 		i++;
 	}
+}
+
+static char	*token_in_one_str(char **token, char optr)
+{
+	char	*ltt_tk;
+	char	*aux;
+	int		i;
+
+	i = 0;
+	ltt_tk = ft_strjoin(token[i], " ");
+	while (token[++i])
+	{
+		aux = ft_strjoin(ltt_tk, token[i]);
+		free(ltt_tk);
+		ltt_tk = ft_strjoin(aux, " ");
+		free(aux);
+	}
+	aux_token_in_one_str(ltt_tk, optr);
 	return (ltt_tk);
 }
-char **remove_ops_files(char **token, char opr)
+
+char	**remove_ops_files(char **token, char opr)
 {
-	char **nw_tk;
-	char *ltt_tk;
+	char	**nw_tk;
+	char	*ltt_tk;
 
 	ltt_tk = token_in_one_str(token, opr);
 	nw_tk = ft_mod_split(ltt_tk, ' ');
@@ -167,73 +177,71 @@ char **remove_ops_files(char **token, char opr)
 	return (nw_tk);
 }
 
-t_fds *ft_get_inputs(char ***token, char opr, char **env)
+static void	aux_get_inputs(char **token, char opr, char **env, t_fds *fds)
 {
-	char	**new_token;
-	t_fds	*fds;
-	int		i;
-	int		j;
-	int		b;
+	int	i;
+	int j;
+	int b;
 
-	i = redirection_counter(*token, opr); /// contador de redirecciones;
-	if (!i)
-		return (NULL);
 	b = 0;
-	fds = malloc(sizeof(t_fds) * (i + 1));
-	if (!fds)
-		return (NULL);
 	i = 0;
-
-	while(token[0][i])
+	while (token[i])
 	{
 		j = 0;
-		move_out_quotes(token[0], i, &j);
-		while (token[0][i][j])
+		move_out_quotes(token, i, &j);
+		while (token[i][j])
 		{
-			if(token[0][i][j] == opr)
+			if (token[i][j] == opr)
 			{
-				if (token[0][i][++j])
+				if (token[i][++j])
 				{
-					if (token[0][i][j] == opr)
+					if (token[i][j++] == opr)
 					{
-						j++;
-						if (!token [0][i][j])
+						if (!token[i][j])
 						{
 							i++;
 							j = 0;
 						}
 						if (opr == '<')
 						{
-							fds[b].fds = save_hdoc_end(token[0], &i, &fds[b]);
-							fds[b].is_hdoc = 1;
+							fds[b].fds = save_hdoc_end(token, &i, &fds[b]);
 						}
 						else if (opr == '>')
-						{
-							fds[b].fds = save_fd_name(token[0], &i, &j, env);
-							fds[b].is_hdoc = 1;
-						}
+							fds[b]= (t_fds){save_fd_name(token, &i, &j, env), 1, 0};
 					}
 					else
-					{
-						fds[b].fds = save_fd_name(token[0], &i, &j, env);
-						fds[b].is_hdoc = 0;
-					}
-					b++;
+						fds[b] = (t_fds){save_fd_name(token, &i, &j, env), 0, 0};
 				}
 				else
 				{
 					i++;
 					j = 0;
-					fds[b].fds = save_fd_name(token[0], &i, &j, env);
-					fds[b].is_hdoc = 0;
-					b++;
+					fds[b] = (t_fds){save_fd_name(token, &i, &j, env), 0, 0};
 				}
+				b++;
 			}
 			j++;
 		}
 		i++;
 	}
 	fds[b].fds = NULL;
+}
+
+t_fds	*ft_get_inputs(char ***token, char opr, char **env)
+{
+	char	**new_token;
+	t_fds	*fds;
+	int		i;
+	int		b;
+
+	i = redirection_counter(*token, opr);
+	if (!i)
+		return (NULL);
+	b = 0;
+	fds = malloc(sizeof(t_fds) * (i + 1));
+	if (!fds)
+		return (NULL);
+	aux_get_inputs(token[0], opr, env, fds);
 	new_token = remove_ops_files(*token, opr);
 	free_matrix(*token);
 	*token = new_token;
