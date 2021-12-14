@@ -47,6 +47,7 @@ static void	ft_expander(char **str, char **env, t_parse *prs)
 		free(prs->pos_dollar);
 	}
 	prs->n_dollar = 0;
+	prs->pos_dollar = NULL;
 }
 
 void	ft_dollar_detect(char **str, char **env, int flag)

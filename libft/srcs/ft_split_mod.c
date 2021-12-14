@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+
 void	move_out_quotes(char **token, int i, int *j)
 {
 	if (!token || !token[i])

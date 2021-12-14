@@ -47,7 +47,7 @@ char	*cut_compare(char *str)
 	len = 0;
 	while (str[len] != '=' && str[len])
 		len++;
-	aux = ft_calloc(sizeof(char), len);
+	aux = ft_calloc(sizeof(char), len + 1);
 	ft_strncpy(aux, str, len);
 	return (aux);
 }

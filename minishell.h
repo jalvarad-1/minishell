@@ -81,6 +81,14 @@ typedef struct s_cmds
 	struct s_cmds	*next;
 }	t_cmds;
 
+typedef struct s_iterator
+{
+	int		i;
+	int		j;
+	int		b;
+	char	opr;
+}	t_iterator;
+
 void	rl_replace_line (const char *text, int clear_undo);
 /*Signals*/
 void	sig_handler(int signal);

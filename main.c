@@ -93,7 +93,7 @@ int	main(int argc, char **argv, char **envp)
 	//atexit(puta);
 	while (1)
 	{
-		system("leaks minishell");
+		//system("leaks minishell");
 		//system ("lsof -c minishell");
 		signal_receiver();
 		g_common.ctrl_c = 0;
