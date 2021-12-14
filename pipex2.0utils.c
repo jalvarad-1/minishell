@@ -6,27 +6,13 @@ void	error_of_cmd(char **cmd)
 	ft_putstr_fd(": command not found\n", 1);
 }
 
-static char	*search_path_aux(char **split_paths, char **cmd)
+static char *aux_search_path(char **split_paths, char **cmd)
 {
 	char	*aux;
 	char	*path;
 	int		i;
 
 	i = 0;
-	if (open(cmd[0], O_DIRECTORY) != -1)
-	{
-		printf("Burrishell: \"%s\": is a directory\n", cmd[0]);
-		free_matrix(cmd);
-		free_matrix(split_paths);
-		return (NULL);
-	}
-	if (access(cmd[0], X_OK) == 0)
-	{
-		path = ft_strdup(cmd[0]);
-		free_matrix(cmd);
-		free_matrix(split_paths);
-		return (path);
-	}
 	while (split_paths[i])
 	{
 		aux = ft_strjoin(split_paths[i], "/");
@@ -45,6 +31,27 @@ static char	*search_path_aux(char **split_paths, char **cmd)
 	free_matrix(cmd);
 	free_matrix(split_paths);
 	return (0);
+}
+
+static char	*search_path_aux(char **split_paths, char **cmd)
+{
+	char	*path;
+
+	if (open(cmd[0], O_DIRECTORY) != -1)
+	{
+		printf("Burrishell: \"%s\": is a directory\n", cmd[0]);
+		free_matrix(cmd);
+		free_matrix(split_paths);
+		return (NULL);
+	}
+	if (access(cmd[0], X_OK) == 0)
+	{
+		path = ft_strdup(cmd[0]);
+		free_matrix(cmd);
+		free_matrix(split_paths);
+		return (path);
+	}
+	return (aux_search_path(split_paths, cmd));
 }
 
 char	*search_path(char *argv, char **envp)

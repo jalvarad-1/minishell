@@ -363,6 +363,65 @@ int	if_one_cmd(t_cmds *aux, t_pipe_var *info, char ***envp)
 	return (i);
 }
 
+void	free_ptrs_and_wait(t_pipe_var *info, int i)
+{
+	int d;
+
+	d = 0;
+	if (info->fd2 != NULL)
+	{
+		while (d < i - 1)
+			free(info->fd2[d++]);
+		free(info->fd2);
+	}
+	while (info->pid != 0 && i > 0)
+	{
+		wait(&g_common.exit_status);
+		i--;
+	}
+	if (info->path)
+		free(info->path);
+	g_common.pid = 0;
+}
+
+void	aux_pipex(t_pipe_var *info, int b, int c, int i)
+{
+	if (info->path != NULL)
+	{
+		free(info->path);
+		info->path = NULL;
+	}
+	if (i < info->size)
+	{
+		close(info->fd2[i][WRITE_END]);
+		if (i > 0)
+			close(info->fd2[info->l_p][READ_END]);
+	}
+	dup2(b, STDIN_FILENO);
+	close(b);
+	dup2(c, STDOUT_FILENO);
+	close(c);
+}
+
+void	distribute_work(t_pipe_var *info, t_cmds *aux, char ***envp, int i)
+{
+	if (i < info->size)
+		pipe(info->fd2[i]);
+	if (!is_builtin(aux->content))
+	{
+		if (aux->content)
+			info->path = search_path(aux->content[0], *envp);
+		else
+			info->path = NULL;
+	}
+	if (aux->next && i == 0)
+		kamikaze_son1(info[0], aux, envp);
+	else if (aux->next && i != 0 )
+		kamikaze_sonX(info[0], aux, envp);
+	else if (!aux->next && info->pid != 0)
+		psycho_parent(info[0], aux, envp);
+}
+
 void	pipex(char ***envp, t_cmds *cmd)
 {
 	t_pipe_var	info;
@@ -380,58 +439,12 @@ void	pipex(char ***envp, t_cmds *cmd)
 	{
 		b = dup(STDIN_FILENO);
 		c = dup(STDOUT_FILENO);
-		if (i < info.size)
-			pipe(info.fd2[i]);
-		if (!is_builtin(aux->content))
-		{
-			if (aux->content)
-				info.path = search_path(aux->content[0], *envp);
-			else
-				info.path = NULL;
-		}
-		if (aux->next && i == 0)
-			kamikaze_son1(info, aux, envp);
-		else if (aux->next && i != 0 )
-			kamikaze_sonX(info, aux, envp);
-		else if (!aux->next && info.pid != 0)
-			psycho_parent(info, aux, envp);
-		if (info.pid != 0)
-		{
-			if (info.path != NULL)
-			{
-				free(info.path);
-				info.path = NULL;
-			}
-			if (i < info.size)
-			{
-				close(info.fd2[i][WRITE_END]);
-				if (i > 0)
-					close(info.fd2[info.l_p][READ_END]);
-			}
-			aux = aux->next;
-			info.l_p = i;
-			i++;
-			info.n_p = i;
-		}
-		dup2(b, STDIN_FILENO);
-		close(b);
-		dup2(c, STDOUT_FILENO);
-		close(c);
+		distribute_work(&info, aux, envp, i);
+		aux_pipex(&info, b, c, i);
+		aux = aux->next;
+		info.l_p = i;
+		i++;
+		info.n_p = i;
 	}
-	int d;
-	d = 0;
-	if (info.fd2 != NULL)
-	{
-		while (d < i - 1)
-			free(info.fd2[d++]);
-		free(info.fd2);
-	}
-	while (info.pid != 0 && i > 0)
-	{
-		wait(&g_common.exit_status);
-		i--;
-	}
-	if (info.path)
-		free(info.path);
-	g_common.pid = 0;
+	free_ptrs_and_wait(&info, i);
 }
