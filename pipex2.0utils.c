@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex2.0utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jalvarad <jalvarad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/15 16:20:02 by jalvarad          #+#    #+#             */
+/*   Updated: 2021/12/15 17:48:52 by jalvarad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	error_of_cmd(char **cmd)
@@ -6,7 +18,7 @@ void	error_of_cmd(char **cmd)
 	ft_putstr_fd(": command not found\n", 1);
 }
 
-static char *aux_search_path(char **split_paths, char **cmd)
+static char	*aux_search_path(char **split_paths, char **cmd)
 {
 	char	*aux;
 	char	*path;
@@ -67,6 +79,7 @@ char	*search_path(char *argv, char **envp)
 		i++;
 	if (!envp[i])
 	{
+		free_matrix(cmd);
 		return (NULL);
 	}
 	split_paths = ft_split(envp[i] + 5, ':');

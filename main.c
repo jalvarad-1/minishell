@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jalvarad <jalvarad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 12:19:40 by robrodri          #+#    #+#             */
-/*   Updated: 2021/12/01 12:19:51 by robrodri         ###   ########.fr       */
+/*   Updated: 2021/12/15 16:55:55 by jalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	main(int argc, char **argv, char **envp)
 	//atexit(puta);
 	while (1)
 	{
-		//system("leaks minishell");
+		system("leaks minishell");
 		//system ("lsof -c minishell");
 		signal_receiver();
 		g_common.ctrl_c = 0;
@@ -102,9 +102,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strcmp(str, ""))
 		{
 			if (get_command_table(str, env_v, &cmd_table))
-			{
 				pipex(&env_v, cmd_table);
-			}
 			ft_free_table(&cmd_table);
 		}
 		free(str);

@@ -1,36 +1,40 @@
 #include "minishell.h"
 
+static void	move_quote_n_count(char **str, t_iterator *i, t_parse *prs)
+{
+	while (str[i->i][i->j])
+	{
+		if (str[i->i][i->j] == '"')
+		{
+			prs->d_q++;
+			i->j++;
+			while (str[i->i][i->j] && str[i->i][i->j] != '"')
+				i->j++;
+		}
+		else if (str[i->i][i->j] == '\'')
+		{
+			prs->s_q++;
+			i->j++;
+			while (str[i->i][i->j] && str[i->i][i->j] != '\'')
+				i->j++;
+		}
+		else
+			i->j++;
+	}
+}
+
 static int	unquoted_marks(char **str)
 {
-	size_t	i;
-	size_t	j;
-	t_parse	prs;
+	t_iterator	i;
+	t_parse		prs;
 
 	prs = (t_parse){0, 0, 0, 0};
-	i = 0;
-	while (str[i])
+	i = (t_iterator){0, 0, 0, 0};
+	while (str[i.i])
 	{
-		j = 0;
-		while (str[i][j])
-		{
-			if (str[i][j] == '"')
-			{
-				prs.d_q++;
-				j++;
-				while (str[i][j] && str[i][j] != '"')
-					j++;
-			}
-			else if (str[i][j] == '\'')
-			{
-				prs.s_q++;
-				j++;
-				while (str[i][j] && str[i][j] != '\'')
-					j++;
-			}
-			else
-				j++;
-		}
-		i++;
+		i.j = 0;
+		move_quote_n_count(str, &i, &prs);
+		i.i++;
 	}
 	if (prs.s_q % 2 || prs.d_q % 2)
 	{
@@ -40,7 +44,6 @@ static int	unquoted_marks(char **str)
 	return (1);
 }
 
-//Hay que revisar esta funcion porque no esta guardando bien los comandos en la tabla ni crea mas de un NODO
 static void	save_cmd(t_cmds **stack, char **argv, t_fds *ins, t_fds *outs)
 {
 	t_cmds	*tmp;
@@ -73,7 +76,7 @@ static int	dismember(char **cmd, char **env, t_cmds **table)
 		token = ft_mod_split(cmd[i], ' ');
 		if (!operator_identifier(token))
 		{
-			free(cmd);
+			free_matrix(cmd);
 			free_matrix(token);
 			ft_free_table(table);
 			return (0);
@@ -90,7 +93,6 @@ static int	dismember(char **cmd, char **env, t_cmds **table)
 int	get_command_table(char *str, char **env, t_cmds **table)
 {
 	char	**cmd;
-	char	**token;
 
 	if (!rev_vertial_bars(str))
 		return (0);
@@ -100,7 +102,8 @@ int	get_command_table(char *str, char **env, t_cmds **table)
 		free_matrix(cmd);
 		return (0);
 	}
-	dismember(cmd, env, table);
+	if (!dismember(cmd, env, table))
+		return (0);
 	free_matrix(cmd);
 	return (1);
 }

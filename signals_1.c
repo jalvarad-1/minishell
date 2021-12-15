@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals_1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jalvarad <jalvarad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/11 16:45:24 by robrodri          #+#    #+#             */
-/*   Updated: 2021/12/11 16:45:27 by robrodri         ###   ########.fr       */
+/*   Updated: 2021/12/15 17:45:38 by jalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,11 @@ void	signal_receiver(void)
 void	son_signal(void)
 {
 	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	parent_signal(void)
 {
 	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }

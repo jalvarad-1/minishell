@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_mod_split.c                                     :+:      :+:    :+:   */
+/*   ft_split_mod.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jalvarad <jalvarad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 11:15:25 by jalvarad          #+#    #+#             */
-/*   Updated: 2021/10/30 12:19:15 by jalvarad         ###   ########.fr       */
+/*   Updated: 2021/12/15 16:12:41 by jalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,17 @@ static int	mod_word_count(char const *str, char c)
 	return (count + 1);
 }
 
+static void	aux2_ultimate_memcpy(const char *src, char *dst, int *i)
+{
+	dst[*i] = src[*i];
+	(*i)++;
+	while (src[*i] && src[*i] != '"')
+	{
+		dst[*i] = src[*i];
+		(*i)++;
+	}
+}
+
 static void	aux_ultimate_memcpy(const char *src, char *dst, char c)
 {
 	int	i;
@@ -74,15 +85,7 @@ static void	aux_ultimate_memcpy(const char *src, char *dst, char c)
 			}
 		}
 		else if (src[i] == '"')
-		{
-			dst[i] = src[i];
-			i++;
-			while (src[i] && src[i] != '"')
-			{
-				dst[i] = src[i];
-				i++;
-			}
-		}
+			aux2_ultimate_memcpy(src, dst, &i);
 		dst[i] = src[i];
 		i++;
 	}

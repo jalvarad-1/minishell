@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jalvarad <jalvarad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/15 16:16:33 by jalvarad          #+#    #+#             */
+/*   Updated: 2021/12/15 16:18:44 by jalvarad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # define RED "\033[0;31m"
@@ -5,9 +17,9 @@
 # define CYAN "\033[0;36m"
 # define RESET "\033[0m"
 # define YELLOW "\033[0;33m"
-#ifndef ARG_MAX
-#define ARG_MAX 20480
-#endif
+# ifndef ARG_MAX
+#  define ARG_MAX 20480
+# endif
 # ifndef READ_END
 #  define READ_END 0
 # endif
@@ -34,7 +46,7 @@
 # include <stdbool.h>
 # include <limits.h>
 
-typedef struct	s_global
+typedef struct s_global
 {
 	int			is_cmd;
 	int			exit_status;
@@ -42,9 +54,9 @@ typedef struct	s_global
 	int			ctrl_c;
 }				t_global;
 
-t_global g_common;
+t_global	g_common;
 
-typedef struct	s_parse
+typedef struct s_parse
 {
 	size_t	s_q;
 	size_t	d_q;
@@ -61,11 +73,11 @@ typedef struct s_pipe_var
 	int		status;
 	pid_t	pid;
 	char	*path;
-	int		l_p;/// last_pipe
-	int		n_p;/// next_pipe
+	int		l_p;
+	int		n_p;
 }	t_pipe_var;
 
-typedef struct	s_fds
+typedef struct s_fds
 {
 	char	*fds;
 	int		is_hdoc;
@@ -76,7 +88,7 @@ typedef struct s_cmds
 {
 	char			**content;
 	t_fds			*input_fd;
-	t_fds			*output_fd; //Guardamos las redirecciones
+	t_fds			*output_fd;
 	char			*heredoc_end;
 	struct s_cmds	*next;
 }	t_cmds;
@@ -89,7 +101,7 @@ typedef struct s_iterator
 	char	opr;
 }	t_iterator;
 
-void	rl_replace_line (const char *text, int clear_undo);
+void	rl_replace_line(const char *text, int clear_undo);
 /*Signals*/
 void	sig_handler(int signal);
 void	signal_receiver(void);

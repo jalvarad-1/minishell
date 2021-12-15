@@ -70,7 +70,7 @@ int	operator_identifier(char **str)
 
 	i = 0;
 	if (!str)
-		return (0);
+		return (1);
 	while (str[i])
 	{
 		j = 0;

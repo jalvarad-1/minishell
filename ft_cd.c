@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jalvarad <jalvarad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/02 12:25:32 by robrodri          #+#    #+#             */
-/*   Updated: 2021/12/02 12:25:35 by robrodri         ###   ########.fr       */
+/*   Updated: 2021/12/15 17:12:13 by jalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	no_str_case(char **str, char ***env_v)
 	if (i >= 0 && ((*env_v)[i])[4] != 0)
 	{
 		g_common.exit_status = 0;
-		*str = (*env_v)[i] + 5;
+		*str = ft_strdup((*env_v)[i] + 5);
 	}
 	else
 	{
@@ -77,6 +77,7 @@ void	ft_cd(char ***env_v, char **str, int f_or_s)
 			g_common.exit_status = 1;
 			printf("Burrishell : cd: %s No such file or directory\n", aux_str);
 		}
+		free(aux_str);
 	}
 	if (!f_or_s)
 		exit(0);

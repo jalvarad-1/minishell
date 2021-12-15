@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jalvarad <jalvarad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/02 10:43:02 by robrodri          #+#    #+#             */
-/*   Updated: 2021/12/02 10:43:07 by robrodri         ###   ########.fr       */
+/*   Updated: 2021/12/15 17:16:34 by jalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ void	ft_exit(char **str)
 		if (argc > 2 && ft_str_is_numeric(str[1]))
 		{
 			printf("minishell: exit: too many arguments\n");
-			i = ft_atoi(str[1]) % 255;
+			g_common.exit_status = ft_atoi(str[1]) % 255;
+			return ;
 		}
 		else if (!ft_str_is_numeric(str[1]))
 		{

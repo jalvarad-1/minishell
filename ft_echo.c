@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: robrodri <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jalvarad <jalvarad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/02 10:58:47 by robrodri          #+#    #+#             */
-/*   Updated: 2021/12/02 10:58:53 by robrodri         ###   ########.fr       */
+/*   Updated: 2021/12/15 17:07:22 by jalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void	ft_echo(char **str, int f_or_s)
 	if (!str[i])
 	{
 		printf("\n");
+		g_common.exit_status = 0;
 		return ;
 	}
 	while (str[i])
