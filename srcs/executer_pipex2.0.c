@@ -98,6 +98,11 @@ void	pipex(char ***envp, t_cmds *cmd)
 	int			b;
 	int			c;
 
+	if (ft_lstsize(cmd) - 1 > 200)
+	{
+		dprintf(2, "Minishell: Many pipes: Are you seriusly?\n");
+		return ;
+	}
 	init_pipe_vars(&info, cmd);
 	aux = cmd;
 	i = 0;

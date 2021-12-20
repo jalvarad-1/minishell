@@ -63,7 +63,7 @@ void	ft_exit(char **str)
 			i = 255;
 		}
 		else
-			i = ft_atoi(str[1]) % 255;
+			i = ft_atoi(str[1]) % 256;
 	}
 	exit(i);
 }

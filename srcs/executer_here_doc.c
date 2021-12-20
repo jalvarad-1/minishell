@@ -21,13 +21,13 @@ static void	del_str(char **str)
 	}
 }
 
-static void	ft_wait_heredoc(int *fd, char **pre_aux)
+static void	ft_wait_heredoc(int status, int *fd, char **pre_aux)
 {
-	int	status;
+	int	ja;
 
-	status = 0;
-	wait(&status);
-	if (status != 0)
+	ja = 0;
+	waitpid(status, &ja, 0 );
+	if (ja != 0)
 		g_common.ctrl_c = 1;
 	del_str(pre_aux);
 	close(fd[WRITE_END]);
@@ -79,5 +79,5 @@ void	ft_heredoc(char *table, char **env, int expand, char *str)
 		}
 		ft_heredoc_aux3(&str, &aux, fd, pre_aux);
 	}
-	ft_wait_heredoc(fd, &pre_aux);
+	ft_wait_heredoc(status, fd, &pre_aux);
 }
